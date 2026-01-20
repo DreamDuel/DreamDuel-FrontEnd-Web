@@ -80,7 +80,7 @@ const showUserMenu = ref(false);
 
     <!-- Main Content -->
     <main class="md:pt-16 pb-16 md:pb-0">
-      <RouterView />
+      <slot />
     </main>
 
     <!-- Mobile Bottom Navigation -->
