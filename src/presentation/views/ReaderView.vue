@@ -20,7 +20,7 @@ onMounted(async () => {
 });
 
 const goBack = () => {
-  router.push('/');
+  router.push('/home');
 };
 
 const toggleLike = async () => {
@@ -86,7 +86,12 @@ const formatNumber = (num: number): string => {
         </h1>
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4 text-text-secondary text-sm">
-            <span>{{ storyStore.currentStory.author.name }}</span>
+            <router-link 
+              :to="`/user/${storyStore.currentStory.author.id}`"
+              class="hover:text-primary transition-colors cursor-pointer"
+            >
+              {{ storyStore.currentStory.author.name }}
+            </router-link>
             <span>•</span>
             <span>{{ formatNumber(storyStore.currentStory.stats.views) }} lecturas</span>
           </div>

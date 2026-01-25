@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router';
+import { RouterView, useRouter } from 'vue-router';
 import { SparklesIcon, PlusCircleIcon, UserCircleIcon, MagnifyingGlassIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import BottomNavigation from '@/presentation/components/BottomNavigation.vue';
-import { ref } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import { ref, onMounted } from 'vue';
 
+const router = useRouter();
+const userStore = useUserStore();
 const showUserMenu = ref(false);
+
+onMounted(() => {
+  userStore.loadUserFromStorage();
+});
 </script>
 
 <template>
@@ -14,7 +21,7 @@ const showUserMenu = ref(false);
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
-          <router-link to="/" class="flex items-center space-x-2 group">
+          <router-link to="/home" class="flex items-center space-x-2 group">
             <SparklesIcon class="h-8 w-8 text-primary transition-transform group-hover:scale-110" />
             <span class="text-2xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
               DreamDuel
@@ -24,7 +31,7 @@ const showUserMenu = ref(false);
           <!-- Navigation Links (Centro) -->
           <div class="flex items-center space-x-8">
             <router-link 
-              to="/" 
+              to="/home" 
               class="text-text-secondary hover:text-primary transition-colors font-medium"
             >
               Inicio
@@ -48,9 +55,15 @@ const showUserMenu = ref(false);
           <div class="flex items-center space-x-4 relative">
             <button 
               @click="showUserMenu = !showUserMenu"
-              class="text-text-secondary hover:text-primary transition-colors"
+              class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors group"
             >
-              <UserCircleIcon class="h-8 w-8" />
+              <img 
+                v-if="userStore.currentUser"
+                :src="userStore.currentUser.avatarUrl"
+                :alt="userStore.currentUser.username"
+                class="h-8 w-8 rounded-full border-2 border-primary/30 group-hover:border-primary transition-colors"
+              />
+              <UserCircleIcon v-else class="h-8 w-8" />
             </button>
             
             <!-- User Dropdown Menu -->

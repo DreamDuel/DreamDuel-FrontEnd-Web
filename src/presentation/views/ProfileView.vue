@@ -1,24 +1,89 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { UserCircleIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline';
+import { ref, onMounted, computed } from 'vue';
+import { UserCircleIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon } from '@heroicons/vue/24/outline';
 import { useStoryStore } from '@/stores/storyStore';
+import { useUserStore } from '@/stores/userStore';
+import { useRouter } from 'vue-router';
 import StoryCard from '@/presentation/components/StoryCard.vue';
 
 const storyStore = useStoryStore();
-const currentTab = ref<'stories' | 'saved'>('stories');
-
-onMounted(async () => {
-  // Cargar historias del usuario
-  // TODO: Implementar cuando haya autenticación
-  // await storyStore.fetchStories({ authorId: currentUserId });
-  
-  // Por ahora usar las existentes en el store
+const userStore = useUserStore();
+const router = useRouter();
+const currentTab = ref<'stories' | 'saved' | 'liked'>('stories');
+const isEditingProfile = ref(false);
+const editForm = ref({
+  username: '',
+  bio: ''
 });
 
-const userStats = {
-  storiesCreated: 0,
-  totalLikes: 0,
-  followers: 0
+onMounted(async () => {
+  // Cargar usuario desde localStorage si existe
+  userStore.loadUserFromStorage();
+  
+  // Cargar historias
+  await Promise.all([
+    storyStore.fetchStories(),
+    storyStore.fetchSavedStories()
+  ]);
+  
+  // Inicializar formulario de edición
+  if (userStore.currentUser) {
+    editForm.value.username = userStore.currentUser.username;
+    editForm.value.bio = userStore.currentUser.bio;
+  }
+});
+
+const userStats = computed(() => {
+  if (userStore.currentUser) {
+    return userStore.currentUser.stats;
+  }
+  return {
+    storiesCreated: 0,
+    totalLikes: 0,
+    followers: 0,
+    following: 0
+  };
+});
+
+const myStories = computed(() => {
+  if (!userStore.currentUser?.myStories) return [];
+  return storyStore.stories.filter(s => userStore.currentUser?.myStories.includes(s.id));
+});
+
+const savedStoriesList = computed(() => {
+  if (!userStore.currentUser?.savedStories) return [];
+  return [...storyStore.stories, ...storyStore.savedStories].filter(s => 
+    userStore.currentUser?.savedStories.includes(s.id)
+  );
+});
+
+const likedStoriesList = computed(() => {
+  if (!userStore.currentUser?.likedStories) return [];
+  return [...storyStore.stories, ...storyStore.trendingStories, ...storyStore.newStories].filter(s => 
+    userStore.currentUser?.likedStories.includes(s.id)
+  );
+});
+
+const handleLogout = () => {
+  userStore.logout();
+  router.push('/login');
+};
+
+const toggleEditProfile = () => {
+  if (isEditingProfile.value) {
+    // Guardar cambios
+    userStore.updateProfile({
+      username: editForm.value.username,
+      bio: editForm.value.bio
+    });
+  } else {
+    // Iniciar edición
+    if (userStore.currentUser) {
+      editForm.value.username = userStore.currentUser.username;
+      editForm.value.bio = userStore.currentUser.bio;
+    }
+  }
+  isEditingProfile.value = !isEditingProfile.value;
 };
 </script>
 
@@ -30,29 +95,70 @@ const userStats = {
         <div class="flex items-start justify-between mb-6">
           <div class="flex items-center space-x-6">
             <!-- Avatar -->
-            <div class="relative">
-              <UserCircleIcon class="h-24 w-24 text-primary" />
-              <button class="absolute bottom-0 right-0 bg-primary hover:bg-primary-light text-white rounded-full p-2 transition-colors">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-              </button>
+            <div>
+              <img 
+                :src="userStore.currentUser?.avatarUrl || 'https://ui-avatars.com/api/?name=Usuario&background=0099FF&color=fff&size=200'"
+                alt="Avatar" 
+                class="h-24 w-24 rounded-full border-4 border-primary/30 object-cover"
+              />
             </div>
 
             <!-- Info -->
-            <div>
-              <h1 class="text-3xl font-bold text-text-primary mb-2">Usuario</h1>
-              <p class="text-text-secondary">Creador de historias épicas</p>
+            <div class="flex-1">
+              <div v-if="!isEditingProfile">
+                <h1 class="text-3xl font-bold text-text-primary mb-2">{{ userStore.currentUser?.username || 'Usuario' }}</h1>
+                <p class="text-text-secondary">{{ userStore.currentUser?.email || 'usuario@dreamduel.com' }}</p>
+                <p v-if="userStore.currentUser?.bio" class="text-text-tertiary mt-2 text-sm">{{ userStore.currentUser.bio }}</p>
+                <p v-else class="text-text-tertiary mt-2 text-sm italic">Sin biografía</p>
+              </div>
+              <div v-else class="space-y-3">
+                <input
+                  v-model="editForm.username"
+                  type="text"
+                  placeholder="Nombre de usuario"
+                  class="w-full px-4 py-2 bg-background-elevated border border-white/10 rounded-lg text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                />
+                <textarea
+                  v-model="editForm.bio"
+                  placeholder="Biografía (opcional)"
+                  rows="2"
+                  class="w-full px-4 py-2 bg-background-elevated border border-white/10 rounded-lg text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
+                />
+              </div>
             </div>
           </div>
 
-          <!-- Settings Button -->
-          <router-link
-            to="/settings"
-            class="p-3 bg-background-elevated hover:bg-background-elevated/80 rounded-xl transition-colors"
-          >
-            <Cog6ToothIcon class="h-6 w-6 text-text-secondary hover:text-primary transition-colors" />
-          </router-link>
+          <!-- Settings, Edit and Logout Buttons -->
+          <div class="flex items-start space-x-2">
+            <button
+              @click="toggleEditProfile"
+              :class="[
+                'p-3 rounded-xl transition-colors',
+                isEditingProfile 
+                  ? 'bg-primary text-white hover:bg-primary-light' 
+                  : 'bg-background-elevated hover:bg-background-elevated/80'
+              ]"
+              :title="isEditingProfile ? 'Guardar cambios' : 'Editar perfil'"
+            >
+              <PencilIcon v-if="!isEditingProfile" class="h-6 w-6 text-text-secondary hover:text-primary transition-colors" />
+              <svg v-else class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </button>
+            <router-link
+              to="/settings"
+              class="p-3 bg-background-elevated hover:bg-background-elevated/80 rounded-xl transition-colors"
+            >
+              <Cog6ToothIcon class="h-6 w-6 text-text-secondary hover:text-primary transition-colors" />
+            </router-link>
+            <button
+              @click="handleLogout"
+              class="p-3 bg-background-elevated hover:bg-error/20 rounded-xl transition-colors group"
+              title="Cerrar sesión"
+            >
+              <ArrowRightOnRectangleIcon class="h-6 w-6 text-text-secondary group-hover:text-error transition-colors" />
+            </button>
+          </div>
         </div>
 
         <!-- Stats -->
@@ -83,7 +189,7 @@ const userStats = {
               : 'bg-background-card text-text-secondary hover:text-text-primary'
           ]"
         >
-          Mis Historias
+          Mis Historias ({{ myStories.length }})
         </button>
         <button
           @click="currentTab = 'saved'"
@@ -94,13 +200,24 @@ const userStats = {
               : 'bg-background-card text-text-secondary hover:text-text-primary'
           ]"
         >
-          Guardadas
+          Guardadas ({{ savedStoriesList.length }})
+        </button>
+        <button
+          @click="currentTab = 'liked'"
+          :class="[
+            'px-6 py-3 rounded-xl font-semibold transition-all',
+            currentTab === 'liked'
+              ? 'bg-primary text-white'
+              : 'bg-background-card text-text-secondary hover:text-text-primary'
+          ]"
+        >
+          Me gusta ({{ likedStoriesList.length }})
         </button>
       </div>
 
       <!-- Content -->
       <div v-if="currentTab === 'stories'">
-        <div v-if="storyStore.stories.length === 0" class="text-center py-20">
+        <div v-if="myStories.length === 0" class="text-center py-20">
           <p class="text-text-secondary text-lg mb-4">Aún no has creado historias</p>
           <router-link
             to="/create"
@@ -109,10 +226,9 @@ const userStats = {
             <span>Crear tu primera historia</span>
           </router-link>
         </div>
-        
-        <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <StoryCard
-            v-for="story in storyStore.stories"
+            v-for="story in myStories"
             :key="story.id"
             :story="story"
           />
@@ -120,21 +236,25 @@ const userStats = {
       </div>
 
       <div v-if="currentTab === 'saved'">
-        <div v-if="!storyStore.hasSavedStories" class="text-center py-20">
-          <div class="text-6xl mb-4">📚</div>
-          <p class="text-text-secondary text-lg mb-2">No tienes historias guardadas</p>
-          <p class="text-text-tertiary text-sm mb-6">Guarda historias que te gusten para leerlas más tarde</p>
-          <router-link
-            to="/"
-            class="inline-flex items-center space-x-2 px-6 py-3 bg-background-card hover:bg-background-elevated text-text-primary rounded-xl transition-colors"
-          >
-            <span>Explorar historias</span>
-          </router-link>
+        <div v-if="savedStoriesList.length === 0" class="text-center py-20">
+          <p class="text-text-secondary text-lg">No tienes historias guardadas</p>
         </div>
-        
-        <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <StoryCard
-            v-for="story in storyStore.savedStories"
+            v-for="story in savedStoriesList"
+            :key="story.id"
+            :story="story"
+          />
+        </div>
+      </div>
+
+      <div v-if="currentTab === 'liked'">
+        <div v-if="likedStoriesList.length === 0" class="text-center py-20">
+          <p class="text-text-secondary text-lg">No has dado like a ninguna historia</p>
+        </div>
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <StoryCard
+            v-for="story in likedStoriesList"
             :key="story.id"
             :story="story"
           />

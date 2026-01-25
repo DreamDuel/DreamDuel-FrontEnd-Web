@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/userStore';
 import { SparklesIcon, PhotoIcon, XMarkIcon } from '@heroicons/vue/24/solid';
 
 const router = useRouter();
+const userStore = useUserStore();
 const prompt = ref('');
 const selectedStyle = ref<string | null>(null);
 const selectedGenre = ref<string | null>(null);
@@ -110,13 +112,19 @@ const generateStory = async () => {
   isGenerating.value = true;
   
   // Simular generación de historia
-  setTimeout(() => {
+  setTimeout(async () => {
     console.log('Generating story with:', {
       prompt: prompt.value,
       style: selectedStyle.value,
       genre: selectedGenre.value,
       characterImages: characterImages.value.map(f => f.name)
     });
+    
+    // Crear y guardar la historia en el perfil del usuario
+    const newStoryId = `story-${Date.now()}`;
+    if (userStore.currentUser) {
+      userStore.addStoryToProfile(newStoryId);
+    }
     
     // Navegar a pantalla de carga y luego a la historia
     router.push('/loading');

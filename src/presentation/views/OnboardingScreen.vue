@@ -47,7 +47,7 @@ const skipOnboarding = () => {
 
 const completeOnboarding = () => {
   localStorage.setItem('hasSeenOnboarding', 'true');
-  router.push('/');
+  router.push('/home');
 };
 
 const goToSlide = (index: number) => {

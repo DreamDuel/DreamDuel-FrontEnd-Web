@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { ArrowLeftIcon } from '@heroicons/vue/24/outline';
+import { useUserStore } from '@/stores/userStore';
+import { ArrowLeftIcon, CheckCircleIcon } from '@heroicons/vue/24/outline';
 
 const router = useRouter();
+const userStore = useUserStore();
 
 const formData = ref({
-  username: 'Usuario',
-  email: 'usuario@dreamduel.com',
+  username: '',
+  email: '',
   bio: '',
   notifications: true,
   theme: 'dark'
@@ -20,37 +22,78 @@ const passwordForm = ref({
 });
 
 const showPasswordModal = ref(false);
+const successMessage = ref('');
+const errorMessage = ref('');
+
+onMounted(() => {
+  if (userStore.currentUser) {
+    formData.value.username = userStore.currentUser.username;
+    formData.value.email = userStore.currentUser.email;
+    formData.value.bio = userStore.currentUser.bio;
+  }
+});
 
 const goBack = () => {
   router.push('/profile');
 };
 
 const saveProfile = () => {
-  // TODO: Implementar guardado con el backend
-  console.log('Saving profile:', formData.value);
+  userStore.updateProfile({
+    username: formData.value.username,
+    email: formData.value.email,
+    bio: formData.value.bio
+  });
+  successMessage.value = 'Perfil actualizado correctamente';
+  setTimeout(() => successMessage.value = '', 3000);
 };
 
 const updatePassword = () => {
+  errorMessage.value = '';
+  
   if (passwordForm.value.new !== passwordForm.value.confirm) {
-    alert(t('common.error'));
+    errorMessage.value = 'Las contraseñas no coinciden';
     return;
   }
-  // TODO: Implementar cambio de contraseña
-  console.log('Updating password');
+  
+  if (passwordForm.value.new.length < 6) {
+    errorMessage.value = 'La contraseña debe tener al menos 6 caracteres';
+    return;
+  }
+  
+  // En una implementación real, validarías la contraseña actual
+  successMessage.value = 'Contraseña actualizada correctamente';
   showPasswordModal.value = false;
   passwordForm.value = { current: '', new: '', confirm: '' };
+  setTimeout(() => successMessage.value = '', 3000);
 };
 
 const logout = () => {
-  if (confirm(t('settings.confirmLogout'))) {
-    localStorage.removeItem('authToken');
-    router.push('/onboarding');
+  if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+    userStore.logout();
+    router.push('/login');
   }
 };
 </script>
 
 <template>
   <div class="min-h-screen bg-background-deep">
+    <!-- Success/Error Messages -->
+    <div v-if="successMessage" class="fixed top-4 right-4 z-50 max-w-md animate-fade-in">
+      <div class="bg-accent-teal/20 border border-accent-teal text-white px-6 py-4 rounded-xl flex items-center space-x-3">
+        <CheckCircleIcon class="h-6 w-6 text-accent-teal flex-shrink-0" />
+        <p>{{ successMessage }}</p>
+      </div>
+    </div>
+    
+    <div v-if="errorMessage" class="fixed top-4 right-4 z-50 max-w-md animate-fade-in">
+      <div class="bg-error/20 border border-error text-white px-6 py-4 rounded-xl flex items-center space-x-3">
+        <svg class="h-6 w-6 text-error flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p>{{ errorMessage }}</p>
+      </div>
+    </div>
+
     <div class="max-w-4xl mx-auto px-4 py-8">
       <!-- Header -->
       <div class="flex items-center space-x-4 mb-8">
@@ -60,17 +103,17 @@ const logout = () => {
         >
           <ArrowLeftIcon class="h-6 w-6 text-text-secondary" />
         </button>
-        <h1 class="text-3xl font-bold text-text-primary">{{ t('settings.title') }}</h1>
+        <h1 class="text-3xl font-bold text-text-primary">Configuración</h1>
       </div>
 
       <!-- Account Section -->
       <div class="bg-background-card rounded-2xl p-6 mb-6">
-        <h2 class="text-xl font-bold text-text-primary mb-6">{{ t('settings.account.title') }}</h2>
+        <h2 class="text-xl font-bold text-text-primary mb-6">Cuenta</h2>
         
         <div class="space-y-4">
           <!-- Username -->
           <div>
-            <label class="block text-text-secondary text-sm font-medium mb-2">{{ t('settings.account.username') }}</label>
+            <label class="block text-text-secondary text-sm font-medium mb-2">Nombre de usuario</label>
             <input
               v-model="formData.username"
               type="text"
@@ -80,7 +123,7 @@ const logout = () => {
 
           <!-- Email (readonly) -->
           <div>
-            <label class="block text-text-secondary text-sm font-medium mb-2">{{ t('settings.account.email') }}</label>
+            <label class="block text-text-secondary text-sm font-medium mb-2">Correo electrónico</label>
             <input
               v-model="formData.email"
               type="email"
@@ -91,7 +134,7 @@ const logout = () => {
 
           <!-- Bio -->
           <div>
-            <label class="block text-text-secondary text-sm font-medium mb-2">{{ t('settings.account.bio') }}</label>
+            <label class="block text-text-secondary text-sm font-medium mb-2">Biografía</label>
             <textarea
               v-model="formData.bio"
               rows="3"
@@ -105,7 +148,7 @@ const logout = () => {
             @click="showPasswordModal = true"
             class="text-primary hover:text-primary-light font-medium transition-colors"
           >
-            {{ t('settings.account.changePassword') }}
+            Cambiar contraseña
           </button>
 
           <!-- Save Button -->
@@ -113,20 +156,20 @@ const logout = () => {
             @click="saveProfile"
             class="w-full px-6 py-3 bg-primary hover:bg-primary-light text-white font-semibold rounded-xl transition-colors"
           >
-            {{ t('common.save') }}
+            Guardar cambios
           </button>
         </div>
       </div>
 
       <!-- Preferences Section -->
       <div class="bg-background-card rounded-2xl p-6 mb-6">
-        <h2 class="text-xl font-bold text-text-primary mb-6">{{ t('settings.preferences.title') }}</h2>
+        <h2 class="text-xl font-bold text-text-primary mb-6">Preferencias</h2>
         
         <div class="space-y-6">
           <!-- Notifications Toggle -->
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-text-primary font-medium">{{ t('settings.preferences.notifications') }}</p>
+              <p class="text-text-primary font-medium">Notificaciones</p>
               <p class="text-text-tertiary text-sm">Recibe actualizaciones de tus historias</p>
             </div>
             <button

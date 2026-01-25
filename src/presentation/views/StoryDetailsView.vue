@@ -70,22 +70,22 @@ const formatNumber = (num: number): string => {
             </h1>
 
             <!-- Author -->
-            <div class="flex items-center space-x-4 mb-6">
+            <router-link 
+              :to="`/user/${storyStore.currentStory.author.id}`"
+              class="flex items-center space-x-4 mb-6 hover:opacity-80 transition-opacity"
+            >
               <img
                 :src="storyStore.currentStory.author.avatarUrl"
                 :alt="storyStore.currentStory.author.name"
                 class="w-14 h-14 rounded-full border-2 border-primary"
               />
               <div class="flex-1">
-                <p class="text-text-primary font-semibold text-lg">
+                <p class="text-text-primary font-semibold text-lg hover:text-primary transition-colors">
                   {{ storyStore.currentStory.author.name }}
                 </p>
                 <p class="text-text-tertiary text-sm">Autor</p>
               </div>
-              <button class="px-6 py-2 bg-primary hover:bg-primary-light text-white font-semibold rounded-lg transition-colors">
-                Seguir
-              </button>
-            </div>
+            </router-link>
 
             <!-- Synopsis -->
             <p class="text-text-secondary text-lg leading-relaxed mb-6">

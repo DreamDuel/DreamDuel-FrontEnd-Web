@@ -13,7 +13,7 @@ onMounted(() => {
     if (!isFirstTime) {
       router.push('/onboarding');
     } else {
-      router.push('/');
+      router.push('/home');
     }
   }, 2500);
 });

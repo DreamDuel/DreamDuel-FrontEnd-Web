@@ -80,14 +80,18 @@ const toggleLike = async (event: Event) => {
       </h3>
 
       <!-- Author -->
-      <div class="flex items-center space-x-2 mb-3">
+      <router-link 
+        :to="`/user/${story.author.id}`"
+        class="flex items-center space-x-2 mb-3 hover:opacity-80 transition-opacity w-fit"
+        @click.stop
+      >
         <img 
           :src="story.author.avatarUrl" 
           :alt="story.author.name"
           class="w-6 h-6 rounded-full"
         />
-        <span class="text-sm text-text-secondary">{{ story.author.name }}</span>
-      </div>
+        <span class="text-sm text-text-secondary hover:text-primary transition-colors">{{ story.author.name }}</span>
+      </router-link>
 
       <!-- Stats -->
       <div class="flex items-center justify-between">

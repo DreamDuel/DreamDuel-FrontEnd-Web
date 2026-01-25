@@ -16,7 +16,7 @@ const currentTab = computed(() => {
 });
 
 const navItems = computed(() => [
-  { id: 'home', label: 'Inicio', icon: HomeIcon, iconSolid: HomeIconSolid, path: '/' },
+  { id: 'home', label: 'Inicio', icon: HomeIcon, iconSolid: HomeIconSolid, path: '/home' },
   { id: 'search', label: 'Buscar', icon: MagnifyingGlassIcon, iconSolid: MagnifyingGlassIconSolid, path: '/search' },
   { id: 'create', label: 'Crear', icon: SparklesIcon, iconSolid: SparklesIconSolid, path: '/create' },
   { id: 'profile', label: 'Perfil', icon: UserCircleIcon, iconSolid: UserCircleIconSolid, path: '/profile' }

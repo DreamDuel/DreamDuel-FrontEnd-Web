@@ -6,6 +6,7 @@ import { ref, computed } from 'vue';
 import type { Story } from '@/domain/stories/entities/Story.entity';
 import type { StoryCreationRequest } from '@/domain/stories/value-objects/StoryCreationRequest.vo';
 import { container } from '@/infrastructure/di/container';
+import { useUserStore } from './userStore';
 
 export const useStoryStore = defineStore('story', () => {
   // State
@@ -115,6 +116,8 @@ export const useStoryStore = defineStore('story', () => {
   }
 
   async function likeStory(storyId: string, userId: string): Promise<boolean> {
+    const userStore = useUserStore();
+    
     try {
       const useCase = container.likeStoryUseCase();
       const liked = await useCase.execute(storyId, userId);
@@ -139,6 +142,9 @@ export const useStoryStore = defineStore('story', () => {
         if (currentStory.value?.id === storyId) {
           currentStory.value.stats.likes++;
         }
+        
+        // Actualizar perfil del usuario
+        userStore.toggleLikeStory(storyId);
       } else {
         // Quitar like
         likedStoryIds.value.delete(storyId);
@@ -158,6 +164,9 @@ export const useStoryStore = defineStore('story', () => {
         if (currentStory.value?.id === storyId && currentStory.value.stats.likes > 0) {
           currentStory.value.stats.likes--;
         }
+        
+        // Actualizar perfil del usuario
+        userStore.toggleLikeStory(storyId);
       }
       
       return liked;
@@ -168,6 +177,8 @@ export const useStoryStore = defineStore('story', () => {
   }
 
   async function saveStory(storyId: string, userId: string): Promise<boolean> {
+    const userStore = useUserStore();
+    
     try {
       const useCase = container.saveStoryUseCase();
       const saved = await useCase.execute(storyId, userId);
@@ -184,11 +195,17 @@ export const useStoryStore = defineStore('story', () => {
           if (story) {
             savedStories.value.unshift(story);
           }
+          
+          // Actualizar perfil del usuario
+          userStore.toggleSaveStory(storyId);
         }
       } else {
         // Quitar de guardadas
         savedStoryIds.value.delete(storyId);
         savedStories.value = savedStories.value.filter(s => s.id !== storyId);
+        
+        // Actualizar perfil del usuario
+        userStore.toggleSaveStory(storyId);
       }
       
       return saved;
