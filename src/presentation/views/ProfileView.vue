@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { UserCircleIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon } from '@heroicons/vue/24/outline';
+import { UserCircleIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon, SparklesIcon, ClockIcon, GiftIcon } from '@heroicons/vue/24/outline';
 import { useStoryStore } from '@/stores/storyStore';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
@@ -85,6 +85,21 @@ const toggleEditProfile = () => {
   }
   isEditingProfile.value = !isEditingProfile.value;
 };
+
+const copyReferralCode = () => {
+  if (!userStore.currentUser?.credits?.referralCode) return;
+  const referralLink = `https://dreamduel.com/ref/${userStore.currentUser.credits.referralCode}`;
+  navigator.clipboard.writeText(referralLink);
+  alert('¡Link de referido copiado!');
+};
+
+const timeUntilReset = computed(() => {
+  try {
+    return userStore.getTimeUntilReset();
+  } catch {
+    return '12:00:00';
+  }
+});
 </script>
 
 <template>
@@ -161,8 +176,67 @@ const toggleEditProfile = () => {
           </div>
         </div>
 
+        <!-- Credits & Premium Status -->
+        <div v-if="!userStore.currentUser?.isPremium" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Credits Remaining -->
+          <div class="bg-gradient-to-br from-primary/10 to-accent-teal/10 rounded-xl p-4 border border-primary/20">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2">
+                <SparklesIcon class="h-5 w-5 text-primary" />
+                <span class="font-semibold text-text-primary">Imágenes gratis</span>
+              </div>
+              <span class="text-2xl font-bold text-primary">{{ userStore.currentUser?.credits.freeImagesLeft || 0 }}</span>
+            </div>
+            <div class="flex items-center space-x-2 text-xs text-text-secondary">
+              <ClockIcon class="h-4 w-4" />
+              <span>Recarga en: {{ timeUntilReset }}</span>
+            </div>
+          </div>
+
+          <!-- Referral Code -->
+          <div class="bg-gradient-to-br from-accent-gold/10 to-accent-crimson/10 rounded-xl p-4 border border-accent-gold/20">
+            <div class="flex items-center space-x-2 mb-2">
+              <GiftIcon class="h-5 w-5 text-accent-gold" />
+              <span class="font-semibold text-text-primary">Código de referido</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <code class="flex-1 px-3 py-2 bg-background-deep rounded-lg text-primary font-mono text-sm">
+                {{ userStore.currentUser?.credits.referralCode }}
+              </code>
+              <button 
+                @click="copyReferralCode"
+                class="px-3 py-2 bg-accent-gold hover:bg-accent-gold/80 text-white rounded-lg text-xs font-semibold transition-colors"
+              >
+                Copiar
+              </button>
+            </div>
+            <p class="text-xs text-text-tertiary mt-2">
+              +3 imágenes por amigo invitado ({{ userStore.currentUser?.credits.referralsCount || 0 }} invitados)
+            </p>
+          </div>
+        </div>
+
+        <!-- Premium Badge -->
+        <div v-else class="mt-6">
+          <div class="bg-gradient-to-r from-primary to-accent-gold rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <SparklesIcon class="h-6 w-6 text-white" />
+              <div>
+                <h3 class="font-bold text-white">Premium Activo</h3>
+                <p class="text-white/80 text-sm">Imágenes ilimitadas • Sin marcas de agua</p>
+              </div>
+            </div>
+            <router-link 
+              to="/settings"
+              class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg text-sm font-semibold transition-colors"
+            >
+              Gestionar
+            </router-link>
+          </div>
+        </div>
+
         <!-- Stats -->
-        <div class="grid grid-cols-3 gap-6">
+        <div class="grid grid-cols-3 gap-6 mt-6">
           <div class="text-center">
             <p class="text-3xl font-bold text-primary">{{ userStats.storiesCreated }}</p>
             <p class="text-text-secondary text-sm">Historias</p>

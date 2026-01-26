@@ -21,6 +21,22 @@ interface User {
   likedStories: string[]; // IDs de historias con like
   following: string[]; // IDs de usuarios que sigo
   followers: string[]; // IDs de seguidores
+  // Sistema de créditos y límites
+  credits: {
+    freeImagesLeft: number; // 3 imágenes gratis al registrarse
+    lastImageResetDate: Date; // Para restauración de 12h
+    totalImagesGenerated: number;
+    referralCode: string; // Código único para invitar amigos
+    referralsCount: number; // Amigos invitados
+  };
+  // Métricas de uso (PQLs)
+  usageMetrics: {
+    generationsToday: number;
+    blurClicksToday: number;
+    downloadAttempts: number;
+    lastActivityDate: Date;
+    isHighIntent: boolean; // true si >5 generaciones/hora
+  };
 }
 
 export const useUserStore = defineStore('user', () => {
@@ -37,6 +53,8 @@ export const useUserStore = defineStore('user', () => {
   // Actions
   function register(username: string, email: string, password: string) {
     // Crear usuario simulado
+    const referralCode = `DD${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+    
     const newUser: User = {
       id: `user-${Date.now()}`,
       username,
@@ -55,7 +73,21 @@ export const useUserStore = defineStore('user', () => {
       savedStories: [],
       likedStories: [],
       following: [],
-      followers: []
+      followers: [],
+      credits: {
+        freeImagesLeft: 3, // Pack de bienvenida: 3 imágenes gratis
+        lastImageResetDate: new Date(),
+        totalImagesGenerated: 0,
+        referralCode: referralCode,
+        referralsCount: 0
+      },
+      usageMetrics: {
+        generationsToday: 0,
+        blurClicksToday: 0,
+        downloadAttempts: 0,
+        lastActivityDate: new Date(),
+        isHighIntent: false
+      }
     };
 
     currentUser.value = newUser;
@@ -89,8 +121,34 @@ export const useUserStore = defineStore('user', () => {
     const savedAuth = localStorage.getItem('dreamduel_auth');
     
     if (savedUser && savedAuth === 'true') {
-      currentUser.value = JSON.parse(savedUser);
+      const user = JSON.parse(savedUser);
+      
+      // Inicializar propiedades nuevas si no existen (retrocompatibilidad)
+      if (!user.credits) {
+        user.credits = {
+          freeImagesLeft: 3,
+          lastImageResetDate: new Date(),
+          totalImagesGenerated: 0,
+          referralCode: 'DD' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+          referralsCount: 0
+        };
+      }
+      
+      if (!user.usageMetrics) {
+        user.usageMetrics = {
+          generationsToday: 0,
+          blurClicksToday: 0,
+          downloadAttempts: 0,
+          lastActivityDate: new Date(),
+          isHighIntent: false
+        };
+      }
+      
+      currentUser.value = user;
       isAuthenticated.value = true;
+      
+      // Guardar usuario actualizado
+      localStorage.setItem('dreamduel_user', JSON.stringify(user));
     }
   }
 
@@ -162,6 +220,93 @@ export const useUserStore = defineStore('user', () => {
     return currentUser.value.following.includes(userId);
   }
 
+  // Sistema de créditos e imágenes
+  function canGenerateImage(): boolean {
+    if (!currentUser.value) return false;
+    if (currentUser.value.isPremium) return true;
+    return currentUser.value.credits?.freeImagesLeft > 0;
+  }
+
+  function useImageCredit(): boolean {
+    if (!currentUser.value) return false;
+    if (currentUser.value.isPremium) return true; // Premium: ilimitado
+    
+    if (!currentUser.value.credits) return false;
+    
+    if (currentUser.value.credits.freeImagesLeft > 0) {
+      currentUser.value.credits.freeImagesLeft--;
+      currentUser.value.credits.totalImagesGenerated++;
+      localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+      return true;
+    }
+    return false;
+  }
+
+  function checkAndResetCredits() {
+    if (!currentUser.value || currentUser.value.isPremium || !currentUser.value.credits) return;
+    
+    const now = new Date();
+    const lastReset = new Date(currentUser.value.credits.lastImageResetDate);
+    const hoursSinceReset = (now.getTime() - lastReset.getTime()) / (1000 * 60 * 60);
+    
+    if (hoursSinceReset >= 12 && currentUser.value.credits.freeImagesLeft === 0) {
+      currentUser.value.credits.freeImagesLeft = 3;
+      currentUser.value.credits.lastImageResetDate = now;
+      localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+    }
+  }
+
+  function addReferralBonus() {
+    if (!currentUser.value?.credits) return;
+    currentUser.value.credits.freeImagesLeft += 3; // +3 imágenes por referido
+    currentUser.value.credits.referralsCount++;
+    localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+  }
+
+  // Métricas de uso y PQLs
+  function trackGeneration() {
+    if (!currentUser.value?.usageMetrics) return;
+    currentUser.value.usageMetrics.generationsToday++;
+    currentUser.value.usageMetrics.lastActivityDate = new Date();
+    
+    // Detectar alta intención (>5 generaciones en poco tiempo)
+    if (currentUser.value.usageMetrics.generationsToday >= 5) {
+      currentUser.value.usageMetrics.isHighIntent = true;
+    }
+    localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+  }
+
+  function trackBlurClick() {
+    if (!currentUser.value?.usageMetrics) return;
+    currentUser.value.usageMetrics.blurClicksToday++;
+    localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+  }
+
+  function trackDownloadAttempt() {
+    if (!currentUser.value?.usageMetrics) return;
+    currentUser.value.usageMetrics.downloadAttempts++;
+    localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+  }
+
+  function getTimeUntilReset(): string {
+    if (!currentUser.value?.credits?.lastImageResetDate) return '12:00:00';
+    
+    try {
+      const now = new Date();
+      const lastReset = new Date(currentUser.value.credits.lastImageResetDate);
+      const hoursSinceReset = (now.getTime() - lastReset.getTime()) / (1000 * 60 * 60);
+      const hoursUntilReset = Math.max(0, 12 - hoursSinceReset);
+      
+      const hours = Math.floor(hoursUntilReset);
+      const minutes = Math.floor((hoursUntilReset - hours) * 60);
+      const seconds = Math.floor(((hoursUntilReset - hours) * 60 - minutes) * 60);
+      
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    } catch {
+      return '12:00:00';
+    }
+  }
+
   return {
     currentUser,
     isAuthenticated,
@@ -175,6 +320,14 @@ export const useUserStore = defineStore('user', () => {
     toggleSaveStory,
     toggleLikeStory,
     toggleFollowUser,
-    isFollowing
+    isFollowing,
+    canGenerateImage,
+    useImageCredit,
+    checkAndResetCredits,
+    addReferralBonus,
+    trackGeneration,
+    trackBlurClick,
+    trackDownloadAttempt,
+    getTimeUntilReset
   };
 });

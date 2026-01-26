@@ -15,6 +15,9 @@ import SettingsView from '@/presentation/views/SettingsView.vue';
 import LoadingScreen from '@/presentation/views/LoadingScreen.vue';
 import StoryDetailsView from '@/presentation/views/StoryDetailsView.vue';
 import StoryViewerScreen from '@/presentation/views/StoryViewerScreen.vue';
+import PricingView from '@/presentation/views/PricingView.vue';
+import GuestCreateView from '@/presentation/views/GuestCreateView.vue';
+import NicheLandingView from '@/presentation/views/NicheLandingView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,7 +48,21 @@ const router = createRouter({
     },
     {
       path: '/',
-      redirect: '/login'
+      name: 'root',
+      component: GuestCreateView,
+      meta: { hideNavigation: true }
+    },
+    {
+      path: '/guest',
+      name: 'guest-create',
+      component: GuestCreateView,
+      meta: { hideNavigation: true }
+    },
+    {
+      path: '/generador/:niche',
+      name: 'niche-landing',
+      component: NicheLandingView,
+      meta: { hideNavigation: true }
     },
     {
       path: '/home',
@@ -76,6 +93,12 @@ const router = createRouter({
       path: '/settings',
       name: 'settings',
       component: SettingsView
+    },
+    {
+      path: '/pricing',
+      name: 'pricing',
+      component: PricingView,
+      meta: { hideNavigation: true }
     },
     {
       path: '/loading',

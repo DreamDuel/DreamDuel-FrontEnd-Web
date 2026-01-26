@@ -3,6 +3,8 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
 import { SparklesIcon, PhotoIcon, XMarkIcon } from '@heroicons/vue/24/solid';
+import ImageLimitModal from '@/presentation/components/ImageLimitModal.vue';
+import UpgradeSlideout from '@/presentation/components/UpgradeSlideout.vue';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -13,6 +15,8 @@ const isGenerating = ref(false);
 const characterImages = ref<File[]>([]);
 const imagePreviewUrls = ref<string[]>([]);
 const isDragging = ref(false);
+const showLimitModal = ref(false);
+const showUpgradeSlideout = ref(false);
 
 const styles = [
   { id: 'anime', name: 'Anime', emoji: '🎌' },
@@ -109,7 +113,21 @@ const canGenerate = computed(() => {
 const generateStory = async () => {
   if (!canGenerate.value) return;
   
+  // Verificar si el usuario puede generar imágenes
+  if (!userStore.canGenerateImage()) {
+    showLimitModal.value = true;
+    return;
+  }
+  
   isGenerating.value = true;
+  
+  // Usar un crédito de imagen si no es premium
+  if (!userStore.currentUser?.isPremium) {
+    userStore.useImageCredit();
+  }
+  
+  // Rastrear la generación para PQL
+  userStore.trackGeneration();
   
   // Simular generación de historia
   setTimeout(async () => {
@@ -136,6 +154,12 @@ const generateStory = async () => {
     
     isGenerating.value = false;
   }, 1000);
+};
+
+const handleUpgrade = () => {
+  showLimitModal.value = false;
+  showUpgradeSlideout.value = false;
+  router.push('/pricing');
 };
 </script>
 
@@ -323,5 +347,19 @@ const generateStory = async () => {
         </div>
       </div>
     </div>
+
+    <!-- Modals -->
+    <ImageLimitModal 
+      :show="showLimitModal" 
+      @close="showLimitModal = false"
+      @upgrade="handleUpgrade"
+    />
+    
+    <UpgradeSlideout
+      :show="showUpgradeSlideout"
+      trigger="limit"
+      @close="showUpgradeSlideout = false"
+      @upgrade="handleUpgrade"
+    />
   </div>
 </template>

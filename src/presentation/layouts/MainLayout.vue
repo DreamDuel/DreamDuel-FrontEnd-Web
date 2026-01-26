@@ -2,15 +2,26 @@
 import { RouterView, useRouter } from 'vue-router';
 import { SparklesIcon, PlusCircleIcon, UserCircleIcon, MagnifyingGlassIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import BottomNavigation from '@/presentation/components/BottomNavigation.vue';
+import WelcomeBanner from '@/presentation/components/WelcomeBanner.vue';
 import { useUserStore } from '@/stores/userStore';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 const router = useRouter();
 const userStore = useUserStore();
 const showUserMenu = ref(false);
+const showWelcomeBanner = ref(false);
+
+const imagesRemaining = computed(() => userStore.currentUser?.credits.freeImagesLeft || 0);
 
 onMounted(() => {
   userStore.loadUserFromStorage();
+  
+  // Mostrar banner de bienvenida solo una vez para usuarios nuevos
+  const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+  if (!hasSeenWelcome && userStore.currentUser && !userStore.currentUser.isPremium) {
+    showWelcomeBanner.value = true;
+    localStorage.setItem('hasSeenWelcome', 'true');
+  }
 });
 </script>
 
@@ -90,6 +101,13 @@ onMounted(() => {
         </div>
       </div>
     </nav>
+
+    <!-- Welcome Banner -->
+    <WelcomeBanner 
+      :show="showWelcomeBanner" 
+      :images-remaining="imagesRemaining"
+      @close="showWelcomeBanner = false"
+    />
 
     <!-- Main Content -->
     <main class="md:pt-16 pb-16 md:pb-0">
