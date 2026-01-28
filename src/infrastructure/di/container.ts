@@ -33,6 +33,9 @@ class DIContainer {
   likeStoryUseCase = () => new LikeStoryUseCase(this.storyRepo);
   saveStoryUseCase = () => new SaveStoryUseCase(this.storyRepo);
   searchStoriesUseCase = () => new SearchStoriesUseCase(this.storyRepo);
+  
+  // Direct repository access (para casos especiales)
+  getStoryRepository = () => this.storyRepo;
 }
 
 export const container = new DIContainer();

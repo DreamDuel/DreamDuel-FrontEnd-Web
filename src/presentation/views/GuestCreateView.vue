@@ -5,39 +5,49 @@ import { SparklesIcon, PhotoIcon, XMarkIcon, ArrowRightIcon } from '@heroicons/v
 
 const router = useRouter();
 const prompt = ref('');
-const selectedStyle = ref<string | null>(null);
-const selectedGenre = ref<string | null>(null);
 const isGenerating = ref(false);
 const showRegisterPrompt = ref(false);
+const characterImage = ref<File | null>(null);
+const imagePreviewUrl = ref<string>('');
+const generatedImageUrl = ref<string>('');
 
-const styles = [
-  { id: 'anime', name: 'Anime', emoji: '🎌' },
-  { id: 'realistic', name: 'Realista', emoji: '📸' },
-  { id: 'noir', name: 'Noir', emoji: '🎬' },
-  { id: 'watercolor', name: 'Acuarela', emoji: '🎨' },
-  { id: 'comic', name: 'Cómic', emoji: '💥' },
-  { id: 'fantasy', name: 'Fantasía', emoji: '🔮' }
-];
-
-const genres = [
-  { id: 'romance', name: 'Romance', emoji: '💕' },
-  { id: 'action', name: 'Acción', emoji: '⚔️' },
-  { id: 'mystery', name: 'Misterio', emoji: '🔍' },
-  { id: 'scifi', name: 'Sci-Fi', emoji: '🚀' },
-  { id: 'horror', name: 'Terror', emoji: '👻' },
-  { id: 'fantasy', name: 'Fantasía', emoji: '🧙' }
-];
-
-const toggleStyle = (styleId: string) => {
-  selectedStyle.value = selectedStyle.value === styleId ? null : styleId;
+const handleFileSelect = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files[0]) {
+    const file = target.files[0];
+    
+    // Validar tipo de archivo
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor selecciona una imagen válida');
+      return;
+    }
+    
+    // Validar tamaño (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen es muy grande. Máximo 5MB');
+      return;
+    }
+    
+    characterImage.value = file;
+    
+    // Crear preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        imagePreviewUrl.value = e.target.result as string;
+      }
+    };
+    reader.readAsDataURL(file);
+  }
 };
 
-const toggleGenre = (genreId: string) => {
-  selectedGenre.value = selectedGenre.value === genreId ? null : genreId;
+const removeImage = () => {
+  characterImage.value = null;
+  imagePreviewUrl.value = '';
 };
 
 const canGenerate = computed(() => {
-  return prompt.value.trim().length > 0 && !isGenerating.value;
+  return prompt.value.trim().length > 0 && characterImage.value !== null && !isGenerating.value;
 });
 
 const generateStory = async () => {
@@ -45,26 +55,27 @@ const generateStory = async () => {
   
   isGenerating.value = true;
   
-  // Simular generación
+  // Simular generación de imagen única
   setTimeout(() => {
-    console.log('Generating guest story:', {
+    console.log('Generating guest image:', {
       prompt: prompt.value,
-      style: selectedStyle.value,
-      genre: selectedGenre.value
+      characterImage: characterImage.value?.name
     });
     
+    // Simular URL de imagen generada
+    generatedImageUrl.value = 'https://picsum.photos/800/1000';
+    
     isGenerating.value = false;
-    // Mostrar prompt para registrarse después de ver el preview
+    // Mostrar prompt para registrarse después de ver la imagen
     showRegisterPrompt.value = true;
-  }, 2000);
+  }, 3000);
 };
 
 const goToRegister = () => {
-  // Guardar datos de la historia en sessionStorage para recuperar después del registro
+  // Guardar datos en sessionStorage para recuperar después del registro
   sessionStorage.setItem('guestStory', JSON.stringify({
     prompt: prompt.value,
-    style: selectedStyle.value,
-    genre: selectedGenre.value
+    imageUrl: generatedImageUrl.value
   }));
   router.push('/register');
 };
@@ -110,10 +121,10 @@ const skipToLogin = () => {
             <SparklesIcon class="h-12 w-12 text-primary animate-pulse" />
           </div>
           <h1 class="text-5xl md:text-6xl font-bold text-text-primary mb-4">
-            Crea tu Primera Historia
+            Transforma tu Foto con IA
           </h1>
           <p class="text-text-secondary text-xl mb-6">
-            Prueba gratis sin registro. Convierte tus ideas en historias visuales con IA.
+            Sube una foto y describe qué quieres hacer con ella. ¡Prueba gratis sin registro!
           </p>
           <div class="flex items-center justify-center space-x-6 text-sm text-text-tertiary">
             <div class="flex items-center space-x-2">
@@ -133,66 +144,59 @@ const skipToLogin = () => {
 
         <!-- Formulario de Creación -->
         <div class="bg-background-card border border-white/10 rounded-2xl p-8 shadow-2xl backdrop-blur-sm mb-8">
+          <!-- Upload de Imagen -->
+          <div class="mb-8">
+            <label class="block text-text-primary font-semibold mb-3 text-lg">
+              1. Sube una foto de una persona
+            </label>
+            
+            <div v-if="!imagePreviewUrl" class="relative">
+              <input
+                type="file"
+                accept="image/*"
+                @change="handleFileSelect"
+                class="hidden"
+                id="characterImageInput"
+              />
+              <label
+                for="characterImageInput"
+                class="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-primary hover:bg-background-elevated/50 transition-all cursor-pointer group"
+              >
+                <PhotoIcon class="h-16 w-16 text-text-tertiary group-hover:text-primary transition-colors mb-3" />
+                <span class="text-text-primary font-medium mb-1">Haz click para subir una imagen</span>
+                <span class="text-text-tertiary text-sm">PNG, JPG (máx. 5MB)</span>
+              </label>
+            </div>
+            
+            <div v-else class="relative">
+              <img :src="imagePreviewUrl" alt="Preview" class="w-full h-80 object-cover rounded-xl" />
+              <button
+                @click="removeImage"
+                class="absolute top-3 right-3 p-2 bg-error/90 hover:bg-error text-white rounded-lg transition-colors"
+              >
+                <XMarkIcon class="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+
           <!-- Prompt Input -->
           <div class="mb-8">
             <label class="block text-text-primary font-semibold mb-3 text-lg">
-              ¿Qué historia quieres crear?
+              2. ¿Qué quieres hacer con esta persona?
             </label>
             <textarea
               v-model="prompt"
-              placeholder="Ej: Una aventura épica sobre un joven mago que descubre un portal mágico en su sótano..."
-              rows="4"
-              class="w-full px-5 py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none text-lg"
+              placeholder="Ej: Ponla en un traje espacial flotando en el espacio, rodeada de estrellas y planetas...
+
+Ej: Conviértela en un superhéroe con capa roja volando sobre la ciudad...
+
+Ej: Hazla aparecer en una playa paradisíaca al atardecer con palmeras..."
+              rows="5"
+              class="w-full px-5 py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
             ></textarea>
             <p class="text-text-tertiary text-sm mt-2">
-              💡 Sé específico: personajes, lugar, conflicto
+              💡 Describe el escenario, ropa, acción, ambiente, etc.
             </p>
-          </div>
-
-          <!-- Estilos Visuales -->
-          <div class="mb-8">
-            <label class="block text-text-primary font-semibold mb-3">
-              Estilo Visual
-            </label>
-            <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
-              <button
-                v-for="style in styles"
-                :key="style.id"
-                @click="toggleStyle(style.id)"
-                :class="[
-                  'p-4 rounded-xl border-2 transition-all hover:scale-105',
-                  selectedStyle === style.id
-                    ? 'border-primary bg-primary/10'
-                    : 'border-white/10 bg-background-elevated hover:border-primary/50'
-                ]"
-              >
-                <div class="text-3xl mb-2">{{ style.emoji }}</div>
-                <div class="text-text-primary text-xs font-medium">{{ style.name }}</div>
-              </button>
-            </div>
-          </div>
-
-          <!-- Géneros -->
-          <div class="mb-8">
-            <label class="block text-text-primary font-semibold mb-3">
-              Género
-            </label>
-            <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
-              <button
-                v-for="genre in genres"
-                :key="genre.id"
-                @click="toggleGenre(genre.id)"
-                :class="[
-                  'p-4 rounded-xl border-2 transition-all hover:scale-105',
-                  selectedGenre === genre.id
-                    ? 'border-accent-crimson bg-accent-crimson/10'
-                    : 'border-white/10 bg-background-elevated hover:border-accent-crimson/50'
-                ]"
-              >
-                <div class="text-3xl mb-2">{{ genre.emoji }}</div>
-                <div class="text-text-primary text-xs font-medium">{{ genre.name }}</div>
-              </button>
-            </div>
           </div>
 
           <!-- Botón de Generar -->
@@ -211,13 +215,17 @@ const skipToLogin = () => {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <span>CREANDO TU HISTORIA...</span>
+              <span>CREANDO TU IMAGEN...</span>
             </template>
             <template v-else>
               <SparklesIcon class="h-6 w-6" />
-              <span>CREAR HISTORIA GRATIS</span>
+              <span>GENERAR IMAGEN GRATIS</span>
             </template>
           </button>
+
+          <p v-if="!canGenerate && !isGenerating" class="text-text-tertiary text-sm mt-3 text-center">
+            {{ !characterImage ? '⚠️ Sube una foto para continuar' : '⚠️ Describe qué quieres hacer con la foto' }}
+          </p>
         </div>
 
         <!-- Beneficios de registrarse -->
@@ -233,7 +241,7 @@ const skipToLogin = () => {
             </div>
             <div class="text-center">
               <div class="text-2xl mb-2">💾</div>
-              <div class="text-text-primary font-semibold">Guardar Historias</div>
+              <div class="text-text-primary font-semibold">Guardar Creaciones</div>
               <div class="text-text-tertiary">Acceso desde cualquier lugar</div>
             </div>
             <div class="text-center">
@@ -246,22 +254,29 @@ const skipToLogin = () => {
       </div>
     </div>
 
-    <!-- Modal: Registrarse para guardar -->
+    <!-- Modal: Vista Previa de Imagen Generada + Registrarse -->
     <Transition name="modal">
-      <div v-if="showRegisterPrompt" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-        <div class="relative w-full max-w-md bg-background-card rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
-          <button @click="showRegisterPrompt = false" class="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors">
+      <div v-if="showRegisterPrompt && generatedImageUrl" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+        <div class="relative w-full max-w-2xl bg-background-card rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
+          <button @click="showRegisterPrompt = false" class="absolute top-4 right-4 z-10 text-text-secondary hover:text-text-primary transition-colors bg-background-deep/80 p-2 rounded-lg">
             <XMarkIcon class="h-6 w-6" />
           </button>
           
-          <div class="p-8 text-center">
-            <div class="text-6xl mb-4">🎉</div>
-            <h2 class="text-2xl font-bold text-text-primary mb-3">
-              ¡Tu historia está lista!
-            </h2>
-            <p class="text-text-secondary mb-6">
-              Regístrate gratis para guardarla, compartirla y crear más historias increíbles.
-            </p>
+          <div class="p-8">
+            <div class="text-center mb-6">
+              <div class="text-6xl mb-4">🎉</div>
+              <h2 class="text-2xl font-bold text-text-primary mb-2">
+                ¡Tu imagen está lista!
+              </h2>
+              <p class="text-text-secondary">
+                Regístrate gratis para guardarla y crear más imágenes increíbles
+              </p>
+            </div>
+
+            <!-- Imagen Generada -->
+            <div class="mb-6">
+              <img :src="generatedImageUrl" alt="Generated" class="w-full h-96 object-cover rounded-xl shadow-xl" />
+            </div>
             
             <div class="space-y-3">
               <button
@@ -280,7 +295,7 @@ const skipToLogin = () => {
               </button>
             </div>
 
-            <p class="text-xs text-text-tertiary mt-4">
+            <p class="text-xs text-text-tertiary mt-4 text-center">
               Sin tarjeta requerida • Cancela cuando quieras
             </p>
           </div>

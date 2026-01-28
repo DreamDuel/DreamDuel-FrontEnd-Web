@@ -1,10 +1,24 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 import { useStoryStore } from '@/stores/storyStore';
 import StoryCard from '@/presentation/components/StoryCard.vue';
 import { PlayIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/solid';
 
 const storyStore = useStoryStore();
+
+// Filtrar solo historias públicas
+const publicTrendingStories = computed(() => 
+  storyStore.trendingStories.filter(s => s.visibility === 'public')
+);
+
+const publicNewStories = computed(() => 
+  storyStore.newStories.filter(s => s.visibility === 'public')
+);
+
+const publicFeaturedStory = computed(() => {
+  const featured = storyStore.featuredStory;
+  return featured?.visibility === 'public' ? featured : publicTrendingStories.value[0] || null;
+});
 
 onMounted(async () => {
   await Promise.all([
@@ -25,12 +39,12 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
 <template>
   <div class="min-h-screen">
     <!-- Hero Section -->
-    <section v-if="storyStore.featuredStory" class="relative h-[70vh] overflow-hidden">
+    <section v-if="publicFeaturedStory" class="relative h-[70vh] overflow-hidden">
       <!-- Background Image with Overlay -->
       <div class="absolute inset-0">
         <img 
-          :src="storyStore.featuredStory.coverUrl" 
-          :alt="storyStore.featuredStory.title"
+          :src="publicFeaturedStory.coverUrl" 
+          :alt="publicFeaturedStory.title"
           class="w-full h-full object-cover"
         />
         <div class="absolute inset-0 bg-gradient-to-r from-background-deep via-background-deep/80 to-transparent" />
@@ -47,32 +61,32 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
 
           <!-- Title -->
           <h1 class="text-5xl md:text-6xl font-bold text-text-primary mb-4 leading-tight">
-            {{ storyStore.featuredStory.title }}
+            {{ publicFeaturedStory.title }}
           </h1>
 
           <!-- Synopsis -->
           <p class="text-xl text-text-secondary mb-6 leading-relaxed">
-            {{ storyStore.featuredStory.synopsis }}
+            {{ publicFeaturedStory.synopsis }}
           </p>
 
           <!-- Author Info -->
           <div class="flex items-center space-x-3 mb-8">
             <img 
-              :src="storyStore.featuredStory.author.avatarUrl" 
-              :alt="storyStore.featuredStory.author.name"
+              :src="publicFeaturedStory.author.avatarUrl" 
+              :alt="publicFeaturedStory.author.name"
               class="w-12 h-12 rounded-full border-2 border-primary"
             />
             <div>
-              <p class="text-text-primary font-medium">{{ storyStore.featuredStory.author.name }}</p>
+              <p class="text-text-primary font-medium">{{ publicFeaturedStory.author.name }}</p>
               <p class="text-text-tertiary text-sm">
-                {{ (storyStore.featuredStory.stats.views / 1000).toFixed(0) }}K lecturas
+                {{ (publicFeaturedStory.stats.views / 1000).toFixed(0) }}K lecturas
               </p>
             </div>
           </div>
 
           <!-- CTA Button -->
           <router-link 
-            :to="`/story/${storyStore.featuredStory.id}`"
+            :to="`/story/${publicFeaturedStory.id}`"
             class="inline-flex items-center space-x-3 px-8 py-4 bg-primary hover:bg-primary-light text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 hover:scale-105"
           >
             <PlayIcon class="h-6 w-6" />
@@ -121,7 +135,7 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
           style="scroll-behavior: smooth;"
         >
           <div 
-            v-for="story in storyStore.trendingStories" 
+            v-for="story in publicTrendingStories" 
             :key="story.id"
             class="flex-shrink-0 w-64 snap-start"
           >
@@ -165,7 +179,7 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
           style="scroll-behavior: smooth;"
         >
           <div 
-            v-for="story in storyStore.newStories" 
+            v-for="story in publicNewStories" 
             :key="story.id"
             class="flex-shrink-0 w-64 snap-start"
           >

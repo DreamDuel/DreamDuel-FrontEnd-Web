@@ -2,21 +2,39 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
-import { SparklesIcon, PhotoIcon, XMarkIcon } from '@heroicons/vue/24/solid';
+import { useStoryStore } from '@/stores/storyStore';
+import { SparklesIcon, PhotoIcon, XMarkIcon, UserIcon } from '@heroicons/vue/24/solid';
 import ImageLimitModal from '@/presentation/components/ImageLimitModal.vue';
 import UpgradeSlideout from '@/presentation/components/UpgradeSlideout.vue';
 
+interface Character {
+  id: string;
+  name: string;
+  imageFile: File;
+  imagePreview: string;
+}
+
 const router = useRouter();
 const userStore = useUserStore();
+const storyStore = useStoryStore();
+const title = ref('');
 const prompt = ref('');
+const isPublic = ref(true);
 const selectedStyle = ref<string | null>(null);
 const selectedGenre = ref<string | null>(null);
 const isGenerating = ref(false);
-const characterImages = ref<File[]>([]);
-const imagePreviewUrls = ref<string[]>([]);
-const isDragging = ref(false);
+const characters = ref<Character[]>([]);
 const showLimitModal = ref(false);
 const showUpgradeSlideout = ref(false);
+
+// Límites de personajes según plan
+const maxCharacters = computed(() => {
+  return userStore.currentUser?.isPremium ? 10 : 2;
+});
+
+const canAddMoreCharacters = computed(() => {
+  return characters.value.length < maxCharacters.value;
+});
 
 const styles = [
   { id: 'anime', name: 'Anime', emoji: '🎌' },
@@ -44,70 +62,74 @@ const toggleGenre = (genreId: string) => {
   selectedGenre.value = selectedGenre.value === genreId ? null : genreId;
 };
 
-const handleFileSelect = (event: Event) => {
+const handleCharacterFileSelect = (event: Event) => {
   const target = event.target as HTMLInputElement;
-  if (target.files) {
-    addFiles(Array.from(target.files));
+  if (target.files && target.files[0]) {
+    addCharacter(target.files[0]);
+    target.value = ''; // Reset input
   }
 };
 
-const handleDrop = (event: DragEvent) => {
-  isDragging.value = false;
-  if (event.dataTransfer?.files) {
-    addFiles(Array.from(event.dataTransfer.files));
-  }
-};
-
-const handleDragOver = (event: DragEvent) => {
-  event.preventDefault();
-  isDragging.value = true;
-};
-
-const handleDragLeave = () => {
-  isDragging.value = false;
-};
-
-const addFiles = (files: File[]) => {
-  const validFiles = files.filter(file => {
-    // Validar tipo de archivo
-    if (!file.type.startsWith('image/')) {
-      alert(`${file.name} no es una imagen válida`);
-      return false;
+const addCharacter = (file: File) => {
+  // Verificar límite
+  if (!canAddMoreCharacters.value) {
+    if (userStore.currentUser?.isPremium) {
+      alert('Máximo 10 personajes por historia');
+    } else {
+      alert('Plan Free: máximo 2 personajes. Actualiza a Premium para hasta 10 personajes.');
+      showUpgradeSlideout.value = true;
     }
-    // Validar tamaño (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert(`${file.name} es muy grande. Máximo 5MB`);
-      return false;
-    }
-    return true;
-  });
-
-  // Limitar a 4 imágenes máximo
-  const totalImages = characterImages.value.length + validFiles.length;
-  if (totalImages > 4) {
-    alert('Máximo 4 imágenes de personajes');
     return;
   }
 
-  validFiles.forEach(file => {
-    characterImages.value.push(file);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target?.result) {
-        imagePreviewUrls.value.push(e.target.result as string);
-      }
-    };
-    reader.readAsDataURL(file);
-  });
+  // Validar tipo de archivo
+  if (!file.type.startsWith('image/')) {
+    alert('Por favor selecciona una imagen válida');
+    return;
+  }
+
+  // Validar tamaño (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    alert('La imagen es muy grande. Máximo 5MB');
+    return;
+  }
+
+  // Crear preview
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    if (e.target?.result) {
+      const newCharacter: Character = {
+        id: `char-${Date.now()}-${Math.random()}`,
+        name: '',
+        imageFile: file,
+        imagePreview: e.target.result as string
+      };
+      characters.value.push(newCharacter);
+    }
+  };
+  reader.readAsDataURL(file);
 };
 
-const removeImage = (index: number) => {
-  characterImages.value.splice(index, 1);
-  imagePreviewUrls.value.splice(index, 1);
+const updateCharacterName = (characterId: string, name: string) => {
+  const character = characters.value.find(c => c.id === characterId);
+  if (character) {
+    character.name = name;
+  }
+};
+
+const removeCharacter = (characterId: string) => {
+  const index = characters.value.findIndex(c => c.id === characterId);
+  if (index > -1) {
+    characters.value.splice(index, 1);
+  }
 };
 
 const canGenerate = computed(() => {
-  return prompt.value.trim().length > 0 && !isGenerating.value;
+  return title.value.trim().length > 3 &&
+         prompt.value.trim().length > 10 && 
+         selectedStyle.value !== null && 
+         selectedGenre.value !== null &&
+         !isGenerating.value;
 });
 
 const generateStory = async () => {
@@ -129,30 +151,48 @@ const generateStory = async () => {
   // Rastrear la generación para PQL
   userStore.trackGeneration();
   
-  // Simular generación de historia
+  // Navegar a pantalla de carga inmediatamente
+  router.push('/loading');
+  
+  // Crear historia usando storyStore
   setTimeout(async () => {
     console.log('Generating story with:', {
+      title: title.value,
       prompt: prompt.value,
       style: selectedStyle.value,
       genre: selectedGenre.value,
-      characterImages: characterImages.value.map(f => f.name)
+      isPublic: isPublic.value,
+      characters: characters.value.map(c => ({ name: c.name, image: c.imageFile.name }))
     });
     
-    // Crear y guardar la historia en el perfil del usuario
-    const newStoryId = `story-${Date.now()}`;
-    if (userStore.currentUser) {
-      userStore.addStoryToProfile(newStoryId);
+    // Crear la historia en el storyStore
+    const tags = [];
+    if (selectedStyle.value) tags.push(selectedStyle.value);
+    if (selectedGenre.value) tags.push(selectedGenre.value);
+    
+    const newStory = await storyStore.createStory({
+      title: title.value,
+      prompt: prompt.value,
+      tags,
+      isPublic: isPublic.value,
+      authorId: userStore.currentUser!.id,
+      characterImages: characters.value.map(c => c.imageFile)
+    });
+    
+    if (newStory && userStore.currentUser) {
+      // Agregar al perfil del usuario
+      userStore.addStoryToProfile(newStory.id);
+      
+      // Navegar a la historia creada
+      setTimeout(() => {
+        router.push(`/story-viewer/${newStory.id}`);
+        isGenerating.value = false;
+      }, 2000);
+    } else {
+      // Error en la creación
+      router.push('/create');
+      isGenerating.value = false;
     }
-    
-    // Navegar a pantalla de carga y luego a la historia
-    router.push('/loading');
-    
-    // Simular finalización de generación
-    setTimeout(() => {
-      router.push('/story-viewer/1');
-    }, 5000);
-    
-    isGenerating.value = false;
   }, 1000);
 };
 
@@ -181,10 +221,25 @@ const handleUpgrade = () => {
 
       <!-- Main Input Card -->
       <div class="bg-background-card rounded-2xl p-8 shadow-2xl shadow-primary/10 mb-8">
+        <!-- Título -->
+        <div class="mb-8">
+          <label class="block text-text-secondary text-sm font-medium mb-3">
+            Título de tu historia
+            <span class="text-accent-crimson">*</span>
+          </label>
+          <input
+            v-model="title"
+            type="text"
+            placeholder="Ej: La Última Guardiana del Tiempo"
+            class="w-full px-4 py-3 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
+          />
+        </div>
+
         <!-- Prompt Input -->
         <div class="mb-8">
           <label class="block text-text-secondary text-sm font-medium mb-3">
             ¿Cuál es tu fantasía hoy?
+            <span class="text-accent-crimson">*</span>
           </label>
           <textarea
             v-model="prompt"
@@ -240,69 +295,138 @@ const handleUpgrade = () => {
           </div>
         </div>
 
-        <!-- Character Images Upload -->
+        <!-- Personajes con Nombres y Límites -->
         <div class="mb-8">
-          <label class="block text-text-secondary text-sm font-medium mb-3">
-            Personajes (Opcional)
-            <span class="text-text-tertiary text-xs ml-2">Sube hasta 4 fotos para personalizarlos</span>
-          </label>
-          
-          <!-- Upload Zone -->
-          <div
-            @drop.prevent="handleDrop"
-            @dragover.prevent="handleDragOver"
-            @dragleave.prevent="handleDragLeave"
-            :class="[
-              'relative border-2 border-dashed rounded-xl p-8 transition-all duration-300 cursor-pointer',
-              isDragging
-                ? 'border-primary bg-primary/10'
-                : 'border-white/20 bg-background-elevated hover:border-primary/50'
-            ]"
-          >
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              @change="handleFileSelect"
-              class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              :disabled="characterImages.length >= 4"
-            />
-            
-            <div class="text-center pointer-events-none">
-              <PhotoIcon class="h-12 w-12 text-primary mx-auto mb-3" />
-              <p class="text-text-secondary mb-1">
-                Arrastra imágenes aquí o haz clic para seleccionar
-              </p>
-              <p class="text-text-tertiary text-sm">
-                PNG, JPG hasta 5MB · Máximo 4 personajes
-              </p>
+          <div class="flex items-center justify-between mb-3">
+            <label class="block text-text-secondary text-sm font-medium">
+              Personajes (Opcional)
+              <span class="text-text-tertiary text-xs ml-2">Añade fotos y nombres</span>
+            </label>
+            <div class="text-xs">
+              <span :class="characters.length >= maxCharacters ? 'text-accent-crimson' : 'text-text-tertiary'">
+                {{ characters.length }}/{{ maxCharacters }}
+              </span>
+              <span v-if="!userStore.currentUser?.isPremium" class="ml-2 px-2 py-1 bg-accent-gold/20 text-accent-gold rounded text-xs">
+                Free: 2 max
+              </span>
+              <span v-else class="ml-2 px-2 py-1 bg-primary/20 text-primary rounded text-xs">
+                Premium: 10 max
+              </span>
             </div>
           </div>
 
-          <!-- Image Previews -->
-          <div v-if="imagePreviewUrls.length > 0" class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+          <!-- Lista de Personajes -->
+          <div class="space-y-3 mb-4">
             <div
-              v-for="(url, index) in imagePreviewUrls"
-              :key="index"
-              class="relative group aspect-square rounded-xl overflow-hidden border border-white/10"
+              v-for="character in characters"
+              :key="character.id"
+              class="flex items-center space-x-3 bg-background-elevated border border-white/10 rounded-xl p-3 group hover:border-primary/30 transition-all"
             >
-              <img
-                :src="url"
-                :alt="`Personaje ${index + 1}`"
-                class="w-full h-full object-cover"
-              />
+              <!-- Imagen del personaje -->
+              <div class="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 border-white/10">
+                <img :src="character.imagePreview" alt="Character" class="w-full h-full object-cover" />
+              </div>
+
+              <!-- Campo de nombre -->
+              <div class="flex-1">
+                <input
+                  type="text"
+                  :value="character.name"
+                  @input="(e) => updateCharacterName(character.id, (e.target as HTMLInputElement).value)"
+                  placeholder="Nombre del personaje (ej: María, Alex, Luna)"
+                  class="w-full px-3 py-2 bg-background-deep border border-white/10 rounded-lg text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                />
+                <p class="text-text-tertiary text-xs mt-1">
+                  <UserIcon class="inline h-3 w-3 mr-1" />
+                  {{ character.imageFile.name }}
+                </p>
+              </div>
+
+              <!-- Botón eliminar -->
               <button
-                @click="removeImage(index)"
-                class="absolute top-2 right-2 p-1.5 bg-background-deep/80 backdrop-blur-sm rounded-full text-text-secondary hover:text-accent-crimson hover:bg-accent-crimson/20 transition-all opacity-0 group-hover:opacity-100"
+                @click="removeCharacter(character.id)"
+                class="p-2 text-text-secondary hover:text-accent-crimson hover:bg-accent-crimson/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
               >
                 <XMarkIcon class="h-5 w-5" />
               </button>
-              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                <p class="text-white text-xs font-medium truncate">
-                  {{ characterImages[index]?.name }}
+            </div>
+          </div>
+
+          <!-- Botón Agregar Personaje -->
+          <div v-if="canAddMoreCharacters" class="relative">
+            <input
+              type="file"
+              accept="image/*"
+              @change="handleCharacterFileSelect"
+              class="hidden"
+              id="addCharacterInput"
+            />
+            <label
+              for="addCharacterInput"
+              class="flex items-center justify-center space-x-2 w-full py-4 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
+            >
+              <PhotoIcon class="h-5 w-5 text-primary" />
+              <span class="text-text-primary font-medium">Agregar Personaje</span>
+            </label>
+          </div>
+
+          <!-- Mensaje cuando alcanza el límite FREE -->
+          <div v-else-if="!userStore.currentUser?.isPremium" class="p-4 bg-gradient-to-r from-accent-gold/10 to-accent-crimson/10 border border-accent-gold/20 rounded-xl">
+            <div class="flex items-start space-x-3">
+              <div class="flex-shrink-0 text-2xl">⚡</div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-text-primary mb-1">
+                  Límite alcanzado (Plan Free)
+                </h4>
+                <p class="text-text-secondary text-sm mb-3">
+                  Has alcanzado el máximo de 2 personajes. Actualiza a Premium para usar hasta 10 personajes por historia.
                 </p>
+                <button
+                  @click="showUpgradeSlideout = true"
+                  class="px-4 py-2 bg-primary hover:bg-primary-light text-white rounded-lg text-sm font-semibold transition-all"
+                >
+                  Actualizar a Premium
+                </button>
               </div>
             </div>
+          </div>
+
+          <!-- Mensaje cuando alcanza el límite PREMIUM -->
+          <div v-else class="text-center text-text-tertiary text-sm py-2">
+            Has alcanzado el máximo de 10 personajes por historia
+          </div>
+        </div>
+
+        <!-- Privacidad -->
+        <div class="mb-8">
+          <label class="block text-text-secondary text-sm font-medium mb-3">
+            Visibilidad de la historia
+          </label>
+          <div class="flex items-center space-x-4">
+            <button
+              @click="isPublic = true"
+              :class="[
+                'flex-1 py-3 px-4 rounded-xl border-2 transition-all font-medium',
+                isPublic
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-white/10 bg-background-elevated text-text-secondary hover:border-primary/50'
+              ]"
+            >
+              🌍 Pública
+              <span class="block text-xs mt-1 opacity-70">Todos pueden verla</span>
+            </button>
+            <button
+              @click="isPublic = false"
+              :class="[
+                'flex-1 py-3 px-4 rounded-xl border-2 transition-all font-medium',
+                !isPublic
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-white/10 bg-background-elevated text-text-secondary hover:border-primary/50'
+              ]"
+            >
+              🔒 Privada
+              <span class="block text-xs mt-1 opacity-70">Solo tú la verás</span>
+            </button>
           </div>
         </div>
 
@@ -320,7 +444,7 @@ const handleUpgrade = () => {
           <template v-if="isGenerating">
             <svg class="animate-spin h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             <span>GENERANDO MAGIA...</span>
           </template>

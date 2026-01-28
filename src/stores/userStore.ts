@@ -51,7 +51,7 @@ export const useUserStore = defineStore('user', () => {
   });
 
   // Actions
-  function register(username: string, email: string, password: string) {
+  function register(username: string, email: string, _password: string) {
     // Crear usuario simulado
     const referralCode = `DD${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
     
@@ -96,14 +96,33 @@ export const useUserStore = defineStore('user', () => {
     // Guardar en localStorage
     localStorage.setItem('dreamduel_user', JSON.stringify(newUser));
     localStorage.setItem('dreamduel_auth', 'true');
+    
+    // Sincronizar con storyStore
+    setTimeout(async () => {
+      const { useStoryStore } = await import('./storyStore');
+      const storyStore = useStoryStore();
+      if (storyStore.syncUserData) {
+        storyStore.syncUserData();
+      }
+    }, 0);
   }
 
-  function login(email: string, password: string): boolean {
+  function login(_email: string, _password: string): boolean {
     // Intentar recuperar usuario guardado
     const savedUser = localStorage.getItem('dreamduel_user');
     if (savedUser) {
       currentUser.value = JSON.parse(savedUser);
       isAuthenticated.value = true;
+      
+      // Sincronizar con storyStore
+      setTimeout(async () => {
+        const { useStoryStore } = await import('./storyStore');
+        const storyStore = useStoryStore();
+        if (storyStore.syncUserData) {
+          storyStore.syncUserData();
+        }
+      }, 0);
+      
       return true;
     }
     return false;
@@ -144,11 +163,29 @@ export const useUserStore = defineStore('user', () => {
         };
       }
       
+      // Inicializar arrays si no existen
+      if (!user.myStories) user.myStories = [];
+      if (!user.savedStories) user.savedStories = [];
+      if (!user.likedStories) user.likedStories = [];
+      
       currentUser.value = user;
       isAuthenticated.value = true;
       
       // Guardar usuario actualizado
       localStorage.setItem('dreamduel_user', JSON.stringify(user));
+      
+      // Verificar y resetear créditos si es necesario
+      setTimeout(() => checkAndResetCredits(), 100);
+      
+      // Sincronizar con storyStore
+      // Nota: Hacemos esto de forma diferida para evitar dependencias circulares
+      setTimeout(async () => {
+        const { useStoryStore } = await import('./storyStore');
+        const storyStore = useStoryStore();
+        if (storyStore.syncUserData) {
+          storyStore.syncUserData();
+        }
+      }, 0);
     }
   }
 
@@ -249,10 +286,18 @@ export const useUserStore = defineStore('user', () => {
     const lastReset = new Date(currentUser.value.credits.lastImageResetDate);
     const hoursSinceReset = (now.getTime() - lastReset.getTime()) / (1000 * 60 * 60);
     
-    if (hoursSinceReset >= 12 && currentUser.value.credits.freeImagesLeft === 0) {
-      currentUser.value.credits.freeImagesLeft = 3;
-      currentUser.value.credits.lastImageResetDate = now;
-      localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+    // Reiniciar a 3 si han pasado 12 horas Y está en 0, O si han pasado más de 12 horas
+    if (hoursSinceReset >= 12) {
+      if (currentUser.value.credits.freeImagesLeft === 0) {
+        currentUser.value.credits.freeImagesLeft = 3;
+        currentUser.value.credits.lastImageResetDate = now;
+        localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+        console.log('✅ Créditos reiniciados a 3');
+      } else if (hoursSinceReset >= 24) {
+        // Si han pasado más de 24 horas, forzar reset
+        currentUser.value.credits.lastImageResetDate = now;
+        localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+      }
     }
   }
 

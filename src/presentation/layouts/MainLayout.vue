@@ -4,7 +4,7 @@ import { SparklesIcon, PlusCircleIcon, UserCircleIcon, MagnifyingGlassIcon, Cog6
 import BottomNavigation from '@/presentation/components/BottomNavigation.vue';
 import WelcomeBanner from '@/presentation/components/WelcomeBanner.vue';
 import { useUserStore } from '@/stores/userStore';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -13,14 +13,32 @@ const showWelcomeBanner = ref(false);
 
 const imagesRemaining = computed(() => userStore.currentUser?.credits.freeImagesLeft || 0);
 
+let creditCheckInterval: number | null = null;
+
 onMounted(() => {
   userStore.loadUserFromStorage();
+  
+  // Verificar y resetear créditos cada minuto
+  creditCheckInterval = window.setInterval(() => {
+    userStore.checkAndResetCredits();
+  }, 60000); // 60 segundos
+  
+  // Verificar inmediatamente
+  setTimeout(() => {
+    userStore.checkAndResetCredits();
+  }, 500);
   
   // Mostrar banner de bienvenida solo una vez para usuarios nuevos
   const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
   if (!hasSeenWelcome && userStore.currentUser && !userStore.currentUser.isPremium) {
     showWelcomeBanner.value = true;
     localStorage.setItem('hasSeenWelcome', 'true');
+  }
+});
+
+onBeforeUnmount(() => {
+  if (creditCheckInterval) {
+    clearInterval(creditCheckInterval);
   }
 });
 </script>

@@ -12,6 +12,7 @@ export class MockStoryRepository implements IStoryRepository {
 
   constructor() {
     this.seedData();
+    this.loadUserStories();
   }
 
   private seedData(): void {
@@ -93,6 +94,57 @@ export class MockStoryRepository implements IStoryRepository {
     ];
   }
 
+  private loadUserStories(): void {
+    try {
+      const savedStories = localStorage.getItem('dreamduel_user_stories');
+      if (savedStories) {
+        const storiesData = JSON.parse(savedStories);
+        // Convertir los objetos planos en instancias de Story
+        const userStories = storiesData.map((data: any) => {
+          const author = new Author(data.author.id, data.author.name, data.author.avatarUrl);
+          const stats = new StoryStats(data.stats.views, data.stats.likes, data.stats.chapters);
+          const scenes = data.scenes.map((s: any) => new Scene(s.id, s.imageUrl, s.text, s.order));
+          const story = new Story(
+            data.id,
+            data.title,
+            data.synopsis,
+            data.coverUrl,
+            author,
+            stats,
+            data.tags,
+            scenes,
+            data.visibility || 'public' // Asegurar que tenga visibilidad
+          );
+          // Asegurar que tenga la fecha de creación original
+          if (data.createdAt) {
+            (story as any).createdAt = new Date(data.createdAt);
+          }
+          return story;
+        });
+        // Agregar las historias del usuario al inicio
+        this.stories.unshift(...userStories);
+      }
+    } catch (error) {
+      console.error('Error loading user stories:', error);
+    }
+  }
+
+  private saveUserStories(): void {
+    try {
+      // Obtener el usuario actual
+      const savedUser = localStorage.getItem('dreamduel_user');
+      if (!savedUser) return;
+      
+      const user = JSON.parse(savedUser);
+      // Filtrar solo las historias del usuario actual
+      const userStories = this.stories.filter(s => s.author.id === user.id);
+      // Guardar en localStorage
+      localStorage.setItem('dreamduel_user_stories', JSON.stringify(userStories));
+    } catch (error) {
+      console.error('Error saving user stories:', error);
+    }
+  }
+
   async getAll(): Promise<Story[]> {
     return this.delay([...this.stories]);
   }
@@ -104,13 +156,22 @@ export class MockStoryRepository implements IStoryRepository {
 
   async getTrending(): Promise<Story[]> {
     const trending = [...this.stories]
-      .sort((a, b) => b.stats.views - a.stats.views)
-      .slice(0, 4);
+      .sort((a, b) => {
+        // Ordenar por vistas, pero si tienen las mismas vistas, ordenar por fecha de creación
+        if (b.stats.views === a.stats.views) {
+          return b.createdAt.getTime() - a.createdAt.getTime();
+        }
+        return b.stats.views - a.stats.views;
+      })
+      .slice(0, 8); // Aumentar a 8 para mostrar más historias
     return this.delay(trending);
   }
 
   async getNew(): Promise<Story[]> {
-    const newStories = [...this.stories].reverse().slice(0, 4);
+    // Ordenar por fecha de creación (más recientes primero)
+    const newStories = [...this.stories]
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, 8); // Aumentar a 8 para mostrar más historias
     return this.delay(newStories);
   }
 
@@ -164,12 +225,33 @@ export class MockStoryRepository implements IStoryRepository {
     // Simular generación de IA con delay largo
     await this.delay(null, 3000);
     
+    // Obtener datos del autor desde el request (si viene con authorId) o usar default
+    const authorId = (request as any).authorId || 'current-user';
+    
+    // Intentar obtener datos reales del usuario desde localStorage
+    let authorName = 'Usuario Actual';
+    let authorAvatar = 'https://i.pravatar.cc/150?img=10';
+    
+    try {
+      const savedUser = localStorage.getItem('dreamduel_user');
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        authorName = user.username || authorName;
+        authorAvatar = user.avatarUrl || authorAvatar;
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+    
+    // Usar el título del request si existe, o generar uno
+    const title = (request as any).title || `Historia generada: ${request.prompt.substring(0, 30)}...`;
+    
     const newStory = new Story(
       newId,
-      `Historia generada: ${request.prompt.substring(0, 30)}...`,
+      title,
       request.prompt,
       'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=400&h=600&fit=crop',
-      new Author('current-user', 'Usuario Actual', 'https://i.pravatar.cc/150?img=10'),
+      new Author(authorId, authorName, authorAvatar),
       new StoryStats(0, 0, 0),
       request.tags,
       [
@@ -180,15 +262,21 @@ export class MockStoryRepository implements IStoryRepository {
     );
     
     this.stories.unshift(newStory);
+    this.saveUserStories(); // Guardar en localStorage
     return newStory;
   }
 
   async update(id: string, data: Partial<Story>): Promise<Story> {
-    const index = this.stories.findIndex(s => s.id === id);
-    if (index === -1) throw new Error('Historia no encontrada');
+    const story = this.stories.find(s => s.id === id);
+    if (!story) throw new Error('Historia no encontrada');
     
-    this.stories[index] = { ...this.stories[index], ...data };
-    return this.delay(this.stories[index]);
+    // Actualizar propiedades específicas
+    if (data.visibility !== undefined) story.visibility = data.visibility;
+    if (data.title !== undefined) story.title = data.title;
+    if (data.synopsis !== undefined) story.synopsis = data.synopsis;
+    
+    this.saveUserStories(); // Guardar cambios en localStorage
+    return this.delay(story);
   }
 
   async delete(id: string): Promise<void> {
@@ -196,14 +284,18 @@ export class MockStoryRepository implements IStoryRepository {
     if (index === -1) throw new Error('Historia no encontrada');
     
     this.stories.splice(index, 1);
+    this.saveUserStories(); // Guardar cambios en localStorage
     return this.delay(undefined);
   }
 
   async incrementViews(id: string): Promise<void> {
     const story = this.stories.find(s => s.id === id);
-    if (story) {
+    if (story && typeof story.view === 'function') {
       story.view();
+    } else if (story && story.stats) {
+      story.stats.views++;
     }
+    return this.delay(undefined);
   }
 
   async toggleLike(id: string, userId: string): Promise<boolean> {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 import { UserCircleIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon, SparklesIcon, ClockIcon, GiftIcon } from '@heroicons/vue/24/outline';
 import { useStoryStore } from '@/stores/storyStore';
 import { useUserStore } from '@/stores/userStore';
@@ -16,6 +16,10 @@ const editForm = ref({
   bio: ''
 });
 
+const timeUntilReset = ref('12:00:00');
+
+let timeUpdateInterval: number | null = null;
+
 onMounted(async () => {
   // Cargar usuario desde localStorage si existe
   userStore.loadUserFromStorage();
@@ -23,13 +27,37 @@ onMounted(async () => {
   // Cargar historias
   await Promise.all([
     storyStore.fetchStories(),
-    storyStore.fetchSavedStories()
+    storyStore.fetchTrendingStories(),
+    storyStore.fetchNewStories()
   ]);
   
   // Inicializar formulario de edición
   if (userStore.currentUser) {
     editForm.value.username = userStore.currentUser.username;
     editForm.value.bio = userStore.currentUser.bio;
+  }
+  
+  // Actualizar el tiempo cada segundo
+  const updateTime = () => {
+    try {
+      timeUntilReset.value = userStore.getTimeUntilReset();
+    } catch {
+      timeUntilReset.value = '12:00:00';
+    }
+  };
+  
+  updateTime();
+  timeUpdateInterval = window.setInterval(updateTime, 1000);
+  
+  // Verificar créditos cada minuto
+  window.setInterval(() => {
+    userStore.checkAndResetCredits();
+  }, 60000);
+});
+
+onBeforeUnmount(() => {
+  if (timeUpdateInterval) {
+    clearInterval(timeUpdateInterval);
   }
 });
 
@@ -47,19 +75,30 @@ const userStats = computed(() => {
 
 const myStories = computed(() => {
   if (!userStore.currentUser?.myStories) return [];
-  return storyStore.stories.filter(s => userStore.currentUser?.myStories.includes(s.id));
+  const allStories = [...storyStore.stories, ...storyStore.trendingStories, ...storyStore.newStories];
+  const uniqueMap = new Map();
+  allStories.forEach(s => uniqueMap.set(s.id, s));
+  return Array.from(uniqueMap.values()).filter(s => 
+    userStore.currentUser?.myStories.includes(s.id)
+  );
 });
 
 const savedStoriesList = computed(() => {
   if (!userStore.currentUser?.savedStories) return [];
-  return [...storyStore.stories, ...storyStore.savedStories].filter(s => 
+  const allStories = [...storyStore.stories, ...storyStore.trendingStories, ...storyStore.newStories, ...storyStore.savedStories];
+  const uniqueMap = new Map();
+  allStories.forEach(s => uniqueMap.set(s.id, s));
+  return Array.from(uniqueMap.values()).filter(s => 
     userStore.currentUser?.savedStories.includes(s.id)
   );
 });
 
 const likedStoriesList = computed(() => {
   if (!userStore.currentUser?.likedStories) return [];
-  return [...storyStore.stories, ...storyStore.trendingStories, ...storyStore.newStories].filter(s => 
+  const allStories = [...storyStore.stories, ...storyStore.trendingStories, ...storyStore.newStories, ...storyStore.savedStories];
+  const uniqueMap = new Map();
+  allStories.forEach(s => uniqueMap.set(s.id, s));
+  return Array.from(uniqueMap.values()).filter(s => 
     userStore.currentUser?.likedStories.includes(s.id)
   );
 });
@@ -92,14 +131,6 @@ const copyReferralCode = () => {
   navigator.clipboard.writeText(referralLink);
   alert('¡Link de referido copiado!');
 };
-
-const timeUntilReset = computed(() => {
-  try {
-    return userStore.getTimeUntilReset();
-  } catch {
-    return '12:00:00';
-  }
-});
 </script>
 
 <template>

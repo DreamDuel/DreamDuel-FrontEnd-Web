@@ -143,8 +143,12 @@ export const useStoryStore = defineStore('story', () => {
           currentStory.value.stats.likes++;
         }
         
-        // Actualizar perfil del usuario
-        userStore.toggleLikeStory(storyId);
+        // Agregar a likedStories del usuario si no está
+        if (userStore.currentUser && !userStore.currentUser.likedStories.includes(storyId)) {
+          userStore.currentUser.likedStories.push(storyId);
+          userStore.currentUser.stats.totalLikes++;
+          localStorage.setItem('dreamduel_user', JSON.stringify(userStore.currentUser));
+        }
       } else {
         // Quitar like
         likedStoryIds.value.delete(storyId);
@@ -165,13 +169,71 @@ export const useStoryStore = defineStore('story', () => {
           currentStory.value.stats.likes--;
         }
         
-        // Actualizar perfil del usuario
-        userStore.toggleLikeStory(storyId);
+        // Quitar de likedStories del usuario
+        if (userStore.currentUser) {
+          const index = userStore.currentUser.likedStories.indexOf(storyId);
+          if (index > -1) {
+            userStore.currentUser.likedStories.splice(index, 1);
+            if (userStore.currentUser.stats.totalLikes > 0) {
+              userStore.currentUser.stats.totalLikes--;
+            }
+            localStorage.setItem('dreamduel_user', JSON.stringify(userStore.currentUser));
+          }
+        }
       }
       
       return liked;
     } catch (err) {
       console.error('Error liking story:', err);
+      return false;
+    }
+  }
+
+  async function updateStoryVisibility(storyId: string, isPublic: boolean): Promise<boolean> {
+    try {
+      const repository = container.getStoryRepository();
+      const story = await repository.getById(storyId);
+      
+      if (!story) {
+        throw new Error('Historia no encontrada');
+      }
+      
+      // Actualizar visibilidad
+      const visibility = isPublic ? 'public' : 'private';
+      await repository.update(storyId, { visibility } as any);
+      
+      // Actualizar en el estado local de forma reactiva
+      const updateVisibility = (storyList: Story[]) => {
+        const storyInList = storyList.find(s => s.id === storyId);
+        if (storyInList) {
+          // Forzar reactividad completa
+          Object.assign(storyInList, { visibility });
+        }
+      };
+      
+      updateVisibility(stories.value);
+      updateVisibility(trendingStories.value);
+      updateVisibility(newStories.value);
+      updateVisibility(savedStories.value);
+      
+      if (currentStory.value?.id === storyId) {
+        Object.assign(currentStory.value, { visibility });
+      }
+      
+      // Actualizar localStorage si es historia del usuario
+      const userStoriesData = localStorage.getItem('dreamduel_user_stories');
+      if (userStoriesData) {
+        const userStories = JSON.parse(userStoriesData);
+        const userStory = userStories.find((s: any) => s.id === storyId);
+        if (userStory) {
+          userStory.visibility = visibility;
+          localStorage.setItem('dreamduel_user_stories', JSON.stringify(userStories));
+        }
+      }
+      
+      return true;
+    } catch (err) {
+      console.error('Error updating story visibility:', err);
       return false;
     }
   }
@@ -184,28 +246,26 @@ export const useStoryStore = defineStore('story', () => {
       const saved = await useCase.execute(storyId, userId);
       
       if (saved) {
-        // Agregar a guardadas si no está
-        if (!savedStoryIds.value.has(storyId)) {
-          savedStoryIds.value.add(storyId);
-          
-          // Buscar la historia completa en los stores existentes
-          const story = [...stories.value, ...trendingStories.value, ...newStories.value]
-            .find(s => s.id === storyId);
-          
-          if (story) {
-            savedStories.value.unshift(story);
-          }
-          
-          // Actualizar perfil del usuario
-          userStore.toggleSaveStory(storyId);
+        // Agregar a guardadas
+        savedStoryIds.value.add(storyId);
+        
+        // Agregar a savedStories del usuario si no está
+        if (userStore.currentUser && !userStore.currentUser.savedStories.includes(storyId)) {
+          userStore.currentUser.savedStories.push(storyId);
+          localStorage.setItem('dreamduel_user', JSON.stringify(userStore.currentUser));
         }
       } else {
         // Quitar de guardadas
         savedStoryIds.value.delete(storyId);
-        savedStories.value = savedStories.value.filter(s => s.id !== storyId);
         
-        // Actualizar perfil del usuario
-        userStore.toggleSaveStory(storyId);
+        // Quitar de savedStories del usuario
+        if (userStore.currentUser) {
+          const index = userStore.currentUser.savedStories.indexOf(storyId);
+          if (index > -1) {
+            userStore.currentUser.savedStories.splice(index, 1);
+            localStorage.setItem('dreamduel_user', JSON.stringify(userStore.currentUser));
+          }
+        }
       }
       
       return saved;
@@ -254,6 +314,28 @@ export const useStoryStore = defineStore('story', () => {
     error.value = null;
   }
 
+  // Sincronizar likes y saves desde el userStore
+  function syncUserData() {
+    const userStore = useUserStore();
+    if (userStore.currentUser) {
+      // Sincronizar liked stories
+      likedStoryIds.value.clear();
+      if (userStore.currentUser.likedStories) {
+        userStore.currentUser.likedStories.forEach(id => {
+          likedStoryIds.value.add(id);
+        });
+      }
+      
+      // Sincronizar saved stories
+      savedStoryIds.value.clear();
+      if (userStore.currentUser.savedStories) {
+        userStore.currentUser.savedStories.forEach(id => {
+          savedStoryIds.value.add(id);
+        });
+      }
+    }
+  }
+
   return {
     // State
     stories,
@@ -276,9 +358,11 @@ export const useStoryStore = defineStore('story', () => {
     fetchSavedStories,
     fetchStoryById,
     createStory,
+    updateStoryVisibility,
     likeStory,
     saveStory,
     searchStories,
+    syncUserData,
     clearError
   };
 });

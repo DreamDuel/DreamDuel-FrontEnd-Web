@@ -3,11 +3,10 @@ import { onMounted, computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStoryStore } from '@/stores/storyStore';
 import { useUserStore } from '@/stores/userStore';
-import { HeartIcon, ShareIcon, ArrowLeftIcon, LockClosedIcon, ArrowDownTrayIcon, VideoCameraIcon } from '@heroicons/vue/24/outline';
-import { HeartIcon as HeartIconSolid } from '@heroicons/vue/24/solid';
+import { HeartIcon, ShareIcon, ArrowLeftIcon, LockClosedIcon, ArrowDownTrayIcon, GlobeAltIcon } from '@heroicons/vue/24/outline';
+import { HeartIcon as HeartIconSolid, LockClosedIcon as LockClosedIconSolid } from '@heroicons/vue/24/solid';
 import UpgradeSlideout from '@/presentation/components/UpgradeSlideout.vue';
 import { shareStory, downloadImageWithWatermark } from '@/utils/watermark';
-import { downloadTikTokVideo } from '@/utils/videoExport';
 
 const route = useRoute();
 const router = useRouter();
@@ -20,6 +19,16 @@ const isLiked = computed(() => {
   return storyStore.isStoryLiked(storyStore.currentStory.id);
 });
 
+const isAuthor = computed(() => {
+  if (!storyStore.currentStory || !userStore.currentUser) return false;
+  return storyStore.currentStory.author.id === userStore.currentUser.id;
+});
+
+const isPublic = computed(() => {
+  if (!storyStore.currentStory) return true;
+  return storyStore.currentStory.visibility === 'public';
+});
+
 const shouldBlurImages = computed(() => {
   return !userStore.currentUser?.isPremium;
 });
@@ -30,7 +39,12 @@ onMounted(async () => {
 });
 
 const goBack = () => {
-  router.push('/home');
+  // Intentar volver a la página anterior, o ir al home si no hay historial
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.push('/home');
+  }
 };
 
 const toggleLike = async () => {
@@ -73,6 +87,8 @@ const handleDownload = async (sceneIndex: number) => {
   if (!storyStore.currentStory) return;
   
   const scene = storyStore.currentStory.scenes[sceneIndex];
+  if (!scene) return; // Validar que la escena existe
+  
   const filename = `dreamduel-${storyStore.currentStory.id}-scene-${sceneIndex + 1}.png`;
   
   // Rastrear intento de descarga para PQL
@@ -90,23 +106,17 @@ const handleDownload = async (sceneIndex: number) => {
   );
 };
 
-const handleExportToTikTok = async () => {
-  if (!storyStore.currentStory) return;
+const toggleVisibility = async () => {
+  if (!storyStore.currentStory || !isAuthor.value) return;
   
-  const scenes = storyStore.currentStory.scenes.map(s => ({
-    imageUrl: s.imageUrl,
-    text: s.text
-  }));
-  
-  await downloadTikTokVideo(
-    scenes,
-    storyStore.currentStory.title,
-    userStore.currentUser?.isPremium || false
+  const newVisibility = !isPublic.value;
+  const success = await storyStore.updateStoryVisibility(
+    storyStore.currentStory.id,
+    newVisibility
   );
   
-  // Mostrar upsell si no es premium
-  if (!userStore.currentUser?.isPremium) {
-    showUpgradeSlideout.value = true;
+  if (success) {
+    console.log(`Historia cambiada a ${newVisibility ? 'pública' : 'privada'}`);
   }
 };
 </script>
@@ -124,14 +134,22 @@ const handleExportToTikTok = async () => {
           <span>Atrás</span>
         </button>
         <div class="flex items-center space-x-4">
+          <!-- Botón de Visibilidad (solo para el autor) -->
           <button 
-            @click="handleExportToTikTok"
-            class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-lg font-semibold transition-all"
-            title="Exportar a TikTok"
+            v-if="isAuthor"
+            @click="toggleVisibility"
+            :class="[
+              'flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all',
+              isPublic 
+                ? 'bg-primary/20 text-primary hover:bg-primary/30' 
+                : 'bg-accent-crimson/20 text-accent-crimson hover:bg-accent-crimson/30'
+            ]"
+            :title="isPublic ? 'Cambiar a privada' : 'Cambiar a pública'"
           >
-            <VideoCameraIcon class="h-5 w-5" />
-            <span class="hidden sm:inline">TikTok</span>
+            <component :is="isPublic ? GlobeAltIcon : LockClosedIconSolid" class="h-5 w-5" />
+            <span class="hidden sm:inline">{{ isPublic ? 'Pública' : 'Privada' }}</span>
           </button>
+          
           <button 
             @click="handleShare"
             class="text-text-secondary hover:text-text-primary transition-colors"

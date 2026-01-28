@@ -3,6 +3,7 @@ import { EyeIcon, HeartIcon, BookmarkIcon } from '@heroicons/vue/24/outline';
 import { HeartIcon as HeartIconSolid, BookmarkIcon as BookmarkIconSolid } from '@heroicons/vue/24/solid';
 import { computed } from 'vue';
 import { useStoryStore } from '@/stores/storyStore';
+import { useUserStore } from '@/stores/userStore';
 import type { Story } from '@/models/Story';
 
 const props = defineProps<{
@@ -10,6 +11,7 @@ const props = defineProps<{
 }>();
 
 const storyStore = useStoryStore();
+const userStore = useUserStore();
 
 const isSaved = computed(() => storyStore.isStorySaved(props.story.id));
 const isLiked = computed(() => storyStore.isStoryLiked(props.story.id));
@@ -24,16 +26,24 @@ const toggleSave = async (event: Event) => {
   event.preventDefault();
   event.stopPropagation();
   
-  const userId = 'current-user-id';
-  await storyStore.saveStory(props.story.id, userId);
+  if (!userStore.currentUser) {
+    console.warn('User not logged in');
+    return;
+  }
+  
+  await storyStore.saveStory(props.story.id, userStore.currentUser.id);
 };
 
 const toggleLike = async (event: Event) => {
   event.preventDefault();
   event.stopPropagation();
   
-  const userId = 'current-user-id';
-  await storyStore.likeStory(props.story.id, userId);
+  if (!userStore.currentUser) {
+    console.warn('User not logged in');
+    return;
+  }
+  
+  await storyStore.likeStory(props.story.id, userStore.currentUser.id);
 };
 </script>
 
@@ -54,6 +64,16 @@ const toggleLike = async (event: Event) => {
       
       <!-- Tags -->
       <div class="absolute top-2 left-2 flex flex-wrap gap-1">
+        <!-- Badge de Privado -->
+        <span 
+          v-if="story.visibility === 'private'"
+          class="px-2 py-1 text-xs bg-accent-crimson/90 backdrop-blur-sm text-white rounded-full font-semibold flex items-center space-x-1"
+        >
+          <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+          </svg>
+          <span>PRIVADA</span>
+        </span>
         <span 
           v-for="tag in story.tags.slice(0, 2)" 
           :key="tag"
