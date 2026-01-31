@@ -52,9 +52,9 @@ const formatNumber = (num: number): string => {
     <div v-if="storyStore.currentStory" class="pt-20 pb-20">
       <div class="max-w-5xl mx-auto px-4">
         <!-- Cover & Info -->
-        <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <div class="grid md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
           <!-- Cover Image -->
-          <div class="relative aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl">
+          <div class="relative aspect-[2/3] max-h-[300px] sm:max-h-[350px] md:max-h-[400px] rounded-2xl overflow-hidden shadow-2xl mx-auto md:mx-0 w-full max-w-[280px] md:max-w-none">
             <img
               :src="storyStore.currentStory.coverUrl"
               :alt="storyStore.currentStory.title"

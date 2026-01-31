@@ -13,6 +13,7 @@ const router = useRouter();
 const storyStore = useStoryStore();
 const userStore = useUserStore();
 const showUpgradeSlideout = ref(false);
+const isTogglingVisibility = ref(false);
 
 const isLiked = computed(() => {
   if (!storyStore.currentStory) return false;
@@ -107,17 +108,30 @@ const handleDownload = async (sceneIndex: number) => {
 };
 
 const toggleVisibility = async () => {
-  if (!storyStore.currentStory || !isAuthor.value) return;
+  if (!storyStore.currentStory || !isAuthor.value || isTogglingVisibility.value) return;
   
+  isTogglingVisibility.value = true;
   const newVisibility = !isPublic.value;
+  
+  // Actualizar UI inmediatamente de forma optimista
+  if (storyStore.currentStory) {
+    storyStore.currentStory.visibility = newVisibility ? 'public' : 'private';
+  }
+  
   const success = await storyStore.updateStoryVisibility(
     storyStore.currentStory.id,
     newVisibility
   );
   
-  if (success) {
-    console.log(`Historia cambiada a ${newVisibility ? 'pública' : 'privada'}`);
+  if (!success) {
+    // Revertir cambio si falla
+    if (storyStore.currentStory) {
+      storyStore.currentStory.visibility = newVisibility ? 'private' : 'public';
+    }
+    alert('Error al cambiar la visibilidad. Intenta de nuevo.');
   }
+  
+  isTogglingVisibility.value = false;
 };
 </script>
 
@@ -138,11 +152,13 @@ const toggleVisibility = async () => {
           <button 
             v-if="isAuthor"
             @click="toggleVisibility"
+            :disabled="isTogglingVisibility"
             :class="[
               'flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all',
               isPublic 
                 ? 'bg-primary/20 text-primary hover:bg-primary/30' 
-                : 'bg-accent-crimson/20 text-accent-crimson hover:bg-accent-crimson/30'
+                : 'bg-accent-crimson/20 text-accent-crimson hover:bg-accent-crimson/30',
+              isTogglingVisibility && 'opacity-50 cursor-not-allowed'
             ]"
             :title="isPublic ? 'Cambiar a privada' : 'Cambiar a pública'"
           >
@@ -183,10 +199,10 @@ const toggleVisibility = async () => {
     </div>
 
     <!-- Story Content -->
-    <div v-else-if="storyStore.currentStory" class="max-w-4xl mx-auto px-4 py-8">
+    <div v-else-if="storyStore.currentStory" class="max-w-3xl mx-auto px-4 py-6 md:py-8">
       <!-- Story Header -->
-      <div class="mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+      <div class="mb-6 md:mb-8">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary mb-4">
           {{ storyStore.currentStory.title }}
         </h1>
         <div class="flex items-center justify-between">
@@ -212,7 +228,7 @@ const toggleVisibility = async () => {
       </div>
 
       <!-- Scenes -->
-      <div class="space-y-8">
+      <div class="space-y-6 md:space-y-8">
         <div 
           v-for="(scene, index) in storyStore.currentStory.scenes" 
           :key="scene.id"
@@ -223,7 +239,7 @@ const toggleVisibility = async () => {
               :src="scene.imageUrl" 
               :alt="`Escena ${index + 1}`"
               :class="[
-                'w-full h-auto transition-all duration-300',
+                'w-full h-auto max-h-[400px] sm:max-h-[500px] md:max-h-[600px] object-contain mx-auto transition-all duration-300',
                 shouldBlurImages ? 'blur-md' : ''
               ]"
             />
@@ -254,8 +270,8 @@ const toggleVisibility = async () => {
             </div>
           </div>
           
-          <div class="p-6">
-            <p class="text-text-primary text-lg leading-relaxed">
+          <div class="p-4 sm:p-6">
+            <p class="text-text-primary text-base sm:text-lg leading-relaxed">
               {{ scene.text }}
             </p>
           </div>

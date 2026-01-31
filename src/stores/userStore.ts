@@ -107,23 +107,32 @@ export const useUserStore = defineStore('user', () => {
     }, 0);
   }
 
-  function login(_email: string, _password: string): boolean {
+  function login(emailOrUsername: string, _password: string): boolean {
     // Intentar recuperar usuario guardado
     const savedUser = localStorage.getItem('dreamduel_user');
     if (savedUser) {
-      currentUser.value = JSON.parse(savedUser);
-      isAuthenticated.value = true;
+      const user = JSON.parse(savedUser);
       
-      // Sincronizar con storyStore
-      setTimeout(async () => {
-        const { useStoryStore } = await import('./storyStore');
-        const storyStore = useStoryStore();
-        if (storyStore.syncUserData) {
-          storyStore.syncUserData();
-        }
-      }, 0);
+      // Verificar si coincide el email o el username
+      const inputLower = emailOrUsername.toLowerCase();
+      const emailMatch = user.email.toLowerCase() === inputLower;
+      const usernameMatch = user.username.toLowerCase() === inputLower;
       
-      return true;
+      if (emailMatch || usernameMatch) {
+        currentUser.value = user;
+        isAuthenticated.value = true;
+        
+        // Sincronizar con storyStore
+        setTimeout(async () => {
+          const { useStoryStore } = await import('./storyStore');
+          const storyStore = useStoryStore();
+          if (storyStore.syncUserData) {
+            storyStore.syncUserData();
+          }
+        }, 0);
+        
+        return true;
+      }
     }
     return false;
   }
@@ -194,6 +203,42 @@ export const useUserStore = defineStore('user', () => {
       currentUser.value = { ...currentUser.value, ...updates };
       localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
     }
+  }
+
+  function updateAvatar(imageFile: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (!currentUser.value) {
+        reject(new Error('Debes iniciar sesión para cambiar tu foto de perfil'));
+        return;
+      }
+
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        try {
+          const avatarUrl = e.target?.result as string;
+          if (avatarUrl && currentUser.value) {
+            currentUser.value.avatarUrl = avatarUrl;
+            localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+            resolve(avatarUrl);
+          } else {
+            reject(new Error('No se pudo leer la imagen'));
+          }
+        } catch (err) {
+          reject(new Error('Error al procesar la imagen'));
+        }
+      };
+      
+      reader.onerror = () => {
+        reject(new Error('Error al leer el archivo de imagen'));
+      };
+      
+      try {
+        reader.readAsDataURL(imageFile);
+      } catch (err) {
+        reject(new Error('No se pudo cargar la imagen'));
+      }
+    });
   }
 
   function addStoryToProfile(storyId: string) {
@@ -361,6 +406,7 @@ export const useUserStore = defineStore('user', () => {
     logout,
     loadUserFromStorage,
     updateProfile,
+    updateAvatar,
     addStoryToProfile,
     toggleSaveStory,
     toggleLikeStory,

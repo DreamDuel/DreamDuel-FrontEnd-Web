@@ -50,10 +50,10 @@ const toggleLike = async (event: Event) => {
 <template>
   <router-link 
     :to="`/story/${story.id}`"
-    class="group block bg-background-card rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/20"
+    class="group block bg-background-card rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] md:hover:scale-105 hover:shadow-2xl hover:shadow-primary/20"
   >
     <!-- Cover Image -->
-    <div class="relative aspect-[2/3] overflow-hidden">
+    <div class="relative w-full h-[280px] sm:h-[320px] md:h-[360px] overflow-hidden">
       <img 
         :src="story.coverUrl" 
         :alt="story.title"
@@ -93,9 +93,9 @@ const toggleLike = async (event: Event) => {
     </div>
 
     <!-- Info Section -->
-    <div class="p-4">
+    <div class="p-3 sm:p-4">
       <!-- Title -->
-      <h3 class="text-lg font-bold text-text-primary mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+      <h3 class="text-base sm:text-lg font-bold text-text-primary mb-2 line-clamp-2 group-hover:text-primary transition-colors">
         {{ story.title }}
       </h3>
 

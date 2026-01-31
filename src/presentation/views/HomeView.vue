@@ -39,7 +39,7 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
 <template>
   <div class="min-h-screen">
     <!-- Hero Section -->
-    <section v-if="publicFeaturedStory" class="relative h-[70vh] overflow-hidden">
+    <section v-if="publicFeaturedStory" class="relative h-[60vh] sm:h-[70vh] overflow-hidden">
       <!-- Background Image with Overlay -->
       <div class="absolute inset-0">
         <img 
@@ -53,32 +53,32 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
 
       <!-- Hero Content -->
       <div class="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
-        <div class="max-w-2xl">
+        <div class="max-w-xl md:max-w-2xl">
           <!-- Badge -->
-          <div class="inline-flex items-center space-x-2 px-4 py-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full mb-6">
-            <span class="text-primary text-sm font-semibold">✨ MÁS POPULAR</span>
+          <div class="inline-flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full mb-4 sm:mb-6">
+            <span class="text-primary text-xs sm:text-sm font-semibold">✨ MÁS POPULAR</span>
           </div>
 
           <!-- Title -->
-          <h1 class="text-5xl md:text-6xl font-bold text-text-primary mb-4 leading-tight">
+          <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-3 sm:mb-4 leading-tight">
             {{ publicFeaturedStory.title }}
           </h1>
 
           <!-- Synopsis -->
-          <p class="text-xl text-text-secondary mb-6 leading-relaxed">
+          <p class="text-base sm:text-lg md:text-xl text-text-secondary mb-4 sm:mb-6 leading-relaxed line-clamp-3">
             {{ publicFeaturedStory.synopsis }}
           </p>
 
           <!-- Author Info -->
-          <div class="flex items-center space-x-3 mb-8">
+          <div class="flex items-center space-x-3 mb-6 sm:mb-8">
             <img 
               :src="publicFeaturedStory.author.avatarUrl" 
               :alt="publicFeaturedStory.author.name"
-              class="w-12 h-12 rounded-full border-2 border-primary"
+              class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-primary"
             />
             <div>
-              <p class="text-text-primary font-medium">{{ publicFeaturedStory.author.name }}</p>
-              <p class="text-text-tertiary text-sm">
+              <p class="text-text-primary font-medium text-sm sm:text-base">{{ publicFeaturedStory.author.name }}</p>
+              <p class="text-text-tertiary text-xs sm:text-sm">
                 {{ (publicFeaturedStory.stats.views / 1000).toFixed(0) }}K lecturas
               </p>
             </div>
@@ -87,9 +87,9 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
           <!-- CTA Button -->
           <router-link 
             :to="`/story/${publicFeaturedStory.id}`"
-            class="inline-flex items-center space-x-3 px-8 py-4 bg-primary hover:bg-primary-light text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 hover:scale-105"
+            class="inline-flex items-center space-x-2 sm:space-x-3 px-6 py-3 sm:px-8 sm:py-4 bg-primary hover:bg-primary-light text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 hover:scale-105 text-sm sm:text-base"
           >
-            <PlayIcon class="h-6 w-6" />
+            <PlayIcon class="h-5 w-5 sm:h-6 sm:w-6" />
             <span>LEER AHORA</span>
           </router-link>
         </div>
@@ -97,13 +97,13 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
     </section>
 
     <!-- Trending Stories Carousel -->
-    <section class="py-16 px-4 sm:px-6 lg:px-8">
+    <section class="py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto">
         <!-- Section Header -->
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center justify-between mb-6 sm:mb-8">
           <div>
-            <h2 class="text-3xl font-bold text-text-primary mb-2">🔥 En Tendencia</h2>
-            <p class="text-text-secondary">Las historias más populares de la semana</p>
+            <h2 class="text-2xl sm:text-3xl font-bold text-text-primary mb-1 sm:mb-2">🔥 En Tendencia</h2>
+            <p class="text-text-secondary text-sm sm:text-base">Las historias más populares de la semana</p>
           </div>
           
           <!-- Carousel Controls -->
@@ -131,13 +131,13 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
         <div 
           v-else
           id="trending-carousel"
-          class="flex overflow-x-auto space-x-6 pb-4 scrollbar-hide snap-x snap-mandatory"
+          class="flex overflow-x-auto space-x-4 sm:space-x-6 pb-4 scrollbar-hide snap-x snap-mandatory"
           style="scroll-behavior: smooth;"
         >
           <div 
             v-for="story in publicTrendingStories" 
             :key="story.id"
-            class="flex-shrink-0 w-64 snap-start"
+            class="flex-shrink-0 w-48 sm:w-56 md:w-64 snap-start"
           >
             <StoryCard :story="story" />
           </div>
@@ -146,13 +146,13 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
     </section>
 
     <!-- New Stories Carousel -->
-    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-background-elevated/30">
+    <section class="py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-background-elevated/30">
       <div class="max-w-7xl mx-auto">
         <!-- Section Header -->
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center justify-between mb-6 sm:mb-8">
           <div>
-            <h2 class="text-3xl font-bold text-text-primary mb-2">✨ Recién Llegadas</h2>
-            <p class="text-text-secondary">Descubre las últimas creaciones</p>
+            <h2 class="text-2xl sm:text-3xl font-bold text-text-primary mb-1 sm:mb-2">✨ Recién Llegadas</h2>
+            <p class="text-text-secondary text-sm sm:text-base">Descubre las últimas creaciones</p>
           </div>
           
           <!-- Carousel Controls -->
@@ -175,13 +175,13 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
         <!-- Carousel -->
         <div 
           id="new-carousel"
-          class="flex overflow-x-auto space-x-6 pb-4 scrollbar-hide snap-x snap-mandatory"
+          class="flex overflow-x-auto space-x-4 sm:space-x-6 pb-4 scrollbar-hide snap-x snap-mandatory"
           style="scroll-behavior: smooth;"
         >
           <div 
             v-for="story in publicNewStories" 
             :key="story.id"
-            class="flex-shrink-0 w-64 snap-start"
+            class="flex-shrink-0 w-48 sm:w-56 md:w-64 snap-start"
           >
             <StoryCard :story="story" />
           </div>
