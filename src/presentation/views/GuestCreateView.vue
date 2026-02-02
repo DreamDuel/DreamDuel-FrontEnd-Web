@@ -169,7 +169,7 @@ const skipToLogin = () => {
             </div>
             
             <div v-else class="relative">
-              <img :src="imagePreviewUrl" alt="Preview" class="w-full h-80 object-cover rounded-xl" />
+              <img :src="imagePreviewUrl" alt="Preview" class="w-full max-h-96 object-contain rounded-xl bg-background-elevated" />
               <button
                 @click="removeImage"
                 class="absolute top-3 right-3 p-2 bg-error/90 hover:bg-error text-white rounded-lg transition-colors"
