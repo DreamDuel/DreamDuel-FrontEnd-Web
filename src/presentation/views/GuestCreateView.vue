@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { SparklesIcon, PhotoIcon, XMarkIcon, ArrowRightIcon } from '@heroicons/vue/24/outline';
 
@@ -10,6 +10,126 @@ const showRegisterPrompt = ref(false);
 const characterImage = ref<File | null>(null);
 const imagePreviewUrl = ref<string>('');
 const generatedImageUrl = ref<string>('');
+
+// Opciones de personalización física
+const selectedHairColor = ref('');
+const selectedHairStyle = ref('');
+const selectedEyeColor = ref('');
+const selectedBodyType = ref('');
+const selectedSkinTone = ref('');
+const selectedAge = ref('');
+const selectedGender = ref('');
+
+// Catálogo de opciones físicas
+const hairColorOptions = [
+  { value: 'rubio', label: '👱 Rubio', description: 'cabello rubio dorado' },
+  { value: 'moreno', label: '👨 Moreno', description: 'cabello moreno oscuro' },
+  { value: 'pelirrojo', label: '👩‍🦰 Pelirrojo', description: 'cabello pelirrojo intenso' },
+  { value: 'castano', label: '🧑 Castaño', description: 'cabello castaño' },
+  { value: 'negro', label: '🖤 Negro', description: 'cabello negro azabache' },
+  { value: 'blanco', label: '🤍 Blanco/Platino', description: 'cabello blanco platinado' },
+  { value: 'colorido', label: '🌈 Colorido', description: 'cabello con colores vibrantes' },
+];
+
+const hairStyleOptions = [
+  { value: 'largo', label: '💇‍♀️ Largo', description: 'cabello largo hasta los hombros o más' },
+  { value: 'corto', label: '💇‍♂️ Corto', description: 'cabello corto estilo pixie o rapado' },
+  { value: 'rizado', label: '🌀 Rizado', description: 'cabello con rizos definidos' },
+  { value: 'liso', label: '➖ Liso', description: 'cabello completamente liso' },
+  { value: 'ondulado', label: '〰️ Ondulado', description: 'cabello ondulado suave' },
+  { value: 'mohawk', label: '🦅 Mohawk', description: 'cabello estilo mohawk punk' },
+  { value: 'trenzas', label: '🪢 Trenzas', description: 'cabello con trenzas elaboradas' },
+];
+
+const eyeColorOptions = [
+  { value: 'azules', label: '💙 Azules', description: 'ojos azules brillantes' },
+  { value: 'verdes', label: '💚 Verdes', description: 'ojos verdes esmeralda' },
+  { value: 'marrones', label: '🤎 Marrones', description: 'ojos marrones cálidos' },
+  { value: 'grises', label: '🩶 Grises', description: 'ojos grises profundos' },
+  { value: 'avellana', label: '🟤 Avellana', description: 'ojos color avellana' },
+  { value: 'heterocromia', label: '👁️ Heterocromía', description: 'ojos de diferente color' },
+];
+
+const bodyTypeOptions = [
+  { value: 'atletico', label: '💪 Atlético', description: 'cuerpo atlético musculoso' },
+  { value: 'delgado', label: '🏃 Delgado', description: 'cuerpo delgado estilizado' },
+  { value: 'promedio', label: '🧍 Promedio', description: 'cuerpo de constitución promedio' },
+  { value: 'robusto', label: '🏋️ Robusto', description: 'cuerpo robusto y fuerte' },
+  { value: 'curvilíneo', label: '💃 Curvilíneo', description: 'cuerpo con curvas definidas' },
+];
+
+const skinToneOptions = [
+  { value: 'clara', label: '🤍 Clara', description: 'piel clara' },
+  { value: 'media', label: '🤎 Media', description: 'piel de tono medio' },
+  { value: 'trigueña', label: '🧡 Trigueña', description: 'piel trigueña' },
+  { value: 'oscura', label: '🖤 Oscura', description: 'piel oscura' },
+  { value: 'bronceada', label: '☀️ Bronceada', description: 'piel bronceada' },
+];
+
+const ageOptions = [
+  { value: 'joven', label: '👦 Joven (18-25)', description: 'apariencia juvenil de 18-25 años' },
+  { value: 'adulto_joven', label: '🧑 Adulto Joven (25-35)', description: 'apariencia de adulto joven 25-35 años' },
+  { value: 'adulto', label: '👨 Adulto (35-50)', description: 'apariencia adulta de 35-50 años' },
+  { value: 'maduro', label: '👴 Maduro (50+)', description: 'apariencia madura de más de 50 años' },
+];
+
+const genderOptions = [
+  { value: 'masculino', label: '♂️ Masculino', description: 'rasgos masculinos' },
+  { value: 'femenino', label: '♀️ Femenino', description: 'rasgos femeninos' },
+  { value: 'andrógino', label: '⚧️ Andrógino', description: 'rasgos andróginos' },
+];
+
+// Construir prompt automático basado en selecciones
+const buildPromptFromSelections = () => {
+  const parts: string[] = [];
+  
+  // Primero las características físicas básicas
+  if (selectedGender.value) {
+    const gender = genderOptions.find(g => g.value === selectedGender.value);
+    if (gender) parts.push(gender.description);
+  }
+  
+  if (selectedAge.value) {
+    const age = ageOptions.find(a => a.value === selectedAge.value);
+    if (age) parts.push(age.description);
+  }
+  
+  if (selectedBodyType.value) {
+    const body = bodyTypeOptions.find(b => b.value === selectedBodyType.value);
+    if (body) parts.push(body.description);
+  }
+  
+  if (selectedSkinTone.value) {
+    const skin = skinToneOptions.find(s => s.value === selectedSkinTone.value);
+    if (skin) parts.push(skin.description);
+  }
+  
+  // Luego características faciales y cabello
+  if (selectedHairColor.value) {
+    const hair = hairColorOptions.find(h => h.value === selectedHairColor.value);
+    if (hair) parts.push(hair.description);
+  }
+  
+  if (selectedHairStyle.value) {
+    const style = hairStyleOptions.find(s => s.value === selectedHairStyle.value);
+    if (style) parts.push(style.description);
+  }
+  
+  if (selectedEyeColor.value) {
+    const eyes = eyeColorOptions.find(e => e.value === selectedEyeColor.value);
+    if (eyes) parts.push(eyes.description);
+  }
+  
+  return parts.join(', ');
+};
+
+// Actualizar prompt cuando cambien las selecciones
+watch([selectedHairColor, selectedHairStyle, selectedEyeColor, selectedBodyType, selectedSkinTone, selectedAge, selectedGender], () => {
+  const autoPrompt = buildPromptFromSelections();
+  if (autoPrompt) {
+    prompt.value = autoPrompt;
+  }
+});
 
 const handleFileSelect = (event: Event) => {
   const target = event.target as HTMLInputElement;
@@ -179,19 +299,181 @@ const skipToLogin = () => {
             </div>
           </div>
 
+          <!-- Opciones de Personalización Física -->
+          <div class="mb-8 space-y-6">
+            <div class="text-center">
+              <h3 class="text-text-primary font-semibold mb-2 text-lg">
+                2. Personaliza las características físicas (Opcional)
+              </h3>
+              <p class="text-text-tertiary text-sm">
+                Selecciona características físicas para transformar la persona de la foto
+              </p>
+            </div>
+
+            <!-- Género -->
+            <div>
+              <label class="block text-text-secondary font-medium mb-2 text-sm">
+                Género / Rasgos
+              </label>
+              <div class="grid grid-cols-3 gap-2">
+                <button
+                  v-for="option in genderOptions"
+                  :key="option.value"
+                  @click="selectedGender = selectedGender === option.value ? '' : option.value"
+                  :class="[
+                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                    selectedGender === option.value
+                      ? 'bg-primary text-white ring-2 ring-primary/50'
+                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
+                  ]"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Edad -->
+            <div>
+              <label class="block text-text-secondary font-medium mb-2 text-sm">
+                Rango de Edad
+              </label>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <button
+                  v-for="option in ageOptions"
+                  :key="option.value"
+                  @click="selectedAge = selectedAge === option.value ? '' : option.value"
+                  :class="[
+                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                    selectedAge === option.value
+                      ? 'bg-primary text-white ring-2 ring-primary/50'
+                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
+                  ]"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Tipo de Cuerpo -->
+            <div>
+              <label class="block text-text-secondary font-medium mb-2 text-sm">
+                Tipo de Cuerpo
+              </label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <button
+                  v-for="option in bodyTypeOptions"
+                  :key="option.value"
+                  @click="selectedBodyType = selectedBodyType === option.value ? '' : option.value"
+                  :class="[
+                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                    selectedBodyType === option.value
+                      ? 'bg-primary text-white ring-2 ring-primary/50'
+                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
+                  ]"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Tono de Piel -->
+            <div>
+              <label class="block text-text-secondary font-medium mb-2 text-sm">
+                Tono de Piel
+              </label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <button
+                  v-for="option in skinToneOptions"
+                  :key="option.value"
+                  @click="selectedSkinTone = selectedSkinTone === option.value ? '' : option.value"
+                  :class="[
+                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                    selectedSkinTone === option.value
+                      ? 'bg-primary text-white ring-2 ring-primary/50'
+                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
+                  ]"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Color de Cabello -->
+            <div>
+              <label class="block text-text-secondary font-medium mb-2 text-sm">
+                Color de Cabello
+              </label>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <button
+                  v-for="option in hairColorOptions"
+                  :key="option.value"
+                  @click="selectedHairColor = selectedHairColor === option.value ? '' : option.value"
+                  :class="[
+                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                    selectedHairColor === option.value
+                      ? 'bg-primary text-white ring-2 ring-primary/50'
+                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
+                  ]"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Estilo de Cabello -->
+            <div>
+              <label class="block text-text-secondary font-medium mb-2 text-sm">
+                Estilo de Cabello
+              </label>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <button
+                  v-for="option in hairStyleOptions"
+                  :key="option.value"
+                  @click="selectedHairStyle = selectedHairStyle === option.value ? '' : option.value"
+                  :class="[
+                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                    selectedHairStyle === option.value
+                      ? 'bg-primary text-white ring-2 ring-primary/50'
+                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
+                  ]"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Color de Ojos -->
+            <div>
+              <label class="block text-text-secondary font-medium mb-2 text-sm">
+                Color de Ojos
+              </label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <button
+                  v-for="option in eyeColorOptions"
+                  :key="option.value"
+                  @click="selectedEyeColor = selectedEyeColor === option.value ? '' : option.value"
+                  :class="[
+                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                    selectedEyeColor === option.value
+                      ? 'bg-primary text-white ring-2 ring-primary/50'
+                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
+                  ]"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- Prompt Input -->
           <div class="mb-8">
             <label class="block text-text-primary font-semibold mb-3 text-lg">
-              2. ¿Qué quieres hacer con esta persona?
+              3. Descripción Final (Generado automáticamente)
             </label>
             <textarea
               v-model="prompt"
-              placeholder="Ej: Ponla en un traje espacial flotando en el espacio, rodeada de estrellas y planetas...
-
-Ej: Conviértela en un superhéroe con capa roja volando sobre la ciudad...
-
-Ej: Hazla aparecer en una playa paradisíaca al atardecer con palmeras..."
-              rows="5"
+              placeholder="Las opciones seleccionadas aparecerán aquí automáticamente. También puedes editarlo manualmente..."
+              rows="4"
               class="w-full px-5 py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
             ></textarea>
             <p class="text-text-tertiary text-sm mt-2">
