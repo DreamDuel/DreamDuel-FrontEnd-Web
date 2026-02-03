@@ -275,7 +275,7 @@ Ej: Hazla aparecer en una playa paradisíaca al atardecer con palmeras..."
 
             <!-- Imagen Generada -->
             <div class="mb-6">
-              <img :src="generatedImageUrl" alt="Generated" class="w-full h-96 object-cover rounded-xl shadow-xl" />
+              <img :src="generatedImageUrl" alt="Generated" class="w-full max-h-96 object-contain rounded-xl shadow-xl bg-background-elevated" />
             </div>
             
             <div class="space-y-3">
