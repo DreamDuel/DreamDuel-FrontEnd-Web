@@ -5,130 +5,130 @@ import { SparklesIcon, PhotoIcon, XMarkIcon, ArrowRightIcon } from '@heroicons/v
 
 const router = useRouter();
 const prompt = ref('');
+const manualPrompt = ref(''); // Texto que el usuario escribe manualmente
 const isGenerating = ref(false);
 const showRegisterPrompt = ref(false);
 const characterImage = ref<File | null>(null);
 const imagePreviewUrl = ref<string>('');
 const generatedImageUrl = ref<string>('');
 
-// Opciones de personalización física
-const selectedHairColor = ref('');
-const selectedHairStyle = ref('');
-const selectedEyeColor = ref('');
+// Opciones de personalización física (solo del cuerpo - cuello para abajo)
 const selectedBodyType = ref('');
-const selectedSkinTone = ref('');
-const selectedAge = ref('');
-const selectedGender = ref('');
+const selectedClothing = ref('');
+const selectedPose = ref('');
+const selectedMuscle = ref('');
+const selectedHeight = ref('');
 
-// Catálogo de opciones físicas
-const hairColorOptions = [
-  { value: 'rubio', label: '👱 Rubio', description: 'cabello rubio dorado' },
-  { value: 'moreno', label: '👨 Moreno', description: 'cabello moreno oscuro' },
-  { value: 'pelirrojo', label: '👩‍🦰 Pelirrojo', description: 'cabello pelirrojo intenso' },
-  { value: 'castano', label: '🧑 Castaño', description: 'cabello castaño' },
-  { value: 'negro', label: '🖤 Negro', description: 'cabello negro azabache' },
-  { value: 'blanco', label: '🤍 Blanco/Platino', description: 'cabello blanco platinado' },
-  { value: 'colorido', label: '🌈 Colorido', description: 'cabello con colores vibrantes' },
-];
-
-const hairStyleOptions = [
-  { value: 'largo', label: '💇‍♀️ Largo', description: 'cabello largo hasta los hombros o más' },
-  { value: 'corto', label: '💇‍♂️ Corto', description: 'cabello corto estilo pixie o rapado' },
-  { value: 'rizado', label: '🌀 Rizado', description: 'cabello con rizos definidos' },
-  { value: 'liso', label: '➖ Liso', description: 'cabello completamente liso' },
-  { value: 'ondulado', label: '〰️ Ondulado', description: 'cabello ondulado suave' },
-  { value: 'mohawk', label: '🦅 Mohawk', description: 'cabello estilo mohawk punk' },
-  { value: 'trenzas', label: '🪢 Trenzas', description: 'cabello con trenzas elaboradas' },
-];
-
-const eyeColorOptions = [
-  { value: 'azules', label: '💙 Azules', description: 'ojos azules brillantes' },
-  { value: 'verdes', label: '💚 Verdes', description: 'ojos verdes esmeralda' },
-  { value: 'marrones', label: '🤎 Marrones', description: 'ojos marrones cálidos' },
-  { value: 'grises', label: '🩶 Grises', description: 'ojos grises profundos' },
-  { value: 'avellana', label: '🟤 Avellana', description: 'ojos color avellana' },
-  { value: 'heterocromia', label: '👁️ Heterocromía', description: 'ojos de diferente color' },
-];
-
+// Catálogo de opciones físicas del cuerpo
 const bodyTypeOptions = [
-  { value: 'atletico', label: '💪 Atlético', description: 'cuerpo atlético musculoso' },
-  { value: 'delgado', label: '🏃 Delgado', description: 'cuerpo delgado estilizado' },
+  { value: 'atletico', label: '💪 Atlético', description: 'cuerpo atlético y tonificado' },
+  { value: 'delgado', label: '🏃 Delgado', description: 'cuerpo delgado y esbelto' },
   { value: 'promedio', label: '🧍 Promedio', description: 'cuerpo de constitución promedio' },
   { value: 'robusto', label: '🏋️ Robusto', description: 'cuerpo robusto y fuerte' },
   { value: 'curvilíneo', label: '💃 Curvilíneo', description: 'cuerpo con curvas definidas' },
+  { value: 'musculoso', label: '🦾 Musculoso', description: 'cuerpo muy musculoso y definido' },
 ];
 
-const skinToneOptions = [
-  { value: 'clara', label: '🤍 Clara', description: 'piel clara' },
-  { value: 'media', label: '🤎 Media', description: 'piel de tono medio' },
-  { value: 'trigueña', label: '🧡 Trigueña', description: 'piel trigueña' },
-  { value: 'oscura', label: '🖤 Oscura', description: 'piel oscura' },
-  { value: 'bronceada', label: '☀️ Bronceada', description: 'piel bronceada' },
+const muscleOptions = [
+  { value: 'definido', label: '💎 Músculos Definidos', description: 'músculos muy definidos y marcados' },
+  { value: 'tonificado', label: '⚡ Tonificado', description: 'músculos tonificados' },
+  { value: 'normal', label: '➖ Normal', description: 'tono muscular normal' },
 ];
 
-const ageOptions = [
-  { value: 'joven', label: '👦 Joven (18-25)', description: 'apariencia juvenil de 18-25 años' },
-  { value: 'adulto_joven', label: '🧑 Adulto Joven (25-35)', description: 'apariencia de adulto joven 25-35 años' },
-  { value: 'adulto', label: '👨 Adulto (35-50)', description: 'apariencia adulta de 35-50 años' },
-  { value: 'maduro', label: '👴 Maduro (50+)', description: 'apariencia madura de más de 50 años' },
+const heightOptions = [
+  { value: 'alto', label: '📏 Alto', description: 'estatura alta' },
+  { value: 'promedio', label: '📐 Estatura Promedio', description: 'estatura promedio' },
+  { value: 'bajo', label: '📌 Bajo', description: 'estatura baja' },
 ];
 
-const genderOptions = [
-  { value: 'masculino', label: '♂️ Masculino', description: 'rasgos masculinos' },
-  { value: 'femenino', label: '♀️ Femenino', description: 'rasgos femeninos' },
-  { value: 'andrógino', label: '⚧️ Andrógino', description: 'rasgos andróginos' },
+const clothingOptions = [
+  { value: 'deportivo', label: '⚽ Ropa Deportiva', description: 'usando ropa deportiva' },
+  { value: 'casual', label: '👕 Casual', description: 'usando ropa casual moderna' },
+  { value: 'formal', label: '👔 Formal', description: 'usando ropa formal elegante' },
+  { value: 'traje_baño', label: '🩱 Traje de Baño', description: 'usando traje de baño' },
+  { value: 'superheroe', label: '🦸 Superhéroe', description: 'usando traje de superhéroe' },
+  { value: 'elegante', label: '🎩 Elegante de Gala', description: 'usando vestimenta de gala' },
+  { value: 'streetwear', label: '🧥 Streetwear', description: 'usando streetwear urbano' },
+];
+
+const poseOptions = [
+  { value: 'parado', label: '🧍 De Pie/Parado', description: 'de pie en pose natural' },
+  { value: 'sentado', label: '🪑 Sentado', description: 'sentado en una silla' },
+  { value: 'echado', label: '🛋️ Echado/Acostado', description: 'echado o acostado' },
+  { value: 'selfie', label: '🤳 Tomando Selfie', description: 'tomando una selfie' },
+  { value: 'corriendo', label: '🏃 Corriendo', description: 'corriendo en acción' },
+  { value: 'saltando', label: '🦘 Saltando', description: 'saltando en el aire' },
+  { value: 'pose_poder', label: '💪 Pose de Poder', description: 'en pose de poder heroica' },
+  { value: 'brazos_cruzados', label: '🙅 Brazos Cruzados', description: 'con brazos cruzados' },
+  { value: 'meditando', label: '🧘 Meditando', description: 'en posición de meditación' },
+  { value: 'bailando', label: '💃 Bailando', description: 'bailando con energía' },
 ];
 
 // Construir prompt automático basado en selecciones
-const buildPromptFromSelections = () => {
-  const parts: string[] = [];
-  
-  // Primero las características físicas básicas
-  if (selectedGender.value) {
-    const gender = genderOptions.find(g => g.value === selectedGender.value);
-    if (gender) parts.push(gender.description);
-  }
-  
-  if (selectedAge.value) {
-    const age = ageOptions.find(a => a.value === selectedAge.value);
-    if (age) parts.push(age.description);
-  }
+const selectedTags = computed(() => {
+  const tags: Array<{key: string, label: string, description: string}> = [];
   
   if (selectedBodyType.value) {
-    const body = bodyTypeOptions.find(b => b.value === selectedBodyType.value);
-    if (body) parts.push(body.description);
+    const option = bodyTypeOptions.find(o => o.value === selectedBodyType.value);
+    if (option) tags.push({key: 'body', label: option.label, description: option.description});
   }
   
-  if (selectedSkinTone.value) {
-    const skin = skinToneOptions.find(s => s.value === selectedSkinTone.value);
-    if (skin) parts.push(skin.description);
+  if (selectedMuscle.value) {
+    const option = muscleOptions.find(o => o.value === selectedMuscle.value);
+    if (option) tags.push({key: 'muscle', label: option.label, description: option.description});
   }
   
-  // Luego características faciales y cabello
-  if (selectedHairColor.value) {
-    const hair = hairColorOptions.find(h => h.value === selectedHairColor.value);
-    if (hair) parts.push(hair.description);
+  if (selectedHeight.value) {
+    const option = heightOptions.find(o => o.value === selectedHeight.value);
+    if (option) tags.push({key: 'height', label: option.label, description: option.description});
   }
   
-  if (selectedHairStyle.value) {
-    const style = hairStyleOptions.find(s => s.value === selectedHairStyle.value);
-    if (style) parts.push(style.description);
+  if (selectedClothing.value) {
+    const option = clothingOptions.find(o => o.value === selectedClothing.value);
+    if (option) tags.push({key: 'clothing', label: option.label, description: option.description});
   }
   
-  if (selectedEyeColor.value) {
-    const eyes = eyeColorOptions.find(e => e.value === selectedEyeColor.value);
-    if (eyes) parts.push(eyes.description);
+  if (selectedPose.value) {
+    const option = poseOptions.find(o => o.value === selectedPose.value);
+    if (option) tags.push({key: 'pose', label: option.label, description: option.description});
   }
   
-  return parts.join(', ');
+  return tags;
+});
+
+const buildPromptFromSelections = () => {
+  return selectedTags.value.map(tag => tag.description).join(', ');
 };
 
-// Actualizar prompt cuando cambien las selecciones
-watch([selectedHairColor, selectedHairStyle, selectedEyeColor, selectedBodyType, selectedSkinTone, selectedAge, selectedGender], () => {
-  const autoPrompt = buildPromptFromSelections();
-  if (autoPrompt) {
-    prompt.value = autoPrompt;
+const removeTag = (key: string) => {
+  switch(key) {
+    case 'body':
+      selectedBodyType.value = '';
+      break;
+    case 'muscle':
+      selectedMuscle.value = '';
+      break;
+    case 'height':
+      selectedHeight.value = '';
+      break;
+    case 'clothing':
+      selectedClothing.value = '';
+      break;
+    case 'pose':
+      selectedPose.value = '';
+      break;
   }
+};
+
+// Actualizar prompt cuando cambien las selecciones o el texto manual
+watch([selectedBodyType, selectedMuscle, selectedHeight, selectedClothing, selectedPose, manualPrompt], () => {
+  const autoPrompt = buildPromptFromSelections();
+  const parts: string[] = [];
+  
+  if (autoPrompt) parts.push(autoPrompt);
+  if (manualPrompt.value.trim()) parts.push(manualPrompt.value.trim());
+  
+  prompt.value = parts.join(', ');
 });
 
 const handleFileSelect = (event: Event) => {
@@ -299,59 +299,15 @@ const skipToLogin = () => {
             </div>
           </div>
 
-          <!-- Opciones de Personalización Física -->
+          <!-- Opciones de Personalización Física del Cuerpo -->
           <div class="mb-8 space-y-6">
             <div class="text-center">
               <h3 class="text-text-primary font-semibold mb-2 text-lg">
-                2. Personaliza las características físicas (Opcional)
+                2. Personaliza el cuerpo (Opcional)
               </h3>
               <p class="text-text-tertiary text-sm">
-                Selecciona características físicas para transformar la persona de la foto
+                Selecciona características físicas del cuerpo y la pose
               </p>
-            </div>
-
-            <!-- Género -->
-            <div>
-              <label class="block text-text-secondary font-medium mb-2 text-sm">
-                Género / Rasgos
-              </label>
-              <div class="grid grid-cols-3 gap-2">
-                <button
-                  v-for="option in genderOptions"
-                  :key="option.value"
-                  @click="selectedGender = selectedGender === option.value ? '' : option.value"
-                  :class="[
-                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    selectedGender === option.value
-                      ? 'bg-primary text-white ring-2 ring-primary/50'
-                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
-                  ]"
-                >
-                  {{ option.label }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Edad -->
-            <div>
-              <label class="block text-text-secondary font-medium mb-2 text-sm">
-                Rango de Edad
-              </label>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                <button
-                  v-for="option in ageOptions"
-                  :key="option.value"
-                  @click="selectedAge = selectedAge === option.value ? '' : option.value"
-                  :class="[
-                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    selectedAge === option.value
-                      ? 'bg-primary text-white ring-2 ring-primary/50'
-                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
-                  ]"
-                >
-                  {{ option.label }}
-                </button>
-              </div>
             </div>
 
             <!-- Tipo de Cuerpo -->
@@ -376,19 +332,63 @@ const skipToLogin = () => {
               </div>
             </div>
 
-            <!-- Tono de Piel -->
+            <!-- Definición Muscular -->
             <div>
               <label class="block text-text-secondary font-medium mb-2 text-sm">
-                Tono de Piel
+                Definición Muscular
+              </label>
+              <div class="grid grid-cols-3 gap-2">
+                <button
+                  v-for="option in muscleOptions"
+                  :key="option.value"
+                  @click="selectedMuscle = selectedMuscle === option.value ? '' : option.value"
+                  :class="[
+                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                    selectedMuscle === option.value
+                      ? 'bg-primary text-white ring-2 ring-primary/50'
+                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
+                  ]"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Estatura -->
+            <div>
+              <label class="block text-text-secondary font-medium mb-2 text-sm">
+                Estatura
+              </label>
+              <div class="grid grid-cols-3 gap-2">
+                <button
+                  v-for="option in heightOptions"
+                  :key="option.value"
+                  @click="selectedHeight = selectedHeight === option.value ? '' : option.value"
+                  :class="[
+                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                    selectedHeight === option.value
+                      ? 'bg-primary text-white ring-2 ring-primary/50'
+                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
+                  ]"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Vestimenta -->
+            <div>
+              <label class="block text-text-secondary font-medium mb-2 text-sm">
+                Vestimenta / Ropa
               </label>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
                 <button
-                  v-for="option in skinToneOptions"
+                  v-for="option in clothingOptions"
                   :key="option.value"
-                  @click="selectedSkinTone = selectedSkinTone === option.value ? '' : option.value"
+                  @click="selectedClothing = selectedClothing === option.value ? '' : option.value"
                   :class="[
                     'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    selectedSkinTone === option.value
+                    selectedClothing === option.value
                       ? 'bg-primary text-white ring-2 ring-primary/50'
                       : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
                   ]"
@@ -398,63 +398,19 @@ const skipToLogin = () => {
               </div>
             </div>
 
-            <!-- Color de Cabello -->
+            <!-- Pose/Acción -->
             <div>
               <label class="block text-text-secondary font-medium mb-2 text-sm">
-                Color de Cabello
-              </label>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                <button
-                  v-for="option in hairColorOptions"
-                  :key="option.value"
-                  @click="selectedHairColor = selectedHairColor === option.value ? '' : option.value"
-                  :class="[
-                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    selectedHairColor === option.value
-                      ? 'bg-primary text-white ring-2 ring-primary/50'
-                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
-                  ]"
-                >
-                  {{ option.label }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Estilo de Cabello -->
-            <div>
-              <label class="block text-text-secondary font-medium mb-2 text-sm">
-                Estilo de Cabello
-              </label>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                <button
-                  v-for="option in hairStyleOptions"
-                  :key="option.value"
-                  @click="selectedHairStyle = selectedHairStyle === option.value ? '' : option.value"
-                  :class="[
-                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    selectedHairStyle === option.value
-                      ? 'bg-primary text-white ring-2 ring-primary/50'
-                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
-                  ]"
-                >
-                  {{ option.label }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Color de Ojos -->
-            <div>
-              <label class="block text-text-secondary font-medium mb-2 text-sm">
-                Color de Ojos
+                Pose / Acción
               </label>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
                 <button
-                  v-for="option in eyeColorOptions"
+                  v-for="option in poseOptions"
                   :key="option.value"
-                  @click="selectedEyeColor = selectedEyeColor === option.value ? '' : option.value"
+                  @click="selectedPose = selectedPose === option.value ? '' : option.value"
                   :class="[
                     'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    selectedEyeColor === option.value
+                    selectedPose === option.value
                       ? 'bg-primary text-white ring-2 ring-primary/50'
                       : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
                   ]"
@@ -470,15 +426,48 @@ const skipToLogin = () => {
             <label class="block text-text-primary font-semibold mb-3 text-lg">
               3. Descripción Final (Generado automáticamente)
             </label>
-            <textarea
-              v-model="prompt"
-              placeholder="Las opciones seleccionadas aparecerán aquí automáticamente. También puedes editarlo manualmente..."
-              rows="4"
-              class="w-full px-5 py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
-            ></textarea>
-            <p class="text-text-tertiary text-sm mt-2">
-              💡 Describe el escenario, ropa, acción, ambiente, etc.
-            </p>
+            
+            <!-- Chips/Burbujas de opciones seleccionadas -->
+            <div v-if="selectedTags.length > 0" class="flex flex-wrap gap-2 mb-3 p-3 bg-background-elevated/50 rounded-lg border border-white/10">
+              <TransitionGroup name="tag">
+                <div
+                  v-for="tag in selectedTags"
+                  :key="tag.key"
+                  class="inline-flex items-center space-x-2 px-3 py-1.5 bg-primary/20 border border-primary/40 rounded-full text-sm text-primary font-medium group hover:bg-primary/30 transition-all"
+                >
+                  <span>{{ tag.label }}</span>
+                  <button
+                    @click="removeTag(tag.key)"
+                    class="ml-1 hover:bg-primary/40 rounded-full p-0.5 transition-colors"
+                  >
+                    <XMarkIcon class="h-4 w-4" />
+                  </button>
+                </div>
+              </TransitionGroup>
+            </div>
+            
+            <!-- Textarea para texto manual adicional -->
+            <div class="mb-3">
+              <textarea
+                v-model="manualPrompt"
+                placeholder="Agrega detalles adicionales: escenario, ambiente, accesorios, efectos especiales..."
+                rows="3"
+                class="w-full px-5 py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
+              ></textarea>
+              <p class="text-text-tertiary text-sm mt-2">
+                💡 Ejemplo: "en una playa al atardecer con palmeras de fondo"
+              </p>
+            </div>
+            
+            <!-- Prompt final combinado (solo lectura) -->
+            <div class="p-4 bg-background-deep/50 rounded-xl border border-white/10">
+              <label class="block text-text-secondary text-xs font-medium mb-2">
+                📝 Prompt Final (se enviará a la IA):
+              </label>
+              <p class="text-text-primary text-sm">
+                {{ prompt || 'Selecciona opciones o escribe una descripción...' }}
+              </p>
+            </div>
           </div>
 
           <!-- Botón de Generar -->
@@ -606,5 +595,25 @@ const skipToLogin = () => {
 .modal-enter-from .bg-background-card,
 .modal-leave-to .bg-background-card {
   transform: scale(0.95);
+}
+
+/* Animaciones para los tags/chips */
+.tag-enter-active,
+.tag-leave-active {
+  transition: all 0.3s ease;
+}
+
+.tag-enter-from {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.tag-leave-to {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.tag-move {
+  transition: transform 0.3s ease;
 }
 </style>
