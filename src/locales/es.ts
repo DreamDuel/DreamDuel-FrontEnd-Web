@@ -20,7 +20,8 @@ export default {
     search: 'Buscar',
     create: 'Crear',
     profile: 'Perfil',
-    settings: 'Configuración'
+    settings: 'Configuración',
+    myProfile: 'Mi Perfil'
   },
   home: {
     hero: {
@@ -35,26 +36,60 @@ export default {
     new: {
       title: 'Nuevas Historias',
       subtitle: 'Las últimas creaciones de la comunidad'
+    },
+    featured: {
+      badge: 'MÁS POPULAR',
+      reads: 'lecturas'
     }
   },
   create: {
     title: 'Genera Tu Historia',
     subtitle: 'Describe tu sueño y la IA lo convertirá en una historia visual única',
+    titleLabel: 'Título de tu historia',
+    titlePlaceholder: 'Ej: La Última Guardiana del Tiempo',
+    titleRequired: 'Título (requerido)',
     prompt: {
       label: '¿Cuál es tu fantasía hoy?',
       placeholder: 'Ejemplo: Una guerrera espacial descubre un planeta olvidado donde la música controla la realidad...'
     },
     style: {
-      label: 'Estilo Visual'
+      label: 'Estilo Visual',
+      anime: 'Anime',
+      realistic: 'Realista',
+      noir: 'Noir',
+      watercolor: 'Acuarela',
+      comic: 'Cómic',
+      fantasy: 'Fantasía'
     },
     genre: {
-      label: 'Género'
+      label: 'Género',
+      romance: 'Romance',
+      action: 'Acción',
+      mystery: 'Misterio',
+      scifi: 'Sci-Fi',
+      horror: 'Terror',
+      fantasy: 'Fantasía'
     },
     characters: {
       label: 'Personajes',
-      subtitle: 'Sube hasta 4 fotos para personalizarlos',
-      dropzone: 'Arrastra imágenes aquí o haz clic para seleccionar',
-      requirements: 'PNG, JPG hasta 5MB · Máximo 4 personajes'
+      subtitle: 'Añade fotos y nombres',
+      optional: 'Opcional',
+      addCharacter: 'Agregar Personaje',
+      namePlaceholder: 'Nombre del personaje (ej: María, Alex, Luna)',
+      limit: 'max',
+      freePlan: 'Free: 2 max',
+      premiumPlan: 'Premium: 10 max',
+      limitReached: 'Límite alcanzado (Plan Free)',
+      limitDesc: 'Has alcanzado el máximo de 2 personajes. Actualiza a Premium para usar hasta 10 personajes por historia.',
+      upgradeToPremium: 'Actualizar a Premium',
+      premiumLimitDesc: 'Has alcanzado el máximo de 10 personajes por historia'
+    },
+    visibility: {
+      label: 'Visibilidad de la historia',
+      public: 'Pública',
+      publicDesc: 'Todos pueden verla',
+      private: 'Privada',
+      privateDesc: 'Solo tú la verás'
     },
     generate: 'MATERIALIZAR',
     generating: 'GENERANDO MAGIA...',
@@ -84,18 +119,49 @@ export default {
     stats: {
       stories: 'Historias',
       followers: 'Seguidores',
-      following: 'Siguiendo'
+      following: 'Siguiendo',
+      totalLikes: 'Likes'
     },
     tabs: {
       myStories: 'Mis Historias',
-      saved: 'Guardadas'
+      saved: 'Guardadas',
+      liked: 'Me gusta'
     },
     empty: {
       noStories: 'Aún no has creado historias',
-      createFirst: 'Crea tu primera historia',
+      createFirst: 'Crear tu primera historia',
       noSaved: 'No tienes historias guardadas',
+      noLiked: 'No has dado like a ninguna historia',
       explore: 'Explorar historias'
-    }
+    },
+    credits: {
+      freeImages: 'Imágenes gratis',
+      resetIn: 'Recarga en:',
+      referralCode: 'Código de referido',
+      copy: 'Copiar',
+      referralDesc: '+3 imágenes por amigo invitado',
+      referrals: 'invitados',
+      referralCopied: '¡Link de referido copiado!'
+    },
+    premium: {
+      active: 'Premium Activo',
+      features: 'Imágenes ilimitadas • Sin marcas de agua',
+      manage: 'Gestionar'
+    },
+    edit: {
+      editProfile: 'Editar perfil',
+      saveChanges: 'Guardar cambios',
+      username: 'Nombre de usuario',
+      bio: 'Biografía',
+      bioPlaceholder: 'Biografía (opcional)',
+      noBio: 'Sin biografía'
+    },
+    avatar: {
+      uploading: 'Subiendo...',
+      errorFormat: 'Por favor selecciona una imagen válida',
+      errorSize: 'La imagen debe ser menor a 5MB'
+    },
+    logout: 'Cerrar sesión'
   },
   settings: {
     title: 'Configuración',
@@ -104,12 +170,24 @@ export default {
       username: 'Nombre de usuario',
       email: 'Correo electrónico',
       bio: 'Biografía',
-      changePassword: 'Cambiar contraseña'
+      bioPlaceholder: 'Cuéntanos sobre ti...',
+      changePassword: 'Cambiar contraseña',
+      saved: 'Perfil actualizado correctamente',
+      passwordMismatch: 'Las contraseñas no coinciden',
+      passwordTooShort: 'La contraseña debe tener al menos 6 caracteres',
+      passwordUpdated: 'Contraseña actualizada correctamente',
+      currentPassword: 'Contraseña actual',
+      newPassword: 'Nueva contraseña',
+      confirmPassword: 'Confirmar contraseña',
+      update: 'Actualizar',
+      saveChanges: 'Guardar cambios'
     },
     preferences: {
       title: 'Preferencias',
-      notifications: 'Notificaciones push',
-      language: 'Idioma'
+      notifications: 'Notificaciones',
+      notificationsDesc: 'Recibe actualizaciones de tus historias',
+      language: 'Idioma',
+      languageDesc: 'Selecciona tu idioma preferido'
     },
     premium: {
       title: 'DreamDuel Premium',
@@ -118,19 +196,23 @@ export default {
         unlimited: 'Generación ilimitada',
         priority: 'Procesamiento prioritario',
         styles: 'Estilos exclusivos',
-        commercial: 'Uso comercial'
+        commercial: 'Uso comercial',
+        noAds: 'Sin anuncios',
+        exclusiveStyles: 'Estilos visuales exclusivos'
       },
       cta: 'Mejorar a Premium',
+      upgradeButton: 'Actualizar a Premium',
       price: '$9.99/mes'
     },
     legal: {
       title: 'Legal y Soporte',
       terms: 'Términos y Condiciones',
       privacy: 'Política de Privacidad',
-      help: 'Centro de Ayuda'
+      help: 'Centro de Ayuda',
+      about: 'Sobre DreamDuel'
     },
     logout: 'Cerrar sesión',
-    confirmLogout: '¿Estás seguro que deseas cerrar sesión?'
+    confirmLogout: '¿Estás seguro de que quieres cerrar sesión?'
   },
   story: {
     readNow: 'Leer Ahora',
@@ -184,5 +266,145 @@ export default {
         description: 'Únete a miles de creadores y lectores en DreamDuel'
       }
     ]
+  },
+  guest: {
+    header: {
+      login: 'Iniciar Sesión',
+      register: 'Registrarse Gratis'
+    },
+    hero: {
+      title: 'Transforma tu Foto con IA',
+      subtitle: 'Sube una foto y describe qué quieres hacer con ella. ¡Prueba gratis sin registro!',
+      features: {
+        noCard: 'Sin tarjeta',
+        instant: 'Instantáneo',
+        free: '100% gratis'
+      }
+    },
+    steps: {
+      uploadImage: 'Sube una foto de una persona',
+      uploadClick: 'Haz click para subir una imagen',
+      maxSize: 'PNG, JPG (máx. 5MB)',
+      customizePhysical: 'Personaliza las características físicas (Opcional)',
+      customizeDesc: 'Selecciona características físicas para transformar la persona de la foto',
+      finalDescription: 'Descripción Final (Generado automáticamente)',
+      additionalDetails: 'Agrega detalles adicionales: escenario, ambiente, accesorios, efectos especiales...',
+      additionalExample: 'Ejemplo: "en una playa al atardecer con palmeras de fondo"',
+      finalPrompt: 'Prompt Final (se enviará a la IA):',
+      selectOrWrite: 'Selecciona opciones o escribe una descripción...'
+    },
+    physicalOptions: {
+      gender: 'Género / Rasgos',
+      ageRange: 'Rango de Edad',
+      bodyType: 'Tipo de Cuerpo',
+      muscleDefinition: 'Definición Muscular',
+      height: 'Estatura',
+      clothing: 'Vestimenta',
+      poseAction: 'Acción / Pose'
+    },
+    bodyTypes: {
+      athletic: '💪 Atlético',
+      slim: '🏃 Delgado',
+      average: '🧍 Promedio',
+      robust: '🏋️ Robusto',
+      curvy: '💃 Curvilíneo',
+      muscular: '🦾 Musculoso'
+    },
+    muscles: {
+      defined: '💎 Músculos Definidos',
+      toned: '⚡ Tonificado',
+      normal: '➖ Normal'
+    },
+    heights: {
+      tall: '📏 Alto',
+      average: '📐 Estatura Promedio',
+      short: '📌 Bajo'
+    },
+    clothing: {
+      sport: '⚽ Ropa Deportiva',
+      casual: '👕 Casual',
+      formal: '👔 Formal',
+      swimsuit: '🩱 Traje de Baño',
+      superhero: '🦸 Superhéroe',
+      elegant: '🎩 Elegante de Gala',
+      streetwear: '🧥 Streetwear'
+    },
+    poses: {
+      standing: '🧍 De Pie/Parado',
+      sitting: '🪑 Sentado',
+      lying: '🛋️ Echado/Acostado',
+      selfie: '🤳 Tomando Selfie',
+      running: '🏃 Corriendo',
+      jumping: '🦘 Saltando',
+      powerPose: '💪 Pose de Poder',
+      crossedArms: '🙅 Brazos Cruzados',
+      meditating: '🧘 Meditando',
+      dancing: '💃 Bailando'
+    },
+    generate: {
+      button: 'GENERAR IMAGEN GRATIS',
+      generating: 'CREANDO TU IMAGEN...',
+      uploadRequired: '⚠️ Sube una foto para continuar',
+      descRequired: '⚠️ Describe qué quieres hacer con la foto'
+    },
+    benefits: {
+      title: '✨ Regístrate y obtén:',
+      freeImages: '3 Imágenes Gratis',
+      freeDesc: 'Pack de bienvenida',
+      saveCreations: 'Guardar Creaciones',
+      saveDesc: 'Acceso desde cualquier lugar',
+      inviteFriends: 'Invita Amigos',
+      inviteDesc: '+3 créditos por invitación'
+    },
+    modal: {
+      ready: '¡Tu imagen está lista!',
+      subtitle: 'Regístrate gratis para guardarla y crear más imágenes increíbles',
+      registerButton: 'Registrarse Gratis',
+      haveAccount: 'Ya tengo cuenta',
+      noCard: 'Sin tarjeta requerida • Cancela cuando quieras'
+    }
+  },
+  auth: {
+    login: {
+      title: 'Iniciar Sesión',
+      email: 'Correo electrónico',
+      password: 'Contraseña',
+      forgotPassword: '¿Olvidaste tu contraseña?',
+      button: 'Iniciar Sesión',
+      noAccount: '¿No tienes cuenta?',
+      signUp: 'Regístrate',
+      welcome: 'Bienvenido de vuelta',
+      subtitle: 'Continúa creando historias increíbles',
+      orLoginWith: 'O inicia sesión con',
+      google: 'Google',
+      apple: 'Apple',
+      creating: 'Iniciando sesión...'
+    },
+    register: {
+      title: 'Crear Cuenta',
+      username: 'Nombre de usuario',
+      usernamePlaceholder: 'usuario123',
+      email: 'Correo electrónico',
+      emailPlaceholder: 'tu@email.com',
+      password: 'Contraseña',
+      passwordPlaceholder: 'Mínimo 8 caracteres',
+      confirmPassword: 'Confirmar contraseña',
+      confirmPasswordPlaceholder: 'Confirma tu contraseña',
+      button: 'Crear Cuenta',
+      creating: 'Creando cuenta...',
+      haveAccount: '¿Ya tienes cuenta?',
+      signIn: 'Inicia sesión',
+      joinCommunity: 'Únete a la comunidad de creadores',
+      acceptTerms: 'Acepto los',
+      terms: 'términos y condiciones',
+      and: 'y la',
+      privacy: 'política de privacidad',
+      orRegisterWith: 'O regístrate con',
+      referralBonus: '¡Bonus de invitación!',
+      referralDesc: 'Obtendrás +3 imágenes gratis adicionales al registrarte',
+      errorPasswordMismatch: 'Las contraseñas no coinciden',
+      errorAcceptTerms: 'Debes aceptar los términos y condiciones',
+      footer: '© 2026 DreamDuel. Todos los derechos reservados.'
+    }
   }
 };

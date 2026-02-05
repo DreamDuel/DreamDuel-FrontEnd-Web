@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
 import { useStoryStore } from '@/stores/storyStore';
+import { useI18n } from 'vue-i18n';
 import { SparklesIcon, PhotoIcon, XMarkIcon, UserIcon } from '@heroicons/vue/24/solid';
 import ImageLimitModal from '@/presentation/components/ImageLimitModal.vue';
 import UpgradeSlideout from '@/presentation/components/UpgradeSlideout.vue';
@@ -14,6 +15,7 @@ interface Character {
   imagePreview: string;
 }
 
+const { t } = useI18n();
 const router = useRouter();
 const userStore = useUserStore();
 const storyStore = useStoryStore();
@@ -37,21 +39,21 @@ const canAddMoreCharacters = computed(() => {
 });
 
 const styles = [
-  { id: 'anime', name: 'Anime', emoji: '🎌' },
-  { id: 'realistic', name: 'Realista', emoji: '📸' },
-  { id: 'noir', name: 'Noir', emoji: '🎬' },
-  { id: 'watercolor', name: 'Acuarela', emoji: '🎨' },
-  { id: 'comic', name: 'Cómic', emoji: '💥' },
-  { id: 'fantasy', name: 'Fantasía', emoji: '🔮' }
+  { id: 'anime', name: computed(() => t('create.style.anime')), emoji: '🎌' },
+  { id: 'realistic', name: computed(() => t('create.style.realistic')), emoji: '📸' },
+  { id: 'noir', name: computed(() => t('create.style.noir')), emoji: '🎬' },
+  { id: 'watercolor', name: computed(() => t('create.style.watercolor')), emoji: '🎨' },
+  { id: 'comic', name: computed(() => t('create.style.comic')), emoji: '💥' },
+  { id: 'fantasy', name: computed(() => t('create.style.fantasy')), emoji: '🔮' }
 ];
 
 const genres = [
-  { id: 'romance', name: 'Romance', emoji: '💕' },
-  { id: 'action', name: 'Acción', emoji: '⚔️' },
-  { id: 'mystery', name: 'Misterio', emoji: '🔍' },
-  { id: 'scifi', name: 'Sci-Fi', emoji: '🚀' },
-  { id: 'horror', name: 'Terror', emoji: '👻' },
-  { id: 'fantasy', name: 'Fantasía', emoji: '🧙' }
+  { id: 'romance', name: computed(() => t('create.genre.romance')), emoji: '💕' },
+  { id: 'action', name: computed(() => t('create.genre.action')), emoji: '⚔️' },
+  { id: 'mystery', name: computed(() => t('create.genre.mystery')), emoji: '🔍' },
+  { id: 'scifi', name: computed(() => t('create.genre.scifi')), emoji: '🚀' },
+  { id: 'horror', name: computed(() => t('create.genre.horror')), emoji: '👻' },
+  { id: 'fantasy', name: computed(() => t('create.genre.fantasy')), emoji: '🧙' }
 ];
 
 const toggleStyle = (styleId: string) => {
@@ -74,9 +76,9 @@ const addCharacter = (file: File) => {
   // Verificar límite
   if (!canAddMoreCharacters.value) {
     if (userStore.currentUser?.isPremium) {
-      alert('Máximo 10 personajes por historia');
+      alert(t('create.characters.premiumLimitDesc'));
     } else {
-      alert('Plan Free: máximo 2 personajes. Actualiza a Premium para hasta 10 personajes.');
+      alert(t('create.characters.limitDesc'));
       showUpgradeSlideout.value = true;
     }
     return;
@@ -84,13 +86,13 @@ const addCharacter = (file: File) => {
 
   // Validar tipo de archivo
   if (!file.type.startsWith('image/')) {
-    alert('Por favor selecciona una imagen válida');
+    alert(t('profile.avatar.errorFormat'));
     return;
   }
 
   // Validar tamaño (max 5MB)
   if (file.size > 5 * 1024 * 1024) {
-    alert('La imagen es muy grande. Máximo 5MB');
+    alert(t('profile.avatar.errorSize'));
     return;
   }
 
@@ -212,10 +214,10 @@ const handleUpgrade = () => {
           <SparklesIcon class="h-12 w-12 text-primary animate-pulse" />
         </div>
         <h1 class="text-5xl md:text-6xl font-bold text-text-primary mb-4">
-          Genera Tu Historia
+          {{ t('create.title') }}
         </h1>
         <p class="text-xl text-text-secondary">
-          Describe tu sueño y la IA lo convertirá en una historia visual única
+          {{ t('create.subtitle') }}
         </p>
       </div>
 
@@ -224,13 +226,13 @@ const handleUpgrade = () => {
         <!-- Título -->
         <div class="mb-8">
           <label class="block text-text-secondary text-sm font-medium mb-3">
-            Título de tu historia
+            {{ t('create.titleLabel') }}
             <span class="text-accent-crimson">*</span>
           </label>
           <input
             v-model="title"
             type="text"
-            placeholder="Ej: La Última Guardiana del Tiempo"
+            :placeholder="t('create.titlePlaceholder')"
             class="w-full px-4 py-3 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
           />
         </div>
@@ -238,12 +240,12 @@ const handleUpgrade = () => {
         <!-- Prompt Input -->
         <div class="mb-8">
           <label class="block text-text-secondary text-sm font-medium mb-3">
-            ¿Cuál es tu fantasía hoy?
+            {{ t('create.prompt.label') }}
             <span class="text-accent-crimson">*</span>
           </label>
           <textarea
             v-model="prompt"
-            placeholder="Ejemplo: Una guerrera espacial descubre un planeta olvidado donde la música controla la realidad..."
+            :placeholder="t('create.prompt.placeholder')"
             rows="4"
             class="w-full px-4 py-3 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all resize-none"
           />
@@ -252,7 +254,7 @@ const handleUpgrade = () => {
         <!-- Style Selection -->
         <div class="mb-8">
           <label class="block text-text-secondary text-sm font-medium mb-3">
-            Estilo Visual
+            {{ t('create.style.label') }}
           </label>
           <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
             <button
@@ -267,7 +269,7 @@ const handleUpgrade = () => {
               ]"
             >
               <span class="text-3xl mb-2">{{ style.emoji }}</span>
-              <span class="text-xs text-text-secondary font-medium">{{ style.name }}</span>
+              <span class="text-xs text-text-secondary font-medium">{{ style.name.value }}</span>
             </button>
           </div>
         </div>
@@ -275,7 +277,7 @@ const handleUpgrade = () => {
         <!-- Genre Selection -->
         <div class="mb-8">
           <label class="block text-text-secondary text-sm font-medium mb-3">
-            Género
+            {{ t('create.genre.label') }}
           </label>
           <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
             <button
@@ -290,7 +292,7 @@ const handleUpgrade = () => {
               ]"
             >
               <span class="text-3xl mb-2">{{ genre.emoji }}</span>
-              <span class="text-xs text-text-secondary font-medium">{{ genre.name }}</span>
+              <span class="text-xs text-text-secondary font-medium">{{ genre.name.value }}</span>
             </button>
           </div>
         </div>
@@ -299,18 +301,18 @@ const handleUpgrade = () => {
         <div class="mb-8">
           <div class="flex items-center justify-between mb-3">
             <label class="block text-text-secondary text-sm font-medium">
-              Personajes (Opcional)
-              <span class="text-text-tertiary text-xs ml-2">Añade fotos y nombres</span>
+              {{ t('create.characters.label') }} ({{ t('create.characters.optional') }})
+              <span class="text-text-tertiary text-xs ml-2">{{ t('create.characters.subtitle') }}</span>
             </label>
             <div class="text-xs">
               <span :class="characters.length >= maxCharacters ? 'text-accent-crimson' : 'text-text-tertiary'">
                 {{ characters.length }}/{{ maxCharacters }}
               </span>
               <span v-if="!userStore.currentUser?.isPremium" class="ml-2 px-2 py-1 bg-accent-gold/20 text-accent-gold rounded text-xs">
-                Free: 2 max
+                {{ t('create.characters.freePlan') }}
               </span>
               <span v-else class="ml-2 px-2 py-1 bg-primary/20 text-primary rounded text-xs">
-                Premium: 10 max
+                {{ t('create.characters.premiumPlan') }}
               </span>
             </div>
           </div>
@@ -333,7 +335,7 @@ const handleUpgrade = () => {
                   type="text"
                   :value="character.name"
                   @input="(e) => updateCharacterName(character.id, (e.target as HTMLInputElement).value)"
-                  placeholder="Nombre del personaje (ej: María, Alex, Luna)"
+                  :placeholder="t('create.characters.namePlaceholder')"
                   class="w-full px-3 py-2 bg-background-deep border border-white/10 rounded-lg text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                 />
                 <p class="text-text-tertiary text-xs mt-1">
@@ -366,7 +368,7 @@ const handleUpgrade = () => {
               class="flex items-center justify-center space-x-2 w-full py-4 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
             >
               <PhotoIcon class="h-5 w-5 text-primary" />
-              <span class="text-text-primary font-medium">Agregar Personaje</span>
+              <span class="text-text-primary font-medium">{{ t('create.characters.addCharacter') }}</span>
             </label>
           </div>
 
@@ -376,16 +378,16 @@ const handleUpgrade = () => {
               <div class="flex-shrink-0 text-2xl">⚡</div>
               <div class="flex-1">
                 <h4 class="font-semibold text-text-primary mb-1">
-                  Límite alcanzado (Plan Free)
+                  {{ t('create.characters.limitReached') }}
                 </h4>
                 <p class="text-text-secondary text-sm mb-3">
-                  Has alcanzado el máximo de 2 personajes. Actualiza a Premium para usar hasta 10 personajes por historia.
+                  {{ t('create.characters.limitDesc') }}
                 </p>
                 <button
                   @click="showUpgradeSlideout = true"
                   class="px-4 py-2 bg-primary hover:bg-primary-light text-white rounded-lg text-sm font-semibold transition-all"
                 >
-                  Actualizar a Premium
+                  {{ t('create.characters.upgradeToPremium') }}
                 </button>
               </div>
             </div>
@@ -393,14 +395,14 @@ const handleUpgrade = () => {
 
           <!-- Mensaje cuando alcanza el límite PREMIUM -->
           <div v-else class="text-center text-text-tertiary text-sm py-2">
-            Has alcanzado el máximo de 10 personajes por historia
+            {{ t('create.characters.premiumLimitDesc') }}
           </div>
         </div>
 
         <!-- Privacidad -->
         <div class="mb-8">
           <label class="block text-text-secondary text-sm font-medium mb-3">
-            Visibilidad de la historia
+            {{ t('create.visibility.label') }}
           </label>
           <div class="flex items-center space-x-4">
             <button
@@ -412,8 +414,8 @@ const handleUpgrade = () => {
                   : 'border-white/10 bg-background-elevated text-text-secondary hover:border-primary/50'
               ]"
             >
-              🌍 Pública
-              <span class="block text-xs mt-1 opacity-70">Todos pueden verla</span>
+              🌍 {{ t('create.visibility.public') }}
+              <span class="block text-xs mt-1 opacity-70">{{ t('create.visibility.publicDesc') }}</span>
             </button>
             <button
               @click="isPublic = false"
@@ -424,8 +426,8 @@ const handleUpgrade = () => {
                   : 'border-white/10 bg-background-elevated text-text-secondary hover:border-primary/50'
               ]"
             >
-              🔒 Privada
-              <span class="block text-xs mt-1 opacity-70">Solo tú la verás</span>
+              🔒 {{ t('create.visibility.private') }}
+              <span class="block text-xs mt-1 opacity-70">{{ t('create.visibility.privateDesc') }}</span>
             </button>
           </div>
         </div>
@@ -446,11 +448,11 @@ const handleUpgrade = () => {
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span>GENERANDO MAGIA...</span>
+            <span>{{ t('create.generating').toUpperCase() }}</span>
           </template>
           <template v-else>
             <SparklesIcon class="h-6 w-6" />
-            <span>MATERIALIZAR</span>
+            <span>{{ t('create.generate').toUpperCase() }}</span>
           </template>
         </button>
       </div>
@@ -459,15 +461,15 @@ const handleUpgrade = () => {
       <div class="grid md:grid-cols-3 gap-4">
         <div class="bg-background-card/50 backdrop-blur-sm border border-white/5 rounded-xl p-4 text-center">
           <div class="text-2xl mb-2">⚡</div>
-          <div class="text-text-secondary text-sm">Generación instantánea</div>
+          <div class="text-text-secondary text-sm">{{ t('create.features.instant') }}</div>
         </div>
         <div class="bg-background-card/50 backdrop-blur-sm border border-white/5 rounded-xl p-4 text-center">
           <div class="text-2xl mb-2">🎨</div>
-          <div class="text-text-secondary text-sm">100% única y personalizada</div>
+          <div class="text-text-secondary text-sm">{{ t('create.features.unique') }}</div>
         </div>
         <div class="bg-background-card/50 backdrop-blur-sm border border-white/5 rounded-xl p-4 text-center">
           <div class="text-2xl mb-2">✨</div>
-          <div class="text-text-secondary text-sm">Ilimitadas posibilidades</div>
+          <div class="text-text-secondary text-sm">{{ t('create.features.unlimited') }}</div>
         </div>
       </div>
     </div>

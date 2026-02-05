@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useUserStore } from '@/stores/userStore';
 import { SparklesIcon, UserIcon, EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon, GiftIcon } from '@heroicons/vue/24/outline';
 import { getReferralCodeFromUrl, saveReferralAttribution, getSavedReferralCode } from '@/utils/referrals';
+
+const { t } = useI18n();
 
 const router = useRouter();
 const route = useRoute();
@@ -41,12 +44,12 @@ const handleRegister = async () => {
   error.value = '';
   
   if (password.value !== confirmPassword.value) {
-    error.value = 'Las contraseñas no coinciden';
+    error.value = t('auth.register.errorPasswordMismatch');
     return;
   }
   
   if (!acceptTerms.value) {
-    error.value = 'Debes aceptar los términos y condiciones';
+    error.value = t('auth.register.errorAcceptTerms');
     return;
   }
 
@@ -84,14 +87,14 @@ const goToLogin = () => {
           </h1>
         </div>
         <p class="text-text-secondary text-lg">
-          Únete a la comunidad de creadores
+          {{ t('auth.register.joinCommunity') }}
         </p>
       </div>
 
       <!-- Formulario de Registro -->
       <div class="bg-background-card border border-white/10 rounded-2xl p-8 shadow-2xl backdrop-blur-sm">
         <h2 class="text-2xl font-bold text-text-primary mb-6 text-center">
-          Crear Cuenta
+          {{ t('auth.register.title') }}
         </h2>
 
         <!-- Referral Bonus Badge -->
@@ -99,8 +102,8 @@ const goToLogin = () => {
           <div class="flex items-center space-x-3">
             <GiftIcon class="h-6 w-6 text-accent-gold flex-shrink-0" />
             <div>
-              <h3 class="font-bold text-text-primary text-sm">¡Bonus de invitación!</h3>
-              <p class="text-xs text-text-secondary">Obtendrás +3 imágenes gratis adicionales al registrarte</p>
+              <h3 class="font-bold text-text-primary text-sm">{{ t('auth.register.referralBonus') }}</h3>
+              <p class="text-xs text-text-secondary">{{ t('auth.register.referralDesc') }}</p>
             </div>
           </div>
         </div>
@@ -114,7 +117,7 @@ const goToLogin = () => {
           <!-- Username -->
           <div>
             <label for="username" class="block text-sm font-medium text-text-secondary mb-2">
-              Nombre de Usuario
+              {{ t('auth.register.username') }}
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -126,7 +129,7 @@ const goToLogin = () => {
                 type="text"
                 required
                 class="w-full pl-10 pr-4 py-3 bg-background-elevated border border-white/10 rounded-lg text-text-primary placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                placeholder="usuario123"
+                :placeholder="t('auth.register.usernamePlaceholder')"
               />
             </div>
           </div>
@@ -134,7 +137,7 @@ const goToLogin = () => {
           <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium text-text-secondary mb-2">
-              Correo Electrónico
+              {{ t('auth.register.email') }}
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -146,7 +149,7 @@ const goToLogin = () => {
                 type="email"
                 required
                 class="w-full pl-10 pr-4 py-3 bg-background-elevated border border-white/10 rounded-lg text-text-primary placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                placeholder="tu@email.com"
+                :placeholder="t('auth.register.emailPlaceholder')"
               />
             </div>
           </div>
@@ -154,7 +157,7 @@ const goToLogin = () => {
           <!-- Password -->
           <div>
             <label for="password" class="block text-sm font-medium text-text-secondary mb-2">
-              Contraseña
+              {{ t('auth.register.password') }}
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -167,7 +170,7 @@ const goToLogin = () => {
                 required
                 minlength="8"
                 class="w-full pl-10 pr-12 py-3 bg-background-elevated border border-white/10 rounded-lg text-text-primary placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                placeholder="Mínimo 8 caracteres"
+                :placeholder="t('auth.register.passwordPlaceholder')"
               />
               <button
                 type="button"
@@ -183,7 +186,7 @@ const goToLogin = () => {
           <!-- Confirm Password -->
           <div>
             <label for="confirmPassword" class="block text-sm font-medium text-text-secondary mb-2">
-              Confirmar Contraseña
+              {{ t('auth.register.confirmPassword') }}
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -195,7 +198,7 @@ const goToLogin = () => {
                 :type="showConfirmPassword ? 'text' : 'password'"
                 required
                 class="w-full pl-10 pr-12 py-3 bg-background-elevated border border-white/10 rounded-lg text-text-primary placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                placeholder="Confirma tu contraseña"
+                :placeholder="t('auth.register.confirmPasswordPlaceholder')"
               />
               <button
                 type="button"
@@ -218,10 +221,10 @@ const goToLogin = () => {
               class="h-4 w-4 mt-1 rounded border-white/10 bg-background-elevated text-primary focus:ring-primary focus:ring-offset-0 transition-all"
             />
             <label for="terms" class="ml-3 text-sm text-text-secondary">
-              Acepto los 
-              <a href="#" class="text-primary hover:text-primary-light">términos y condiciones</a>
-              y la 
-              <a href="#" class="text-primary hover:text-primary-light">política de privacidad</a>
+              {{ t('auth.register.acceptTerms') }} 
+              <a href="#" class="text-primary hover:text-primary-light">{{ t('auth.register.terms') }}</a>
+              {{ t('auth.register.and') }} 
+              <a href="#" class="text-primary hover:text-primary-light">{{ t('auth.register.privacy') }}</a>
             </label>
           </div>
 
@@ -231,13 +234,13 @@ const goToLogin = () => {
             :disabled="isLoading"
             class="w-full py-3 bg-gradient-to-r from-primary to-primary-light text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
           >
-            <span v-if="!isLoading">Crear Cuenta</span>
+            <span v-if="!isLoading">{{ t('auth.register.button') }}</span>
             <span v-else class="flex items-center justify-center">
               <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              Creando cuenta...
+              {{ t('auth.register.creating') }}
             </span>
           </button>
         </form>
@@ -248,7 +251,7 @@ const goToLogin = () => {
             <div class="w-full border-t border-white/10"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-4 bg-background-card text-text-tertiary">O regístrate con</span>
+            <span class="px-4 bg-background-card text-text-tertiary">{{ t('auth.register.orRegisterWith') }}</span>
           </div>
         </div>
 
@@ -274,12 +277,12 @@ const goToLogin = () => {
         <!-- Login -->
         <div class="mt-6 text-center">
           <p class="text-text-secondary">
-            ¿Ya tienes cuenta?
+            {{ t('auth.register.haveAccount') }}
             <button 
               @click="goToLogin"
               class="text-primary hover:text-primary-light font-semibold ml-1 transition-colors"
             >
-              Inicia sesión
+              {{ t('auth.register.signIn') }}
             </button>
           </p>
         </div>
@@ -287,7 +290,7 @@ const goToLogin = () => {
 
       <!-- Footer -->
       <div class="mt-8 text-center text-text-tertiary text-sm">
-        <p>© 2026 DreamDuel. Todos los derechos reservados.</p>
+        <p>{{ t('auth.register.footer') }}</p>
       </div>
     </div>
   </div>

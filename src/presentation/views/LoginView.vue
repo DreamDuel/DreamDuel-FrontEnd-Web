@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useUserStore } from '@/stores/userStore';
 import { SparklesIcon, EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline';
+
+const { t } = useI18n();
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -23,7 +26,7 @@ const handleLogin = async () => {
     if (success) {
       router.push('/home');
     } else {
-      error.value = 'Usuario no encontrado. Por favor regístrate primero.';
+      error.value = t('auth.login.error') || 'Usuario no encontrado. Por favor regístrate primero.';
     }
   }, 1500);
 };
@@ -45,14 +48,14 @@ const goToRegister = () => {
           </h1>
         </div>
         <p class="text-text-secondary text-lg">
-          Crea historias visuales con IA
+          {{ t('common.tagline') }}
         </p>
       </div>
 
       <!-- Formulario de Login -->
       <div class="bg-background-card border border-white/10 rounded-2xl p-8 shadow-2xl backdrop-blur-sm">
         <h2 class="text-2xl font-bold text-text-primary mb-6 text-center">
-          Iniciar Sesión
+          {{ t('auth.login.title') }}
         </h2>
 
         <!-- Error Message -->
@@ -64,7 +67,7 @@ const goToRegister = () => {
           <!-- Email or Username -->
           <div>
             <label for="email" class="block text-sm font-medium text-text-secondary mb-2">
-              Correo o Usuario
+              {{ t('auth.login.email') }}
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -84,7 +87,7 @@ const goToRegister = () => {
           <!-- Password -->
           <div>
             <label for="password" class="block text-sm font-medium text-text-secondary mb-2">
-              Contraseña
+              {{ t('auth.login.password') }}
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -112,7 +115,7 @@ const goToRegister = () => {
           <!-- Olvidaste tu contraseña -->
           <div class="text-right">
             <a href="#" class="text-sm text-primary hover:text-primary-light transition-colors">
-              ¿Olvidaste tu contraseña?
+              {{ t('auth.login.forgotPassword') }}
             </a>
           </div>
 
@@ -122,13 +125,13 @@ const goToRegister = () => {
             :disabled="isLoading"
             class="w-full py-3 bg-gradient-to-r from-primary to-primary-light text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
           >
-            <span v-if="!isLoading">Iniciar Sesión</span>
+            <span v-if="!isLoading">{{ t('auth.login.button') }}</span>
             <span v-else class="flex items-center justify-center">
               <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              Iniciando sesión...
+              {{ t('common.loading') }}
             </span>
           </button>
         </form>
@@ -139,7 +142,7 @@ const goToRegister = () => {
             <div class="w-full border-t border-white/10"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-4 bg-background-card text-text-tertiary">O continúa con</span>
+            <span class="px-4 bg-background-card text-text-tertiary">{{ t('auth.login.orLoginWith') }}</span>
           </div>
         </div>
 
@@ -165,12 +168,12 @@ const goToRegister = () => {
         <!-- Registro -->
         <div class="mt-6 text-center">
           <p class="text-text-secondary">
-            ¿No tienes cuenta?
+            {{ t('auth.login.noAccount') }}
             <button 
               @click="goToRegister"
               class="text-primary hover:text-primary-light font-semibold ml-1 transition-colors"
             >
-              Regístrate
+              {{ t('auth.login.signUp') }}
             </button>
           </p>
         </div>
@@ -178,7 +181,7 @@ const goToRegister = () => {
 
       <!-- Footer -->
       <div class="mt-8 text-center text-text-tertiary text-sm">
-        <p>© 2026 DreamDuel. Todos los derechos reservados.</p>
+        <p>{{ t('auth.register.footer') }}</p>
       </div>
     </div>
   </div>

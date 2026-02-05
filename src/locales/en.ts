@@ -1,0 +1,410 @@
+export default {
+  common: {
+    appName: 'DreamDuel',
+    tagline: 'Your stories come to life',
+    loading: 'Loading...',
+    error: 'Error',
+    save: 'Save',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    delete: 'Delete',
+    edit: 'Edit',
+    share: 'Share',
+    back: 'Back',
+    next: 'Next',
+    skip: 'Skip',
+    start: 'Start'
+  },
+  nav: {
+    home: 'Home',
+    search: 'Search',
+    create: 'Create',
+    profile: 'Profile',
+    settings: 'Settings',
+    myProfile: 'My Profile'
+  },
+  home: {
+    hero: {
+      title: 'Create Unique Visual Stories',
+      subtitle: 'Turn your dreams into interactive narratives with AI',
+      cta: 'Create my first story'
+    },
+    trending: {
+      title: 'Trending',
+      subtitle: 'The most popular stories of the week'
+    },
+    new: {
+      title: 'New Stories',
+      subtitle: 'The latest creations from the community'
+    },
+    featured: {
+      badge: 'MOST POPULAR',
+      reads: 'reads'
+    }
+  },
+  create: {
+    title: 'Generate Your Story',
+    subtitle: 'Describe your dream and AI will turn it into a unique visual story',
+    titleLabel: 'Story title',
+    titlePlaceholder: 'E.g: The Last Time Guardian',
+    titleRequired: 'Title (required)',
+    prompt: {
+      label: 'What\'s your fantasy today?',
+      placeholder: 'Example: A space warrior discovers a forgotten planet where music controls reality...'
+    },
+    style: {
+      label: 'Visual Style',
+      anime: 'Anime',
+      realistic: 'Realistic',
+      noir: 'Noir',
+      watercolor: 'Watercolor',
+      comic: 'Comic',
+      fantasy: 'Fantasy'
+    },
+    genre: {
+      label: 'Genre',
+      romance: 'Romance',
+      action: 'Action',
+      mystery: 'Mystery',
+      scifi: 'Sci-Fi',
+      horror: 'Horror',
+      fantasy: 'Fantasy'
+    },
+    characters: {
+      label: 'Characters',
+      subtitle: 'Add photos and names',
+      optional: 'Optional',
+      addCharacter: 'Add Character',
+      namePlaceholder: 'Character name (e.g: Mary, Alex, Luna)',
+      limit: 'max',
+      freePlan: 'Free: 2 max',
+      premiumPlan: 'Premium: 10 max',
+      limitReached: 'Limit Reached (Free Plan)',
+      limitDesc: 'You\'ve reached the maximum of 2 characters. Upgrade to Premium to use up to 10 characters per story.',
+      upgradeToPremium: 'Upgrade to Premium',
+      premiumLimitDesc: 'You\'ve reached the maximum of 10 characters per story'
+    },
+    visibility: {
+      label: 'Story visibility',
+      public: 'Public',
+      publicDesc: 'Everyone can see it',
+      private: 'Private',
+      privateDesc: 'Only you will see it'
+    },
+    generate: 'MATERIALIZE',
+    generating: 'CREATING MAGIC...',
+    features: {
+      instant: 'Instant generation',
+      unique: '100% unique and personalized',
+      unlimited: 'Unlimited possibilities'
+    }
+  },
+  search: {
+    title: 'Discover Stories',
+    placeholder: 'Search stories, authors, genres...',
+    filters: 'Filters',
+    tags: 'Tags',
+    visualStyle: 'Visual Style',
+    sortBy: 'Sort by',
+    sort: {
+      popular: 'Most popular',
+      recent: 'Most recent',
+      trending: 'Trending'
+    },
+    results: 'results',
+    noResults: 'No stories found',
+    tryDifferent: 'Try different search terms'
+  },
+  profile: {
+    stats: {
+      stories: 'Stories',
+      followers: 'Followers',
+      following: 'Following',
+      totalLikes: 'Likes'
+    },
+    tabs: {
+      myStories: 'My Stories',
+      saved: 'Saved',
+      liked: 'Liked'
+    },
+    empty: {
+      noStories: 'You haven\'t created any stories yet',
+      createFirst: 'Create your first story',
+      noSaved: 'You have no saved stories',
+      noLiked: 'You haven\'t liked any stories',
+      explore: 'Explore stories'
+    },
+    credits: {
+      freeImages: 'Free images',
+      resetIn: 'Resets in:',
+      referralCode: 'Referral code',
+      copy: 'Copy',
+      referralDesc: '+3 images per invited friend',
+      referrals: 'referrals',
+      referralCopied: 'Referral link copied!'
+    },
+    premium: {
+      active: 'Premium Active',
+      features: 'Unlimited images • No watermarks',
+      manage: 'Manage'
+    },
+    edit: {
+      editProfile: 'Edit profile',
+      saveChanges: 'Save changes',
+      username: 'Username',
+      bio: 'Bio',
+      bioPlaceholder: 'Bio (optional)',
+      noBio: 'No bio'
+    },
+    avatar: {
+      uploading: 'Uploading...',
+      errorFormat: 'Please select a valid image',
+      errorSize: 'Image must be smaller than 5MB'
+    },
+    logout: 'Sign out'
+  },
+  settings: {
+    title: 'Settings',
+    account: {
+      title: 'Account',
+      username: 'Username',
+      email: 'Email',
+      bio: 'Bio',
+      bioPlaceholder: 'Tell us about yourself...',
+      changePassword: 'Change password',
+      saved: 'Profile updated successfully',
+      passwordMismatch: 'Passwords do not match',
+      passwordTooShort: 'Password must be at least 6 characters',
+      passwordUpdated: 'Password updated successfully',
+      currentPassword: 'Current password',
+      newPassword: 'New password',
+      confirmPassword: 'Confirm password',
+      update: 'Update',
+      saveChanges: 'Save changes'
+    },
+    preferences: {
+      title: 'Preferences',
+      notifications: 'Push notifications',
+      notificationsDesc: 'Receive updates about your stories',
+      language: 'Language',
+      languageDesc: 'Select your preferred language'
+    },
+    premium: {
+      title: 'DreamDuel Premium',
+      description: 'Unlock exclusive features',
+      features: {
+        unlimited: 'Unlimited generation',
+        priority: 'Priority processing',
+        styles: 'Exclusive styles',
+        commercial: 'Commercial use',
+        noAds: 'No ads',
+        exclusiveStyles: 'Exclusive visual styles'
+      },
+      cta: 'Upgrade to Premium',
+      upgradeButton: 'Upgrade to Premium',
+      price: '$9.99/month'
+    },
+    legal: {
+      title: 'Legal & Support',
+      terms: 'Terms and Conditions',
+      privacy: 'Privacy Policy',
+      help: 'Help Center',
+      about: 'About DreamDuel'
+    },
+    logout: 'Sign out',
+    confirmLogout: 'Are you sure you want to sign out?'
+  },
+  story: {
+    readNow: 'Read Now',
+    readStory: 'Read Story',
+    like: 'Like',
+    save: 'Save',
+    author: 'Author',
+    follow: 'Follow',
+    scenes: 'Scenes from this story',
+    scene: 'Scene',
+    stats: {
+      views: 'views',
+      likes: 'likes',
+      comments: 'comments'
+    }
+  },
+  viewer: {
+    ready: 'Your story is ready!',
+    subtitle: 'You can now read it or share it with the world',
+    actions: {
+      read: 'Read Now',
+      details: 'View Details',
+      create: 'Create Another'
+    },
+    backHome: 'Back to home'
+  },
+  loading: {
+    messages: [
+      'Creating worlds...',
+      'Generating characters...',
+      'Weaving the plot...',
+      'Bringing your story to life...'
+    ]
+  },
+  onboarding: {
+    slides: [
+      {
+        title: 'Create Unique Stories',
+        description: 'Describe your fantasy and AI will generate a personalized visual story'
+      },
+      {
+        title: 'Customize Characters',
+        description: 'Upload photos of your favorite characters and bring them to life in your story'
+      },
+      {
+        title: 'Discover Infinite Stories',
+        description: 'Explore creations from other users and find your next favorite read'
+      },
+      {
+        title: 'Start Dreaming!',
+        description: 'Join thousands of creators and readers on DreamDuel'
+      }
+    ]
+  },
+  guest: {
+    header: {
+      login: 'Log In',
+      register: 'Sign Up Free'
+    },
+    hero: {
+      title: 'Transform Your Photo with AI',
+      subtitle: 'Upload a photo and describe what you want to do with it. Try it free without registration!',
+      features: {
+        noCard: 'No card required',
+        instant: 'Instant',
+        free: '100% free'
+      }
+    },
+    steps: {
+      uploadImage: 'Upload a photo of a person',
+      uploadClick: 'Click to upload an image',
+      maxSize: 'PNG, JPG (max. 5MB)',
+      customizePhysical: 'Customize physical characteristics (Optional)',
+      customizeDesc: 'Select physical characteristics to transform the person in the photo',
+      finalDescription: 'Final Description (Auto-generated)',
+      additionalDetails: 'Add additional details: scenery, environment, accessories, special effects...',
+      additionalExample: 'Example: "on a beach at sunset with palm trees in the background"',
+      finalPrompt: 'Final Prompt (will be sent to AI):',
+      selectOrWrite: 'Select options or write a description...'
+    },
+    physicalOptions: {
+      gender: 'Gender / Features',
+      ageRange: 'Age Range',
+      bodyType: 'Body Type',
+      muscleDefinition: 'Muscle Definition',
+      height: 'Height',
+      clothing: 'Clothing',
+      poseAction: 'Action / Pose'
+    },
+    bodyTypes: {
+      athletic: '💪 Athletic',
+      slim: '🏃 Slim',
+      average: '🧍 Average',
+      robust: '🏋️ Robust',
+      curvy: '💃 Curvy',
+      muscular: '🦾 Muscular'
+    },
+    muscles: {
+      defined: '💎 Defined Muscles',
+      toned: '⚡ Toned',
+      normal: '➖ Normal'
+    },
+    heights: {
+      tall: '📏 Tall',
+      average: '📐 Average Height',
+      short: '📌 Short'
+    },
+    clothing: {
+      sport: '⚽ Sportswear',
+      casual: '👕 Casual',
+      formal: '👔 Formal',
+      swimsuit: '🩱 Swimsuit',
+      superhero: '🦸 Superhero',
+      elegant: '🎩 Elegant Gala',
+      streetwear: '🧥 Streetwear'
+    },
+    poses: {
+      standing: '🧍 Standing',
+      sitting: '🪑 Sitting',
+      lying: '🛋️ Lying Down',
+      selfie: '🤳 Taking Selfie',
+      running: '🏃 Running',
+      jumping: '🦘 Jumping',
+      powerPose: '💪 Power Pose',
+      crossedArms: '🙅 Crossed Arms',
+      meditating: '🧘 Meditating',
+      dancing: '💃 Dancing'
+    },
+    generate: {
+      button: 'GENERATE IMAGE FREE',
+      generating: 'CREATING YOUR IMAGE...',
+      uploadRequired: '⚠️ Upload a photo to continue',
+      descRequired: '⚠️ Describe what you want to do with the photo'
+    },
+    benefits: {
+      title: '✨ Sign up and get:',
+      freeImages: '3 Free Images',
+      freeDesc: 'Welcome pack',
+      saveCreations: 'Save Creations',
+      saveDesc: 'Access from anywhere',
+      inviteFriends: 'Invite Friends',
+      inviteDesc: '+3 credits per referral'
+    },
+    modal: {
+      ready: 'Your image is ready!',
+      subtitle: 'Sign up for free to save it and create more amazing images',
+      registerButton: 'Sign Up Free',
+      haveAccount: 'I already have an account',
+      noCard: 'No card required • Cancel anytime'
+    }
+  },
+  auth: {
+    login: {
+      title: 'Log In',
+      email: 'Email',
+      password: 'Password',
+      forgotPassword: 'Forgot your password?',
+      button: 'Log In',
+      noAccount: "Don't have an account?",
+      signUp: 'Sign up',
+      welcome: 'Welcome back',
+      subtitle: 'Continue creating amazing stories',
+      orLoginWith: 'Or log in with',
+      google: 'Google',
+      apple: 'Apple',
+      creating: 'Logging in...'
+    },
+    register: {
+      title: 'Create Account',
+      username: 'Username',
+      usernamePlaceholder: 'username123',
+      email: 'Email',
+      emailPlaceholder: 'your@email.com',
+      password: 'Password',
+      passwordPlaceholder: 'Minimum 8 characters',
+      confirmPassword: 'Confirm password',
+      confirmPasswordPlaceholder: 'Confirm your password',
+      button: 'Create Account',
+      creating: 'Creating account...',
+      haveAccount: 'Already have an account?',
+      signIn: 'Log in',
+      joinCommunity: 'Join the creator community',
+      acceptTerms: 'I accept the',
+      terms: 'terms and conditions',
+      and: 'and the',
+      privacy: 'privacy policy',
+      orRegisterWith: 'Or sign up with',
+      referralBonus: 'Referral Bonus!',
+      referralDesc: 'You will get +3 free images when you sign up',
+      errorPasswordMismatch: 'Passwords do not match',
+      errorAcceptTerms: 'You must accept the terms and conditions',
+      footer: '© 2026 DreamDuel. All rights reserved.'
+    }
+  }
+};

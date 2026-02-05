@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useStoryStore } from '@/stores/storyStore';
 import StoryCard from '@/presentation/components/StoryCard.vue';
 import { PlayIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/solid';
+
+const { t } = useI18n();
 
 const storyStore = useStoryStore();
 
@@ -56,7 +59,7 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
         <div class="max-w-xl md:max-w-2xl">
           <!-- Badge -->
           <div class="inline-flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full mb-4 sm:mb-6">
-            <span class="text-primary text-xs sm:text-sm font-semibold">✨ MÁS POPULAR</span>
+            <span class="text-primary text-xs sm:text-sm font-semibold">✨ {{ t('home.featured.badge') }}</span>
           </div>
 
           <!-- Title -->
@@ -79,7 +82,7 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
             <div>
               <p class="text-text-primary font-medium text-sm sm:text-base">{{ publicFeaturedStory.author.name }}</p>
               <p class="text-text-tertiary text-xs sm:text-sm">
-                {{ (publicFeaturedStory.stats.views / 1000).toFixed(0) }}K lecturas
+                {{ (publicFeaturedStory.stats.views / 1000).toFixed(0) }}K {{ t('home.featured.reads') }}
               </p>
             </div>
           </div>
@@ -90,7 +93,7 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
             class="inline-flex items-center space-x-2 sm:space-x-3 px-6 py-3 sm:px-8 sm:py-4 bg-primary hover:bg-primary-light text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 hover:scale-105 text-sm sm:text-base"
           >
             <PlayIcon class="h-5 w-5 sm:h-6 sm:w-6" />
-            <span>LEER AHORA</span>
+            <span>{{ t('story.readNow').toUpperCase() }}</span>
           </router-link>
         </div>
       </div>
@@ -102,8 +105,8 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
         <!-- Section Header -->
         <div class="flex items-center justify-between mb-6 sm:mb-8">
           <div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-text-primary mb-1 sm:mb-2">🔥 En Tendencia</h2>
-            <p class="text-text-secondary text-sm sm:text-base">Las historias más populares de la semana</p>
+            <h2 class="text-2xl sm:text-3xl font-bold text-text-primary mb-1 sm:mb-2">🔥 {{ t('home.trending.title') }}</h2>
+            <p class="text-text-secondary text-sm sm:text-base">{{ t('home.trending.subtitle') }}</p>
           </div>
           
           <!-- Carousel Controls -->
@@ -151,8 +154,8 @@ const scrollCarousel = (direction: 'left' | 'right', containerId: string) => {
         <!-- Section Header -->
         <div class="flex items-center justify-between mb-6 sm:mb-8">
           <div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-text-primary mb-1 sm:mb-2">✨ Recién Llegadas</h2>
-            <p class="text-text-secondary text-sm sm:text-base">Descubre las últimas creaciones</p>
+            <h2 class="text-2xl sm:text-3xl font-bold text-text-primary mb-1 sm:mb-2">✨ {{ t('home.new.title') }}</h2>
+            <p class="text-text-secondary text-sm sm:text-base">{{ t('home.new.subtitle') }}</p>
           </div>
           
           <!-- Carousel Controls -->

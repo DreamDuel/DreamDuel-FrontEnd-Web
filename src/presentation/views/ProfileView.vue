@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
-import { UserCircleIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon, SparklesIcon, ClockIcon, GiftIcon } from '@heroicons/vue/24/outline';
+import { Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon, SparklesIcon, ClockIcon, GiftIcon } from '@heroicons/vue/24/outline';
 import { useStoryStore } from '@/stores/storyStore';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import StoryCard from '@/presentation/components/StoryCard.vue';
 
+const { t } = useI18n();
 const storyStore = useStoryStore();
 const userStore = useUserStore();
 const router = useRouter();
@@ -129,7 +131,7 @@ const copyReferralCode = () => {
   if (!userStore.currentUser?.credits?.referralCode) return;
   const referralLink = `https://dreamduel.com/ref/${userStore.currentUser.credits.referralCode}`;
   navigator.clipboard.writeText(referralLink);
-  alert('¡Link de referido copiado!');
+  alert(t('profile.credits.referralCopied'));
 };
 
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -147,13 +149,13 @@ const handleAvatarChange = async (event: Event) => {
   
   // Validar tipo de archivo
   if (!file.type.startsWith('image/')) {
-    alert('Por favor selecciona una imagen válida');
+    alert(t('profile.avatar.errorFormat'));
     return;
   }
   
   // Validar tamaño (max 5MB)
   if (file.size > 5 * 1024 * 1024) {
-    alert('La imagen debe ser menor a 5MB');
+    alert(t('profile.avatar.errorSize'));
     return;
   }
   
@@ -218,18 +220,18 @@ const handleAvatarChange = async (event: Event) => {
                 <h1 class="text-3xl font-bold text-text-primary mb-2">{{ userStore.currentUser?.username || 'Usuario' }}</h1>
                 <p class="text-text-secondary">{{ userStore.currentUser?.email || 'usuario@dreamduel.com' }}</p>
                 <p v-if="userStore.currentUser?.bio" class="text-text-tertiary mt-2 text-sm">{{ userStore.currentUser.bio }}</p>
-                <p v-else class="text-text-tertiary mt-2 text-sm italic">Sin biografía</p>
+                <p v-else class="text-text-tertiary mt-2 text-sm italic">{{ t('profile.edit.noBio') }}</p>
               </div>
               <div v-else class="space-y-3">
                 <input
                   v-model="editForm.username"
                   type="text"
-                  placeholder="Nombre de usuario"
+                  :placeholder="t('profile.edit.username')"
                   class="w-full px-4 py-2 bg-background-elevated border border-white/10 rounded-lg text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                 />
                 <textarea
                   v-model="editForm.bio"
-                  placeholder="Biografía (opcional)"
+                  :placeholder="t('profile.edit.bioPlaceholder')"
                   rows="2"
                   class="w-full px-4 py-2 bg-background-elevated border border-white/10 rounded-lg text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
                 />
@@ -247,7 +249,7 @@ const handleAvatarChange = async (event: Event) => {
                   ? 'bg-primary text-white hover:bg-primary-light' 
                   : 'bg-background-elevated hover:bg-background-elevated/80'
               ]"
-              :title="isEditingProfile ? 'Guardar cambios' : 'Editar perfil'"
+              :title="isEditingProfile ? t('profile.edit.saveChanges') : t('profile.edit.editProfile')"
             >
               <PencilIcon v-if="!isEditingProfile" class="h-6 w-6 text-text-secondary hover:text-primary transition-colors" />
               <svg v-else class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -263,7 +265,7 @@ const handleAvatarChange = async (event: Event) => {
             <button
               @click="handleLogout"
               class="p-3 bg-background-elevated hover:bg-error/20 rounded-xl transition-colors group"
-              title="Cerrar sesión"
+              :title="t('profile.logout')"
             >
               <ArrowRightOnRectangleIcon class="h-6 w-6 text-text-secondary group-hover:text-error transition-colors" />
             </button>
@@ -277,13 +279,13 @@ const handleAvatarChange = async (event: Event) => {
             <div class="flex items-center justify-between mb-2">
               <div class="flex items-center space-x-2">
                 <SparklesIcon class="h-5 w-5 text-primary" />
-                <span class="font-semibold text-text-primary">Imágenes gratis</span>
+                <span class="font-semibold text-text-primary">{{ t('profile.credits.freeImages') }}</span>
               </div>
               <span class="text-2xl font-bold text-primary">{{ userStore.currentUser?.credits.freeImagesLeft || 0 }}</span>
             </div>
             <div class="flex items-center space-x-2 text-xs text-text-secondary">
               <ClockIcon class="h-4 w-4" />
-              <span>Recarga en: {{ timeUntilReset }}</span>
+              <span>{{ t('profile.credits.resetIn') }} {{ timeUntilReset }}</span>
             </div>
           </div>
 
@@ -291,7 +293,7 @@ const handleAvatarChange = async (event: Event) => {
           <div class="bg-gradient-to-br from-accent-gold/10 to-accent-crimson/10 rounded-xl p-4 border border-accent-gold/20">
             <div class="flex items-center space-x-2 mb-2">
               <GiftIcon class="h-5 w-5 text-accent-gold" />
-              <span class="font-semibold text-text-primary">Código de referido</span>
+              <span class="font-semibold text-text-primary">{{ t('profile.credits.referralCode') }}</span>
             </div>
             <div class="flex items-center space-x-2">
               <code class="flex-1 px-3 py-2 bg-background-deep rounded-lg text-primary font-mono text-sm">
@@ -301,11 +303,11 @@ const handleAvatarChange = async (event: Event) => {
                 @click="copyReferralCode"
                 class="px-3 py-2 bg-accent-gold hover:bg-accent-gold/80 text-white rounded-lg text-xs font-semibold transition-colors"
               >
-                Copiar
+                {{ t('profile.credits.copy') }}
               </button>
             </div>
             <p class="text-xs text-text-tertiary mt-2">
-              +3 imágenes por amigo invitado ({{ userStore.currentUser?.credits.referralsCount || 0 }} invitados)
+              {{ t('profile.credits.referralDesc') }} ({{ userStore.currentUser?.credits.referralsCount || 0 }} {{ t('profile.credits.referrals') }})
             </p>
           </div>
         </div>
@@ -316,15 +318,15 @@ const handleAvatarChange = async (event: Event) => {
             <div class="flex items-center space-x-3">
               <SparklesIcon class="h-6 w-6 text-white" />
               <div>
-                <h3 class="font-bold text-white">Premium Activo</h3>
-                <p class="text-white/80 text-sm">Imágenes ilimitadas • Sin marcas de agua</p>
+                <h3 class="font-bold text-white">{{ t('profile.premium.active') }}</h3>
+                <p class="text-white/80 text-sm">{{ t('profile.premium.features') }}</p>
               </div>
             </div>
             <router-link 
               to="/settings"
               class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg text-sm font-semibold transition-colors"
             >
-              Gestionar
+              {{ t('profile.premium.manage') }}
             </router-link>
           </div>
         </div>
@@ -333,15 +335,15 @@ const handleAvatarChange = async (event: Event) => {
         <div class="grid grid-cols-3 gap-6 mt-6">
           <div class="text-center">
             <p class="text-3xl font-bold text-primary">{{ userStats.storiesCreated }}</p>
-            <p class="text-text-secondary text-sm">Historias</p>
+            <p class="text-text-secondary text-sm">{{ t('profile.stats.stories') }}</p>
           </div>
           <div class="text-center">
             <p class="text-3xl font-bold text-accent-crimson">{{ userStats.totalLikes }}</p>
-            <p class="text-text-secondary text-sm">Likes</p>
+            <p class="text-text-secondary text-sm">{{ t('profile.stats.totalLikes') }}</p>
           </div>
           <div class="text-center">
             <p class="text-3xl font-bold text-accent-teal">{{ userStats.followers }}</p>
-            <p class="text-text-secondary text-sm">Seguidores</p>
+            <p class="text-text-secondary text-sm">{{ t('profile.stats.followers') }}</p>
           </div>
         </div>
       </div>
@@ -357,7 +359,7 @@ const handleAvatarChange = async (event: Event) => {
               : 'bg-background-card text-text-secondary hover:text-text-primary'
           ]"
         >
-          Mis Historias ({{ myStories.length }})
+          {{ t('profile.tabs.myStories') }} ({{ myStories.length }})
         </button>
         <button
           @click="currentTab = 'saved'"
@@ -368,7 +370,7 @@ const handleAvatarChange = async (event: Event) => {
               : 'bg-background-card text-text-secondary hover:text-text-primary'
           ]"
         >
-          Guardadas ({{ savedStoriesList.length }})
+          {{ t('profile.tabs.saved') }} ({{ savedStoriesList.length }})
         </button>
         <button
           @click="currentTab = 'liked'"
@@ -379,19 +381,19 @@ const handleAvatarChange = async (event: Event) => {
               : 'bg-background-card text-text-secondary hover:text-text-primary'
           ]"
         >
-          Me gusta ({{ likedStoriesList.length }})
+          {{ t('profile.tabs.liked') }} ({{ likedStoriesList.length }})
         </button>
       </div>
 
       <!-- Content -->
       <div v-if="currentTab === 'stories'">
         <div v-if="myStories.length === 0" class="text-center py-20">
-          <p class="text-text-secondary text-lg mb-4">Aún no has creado historias</p>
+          <p class="text-text-secondary text-lg mb-4">{{ t('profile.empty.noStories') }}</p>
           <router-link
             to="/create"
             class="inline-flex items-center space-x-2 px-6 py-3 bg-primary hover:bg-primary-light text-white rounded-xl transition-colors"
           >
-            <span>Crear tu primera historia</span>
+            <span>{{ t('profile.empty.createFirst') }}</span>
           </router-link>
         </div>
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -405,7 +407,7 @@ const handleAvatarChange = async (event: Event) => {
 
       <div v-if="currentTab === 'saved'">
         <div v-if="savedStoriesList.length === 0" class="text-center py-20">
-          <p class="text-text-secondary text-lg">No tienes historias guardadas</p>
+          <p class="text-text-secondary text-lg">{{ t('profile.empty.noSaved') }}</p>
         </div>
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <StoryCard
@@ -418,7 +420,7 @@ const handleAvatarChange = async (event: Event) => {
 
       <div v-if="currentTab === 'liked'">
         <div v-if="likedStoriesList.length === 0" class="text-center py-20">
-          <p class="text-text-secondary text-lg">No has dado like a ninguna historia</p>
+          <p class="text-text-secondary text-lg">{{ t('profile.empty.noLiked') }}</p>
         </div>
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <StoryCard

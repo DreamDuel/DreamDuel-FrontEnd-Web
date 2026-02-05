@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { RouterView, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { SparklesIcon, PlusCircleIcon, UserCircleIcon, MagnifyingGlassIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import BottomNavigation from '@/presentation/components/BottomNavigation.vue';
 import WelcomeBanner from '@/presentation/components/WelcomeBanner.vue';
 import { useUserStore } from '@/stores/userStore';
+import { useI18n } from 'vue-i18n';
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 
-const router = useRouter();
+const { t } = useI18n();
 const userStore = useUserStore();
 const showUserMenu = ref(false);
 const showWelcomeBanner = ref(false);
@@ -63,14 +64,14 @@ onBeforeUnmount(() => {
               to="/home" 
               class="text-text-secondary hover:text-primary transition-colors font-medium"
             >
-              Inicio
+              {{ t('nav.home') }}
             </router-link>
             <router-link 
               to="/create" 
               class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors font-medium"
             >
               <PlusCircleIcon class="h-5 w-5" />
-              <span>Crear</span>
+              <span>{{ t('nav.create') }}</span>
             </router-link>
             <router-link 
               to="/search" 
@@ -105,14 +106,14 @@ onBeforeUnmount(() => {
                 to="/profile" 
                 class="block px-4 py-3 text-text-secondary hover:bg-primary/10 hover:text-primary transition-colors"
               >
-                Mi Perfil
+                {{ t('nav.myProfile') }}
               </router-link>
               <router-link 
                 to="/settings" 
                 class="flex items-center space-x-2 px-4 py-3 text-text-secondary hover:bg-primary/10 hover:text-primary transition-colors"
               >
                 <Cog6ToothIcon class="h-5 w-5" />
-                <span>Configuración</span>
+                <span>{{ t('nav.settings') }}</span>
               </router-link>
             </div>
           </div>

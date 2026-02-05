@@ -2,9 +2,11 @@
 import { HomeIcon, MagnifyingGlassIcon, SparklesIcon, UserCircleIcon } from '@heroicons/vue/24/outline';
 import { HomeIcon as HomeIconSolid, MagnifyingGlassIcon as MagnifyingGlassIconSolid, SparklesIcon as SparklesIconSolid, UserCircleIcon as UserCircleIconSolid } from '@heroicons/vue/24/solid';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
 
 const route = useRoute();
+const { t } = useI18n();
 
 const currentTab = computed(() => {
   const path = route.path;
@@ -16,10 +18,10 @@ const currentTab = computed(() => {
 });
 
 const navItems = computed(() => [
-  { id: 'home', label: 'Inicio', icon: HomeIcon, iconSolid: HomeIconSolid, path: '/home' },
-  { id: 'search', label: 'Buscar', icon: MagnifyingGlassIcon, iconSolid: MagnifyingGlassIconSolid, path: '/search' },
-  { id: 'create', label: 'Crear', icon: SparklesIcon, iconSolid: SparklesIconSolid, path: '/create' },
-  { id: 'profile', label: 'Perfil', icon: UserCircleIcon, iconSolid: UserCircleIconSolid, path: '/profile' }
+  { id: 'home', label: t('nav.home'), icon: HomeIcon, iconSolid: HomeIconSolid, path: '/home' },
+  { id: 'search', label: t('nav.search'), icon: MagnifyingGlassIcon, iconSolid: MagnifyingGlassIconSolid, path: '/search' },
+  { id: 'create', label: t('nav.create'), icon: SparklesIcon, iconSolid: SparklesIconSolid, path: '/create' },
+  { id: 'profile', label: t('nav.profile'), icon: UserCircleIcon, iconSolid: UserCircleIconSolid, path: '/profile' }
 ]);
 </script>
 
