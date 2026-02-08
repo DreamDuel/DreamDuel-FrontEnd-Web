@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { SparklesIcon, PhotoIcon, XMarkIcon, ArrowRightIcon } from '@heroicons/vue/24/outline';
@@ -8,131 +8,14 @@ const { t } = useI18n();
 
 const router = useRouter();
 const prompt = ref('');
-const manualPrompt = ref(''); // Texto que el usuario escribe manualmente
+const negativePrompt = ref('');
 const isGenerating = ref(false);
 const showRegisterPrompt = ref(false);
 const characterImage = ref<File | null>(null);
 const imagePreviewUrl = ref<string>('');
 const generatedImageUrl = ref<string>('');
 
-// Opciones de personalización física (solo del cuerpo - cuello para abajo)
-const selectedBodyType = ref('');
-const selectedClothing = ref('');
-const selectedPose = ref('');
-const selectedMuscle = ref('');
-const selectedHeight = ref('');
-
-// Catálogo de opciones físicas del cuerpo (las traducciones se obtienen dinámicamente)
-const bodyTypeOptions = computed(() => [
-  { value: 'atletico', label: t('guest.bodyTypes.athletic'), description: 'athletic and toned body' },
-  { value: 'delgado', label: t('guest.bodyTypes.slim'), description: 'slim and slender body' },
-  { value: 'promedio', label: t('guest.bodyTypes.average'), description: 'average build body' },
-  { value: 'robusto', label: t('guest.bodyTypes.robust'), description: 'robust and strong body' },
-  { value: 'curvilíneo', label: t('guest.bodyTypes.curvy'), description: 'body with defined curves' },
-  { value: 'musculoso', label: t('guest.bodyTypes.muscular'), description: 'very muscular and defined body' },
-]);
-
-const muscleOptions = computed(() => [
-  { value: 'definido', label: t('guest.muscles.defined'), description: 'very defined and marked muscles' },
-  { value: 'tonificado', label: t('guest.muscles.toned'), description: 'toned muscles' },
-  { value: 'normal', label: t('guest.muscles.normal'), description: 'normal muscle tone' },
-]);
-
-const heightOptions = computed(() => [
-  { value: 'alto', label: t('guest.heights.tall'), description: 'tall height' },
-  { value: 'promedio', label: t('guest.heights.average'), description: 'average height' },
-  { value: 'bajo', label: t('guest.heights.short'), description: 'short height' },
-]);
-
-const clothingOptions = computed(() => [
-  { value: 'deportivo', label: t('guest.clothing.sport'), description: 'wearing sportswear' },
-  { value: 'casual', label: t('guest.clothing.casual'), description: 'wearing modern casual clothes' },
-  { value: 'formal', label: t('guest.clothing.formal'), description: 'wearing elegant formal attire' },
-  { value: 'traje_baño', label: t('guest.clothing.swimsuit'), description: 'wearing swimsuit' },
-  { value: 'superheroe', label: t('guest.clothing.superhero'), description: 'wearing superhero suit' },
-  { value: 'elegante', label: t('guest.clothing.elegant'), description: 'wearing gala attire' },
-  { value: 'streetwear', label: t('guest.clothing.streetwear'), description: 'wearing urban streetwear' },
-]);
-
-const poseOptions = computed(() => [
-  { value: 'parado', label: t('guest.poses.standing'), description: 'standing in natural pose' },
-  { value: 'sentado', label: t('guest.poses.sitting'), description: 'sitting on a chair' },
-  { value: 'echado', label: t('guest.poses.lying'), description: 'lying down' },
-  { value: 'selfie', label: t('guest.poses.selfie'), description: 'taking a selfie' },
-  { value: 'corriendo', label: t('guest.poses.running'), description: 'running in action' },
-  { value: 'saltando', label: t('guest.poses.jumping'), description: 'jumping in the air' },
-  { value: 'pose_poder', label: t('guest.poses.powerPose'), description: 'in heroic power pose' },
-  { value: 'brazos_cruzados', label: t('guest.poses.crossedArms'), description: 'with crossed arms' },
-  { value: 'meditando', label: t('guest.poses.meditating'), description: 'in meditation position' },
-  { value: 'bailando', label: t('guest.poses.dancing'), description: 'dancing with energy' },
-]);
-
-// Construir prompt automático basado en selecciones
-const selectedTags = computed(() => {
-  const tags: Array<{key: string, label: string, description: string}> = [];
-  
-  if (selectedBodyType.value) {
-    const option = bodyTypeOptions.value.find(o => o.value === selectedBodyType.value);
-    if (option) tags.push({key: 'body', label: option.label, description: option.description});
-  }
-  
-  if (selectedMuscle.value) {
-    const option = muscleOptions.value.find(o => o.value === selectedMuscle.value);
-    if (option) tags.push({key: 'muscle', label: option.label, description: option.description});
-  }
-  
-  if (selectedHeight.value) {
-    const option = heightOptions.value.find(o => o.value === selectedHeight.value);
-    if (option) tags.push({key: 'height', label: option.label, description: option.description});
-  }
-  
-  if (selectedClothing.value) {
-    const option = clothingOptions.value.find(o => o.value === selectedClothing.value);
-    if (option) tags.push({key: 'clothing', label: option.label, description: option.description});
-  }
-  
-  if (selectedPose.value) {
-    const option = poseOptions.value.find(o => o.value === selectedPose.value);
-    if (option) tags.push({key: 'pose', label: option.label, description: option.description});
-  }
-  
-  return tags;
-});
-
-const buildPromptFromSelections = () => {
-  return selectedTags.value.map(tag => tag.description).join(', ');
-};
-
-const removeTag = (key: string) => {
-  switch(key) {
-    case 'body':
-      selectedBodyType.value = '';
-      break;
-    case 'muscle':
-      selectedMuscle.value = '';
-      break;
-    case 'height':
-      selectedHeight.value = '';
-      break;
-    case 'clothing':
-      selectedClothing.value = '';
-      break;
-    case 'pose':
-      selectedPose.value = '';
-      break;
-  }
-};
-
-// Actualizar prompt cuando cambien las selecciones o el texto manual
-watch([selectedBodyType, selectedMuscle, selectedHeight, selectedClothing, selectedPose, manualPrompt], () => {
-  const autoPrompt = buildPromptFromSelections();
-  const parts: string[] = [];
-  
-  if (autoPrompt) parts.push(autoPrompt);
-  if (manualPrompt.value.trim()) parts.push(manualPrompt.value.trim());
-  
-  prompt.value = parts.join(', ');
-});
+// El prompt ya no se genera automáticamente, el usuario lo escribe directamente
 
 const handleFileSelect = (event: Event) => {
   const target = event.target as HTMLInputElement;
@@ -182,6 +65,7 @@ const generateStory = async () => {
   setTimeout(() => {
     console.log('Generating guest image:', {
       prompt: prompt.value,
+      negativePrompt: negativePrompt.value,
       characterImage: characterImage.value?.name
     });
     
@@ -198,6 +82,7 @@ const goToRegister = () => {
   // Guardar datos en sessionStorage para recuperar después del registro
   sessionStorage.setItem('guestStory', JSON.stringify({
     prompt: prompt.value,
+    negativePrompt: negativePrompt.value,
     imageUrl: generatedImageUrl.value
   }));
   router.push('/register');
@@ -302,173 +187,42 @@ const skipToLogin = () => {
             </div>
           </div>
 
-          <!-- Opciones de Personalización Física del Cuerpo -->
-          <div class="mb-8 space-y-6">
-            <div class="text-center">
-              <h3 class="text-text-primary font-semibold mb-2 text-lg">
-                2. {{ t('guest.steps.customizePhysical') }}
-              </h3>
-              <p class="text-text-tertiary text-sm">
-                {{ t('guest.steps.customizeDesc') }}
-              </p>
-            </div>
-
-            <!-- Tipo de Cuerpo -->
-            <div>
-              <label class="block text-text-secondary font-medium mb-2 text-sm">
-                {{ t('guest.physicalOptions.bodyType') }}
-              </label>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                <button
-                  v-for="option in bodyTypeOptions"
-                  :key="option.value"
-                  @click="selectedBodyType = selectedBodyType === option.value ? '' : option.value"
-                  :class="[
-                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    selectedBodyType === option.value
-                      ? 'bg-primary text-white ring-2 ring-primary/50'
-                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
-                  ]"
-                >
-                  {{ option.label }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Definición Muscular -->
-            <div>
-              <label class="block text-text-secondary font-medium mb-2 text-sm">
-                {{ t('guest.physicalOptions.muscleDefinition') }}
-              </label>
-              <div class="grid grid-cols-3 gap-2">
-                <button
-                  v-for="option in muscleOptions"
-                  :key="option.value"
-                  @click="selectedMuscle = selectedMuscle === option.value ? '' : option.value"
-                  :class="[
-                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    selectedMuscle === option.value
-                      ? 'bg-primary text-white ring-2 ring-primary/50'
-                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
-                  ]"
-                >
-                  {{ option.label }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Estatura -->
-            <div>
-              <label class="block text-text-secondary font-medium mb-2 text-sm">
-                {{ t('guest.physicalOptions.height') }}
-              </label>
-              <div class="grid grid-cols-3 gap-2">
-                <button
-                  v-for="option in heightOptions"
-                  :key="option.value"
-                  @click="selectedHeight = selectedHeight === option.value ? '' : option.value"
-                  :class="[
-                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    selectedHeight === option.value
-                      ? 'bg-primary text-white ring-2 ring-primary/50'
-                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
-                  ]"
-                >
-                  {{ option.label }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Vestimenta -->
-            <div>
-              <label class="block text-text-secondary font-medium mb-2 text-sm">
-                {{ t('guest.physicalOptions.clothing') }}
-              </label>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                <button
-                  v-for="option in clothingOptions"
-                  :key="option.value"
-                  @click="selectedClothing = selectedClothing === option.value ? '' : option.value"
-                  :class="[
-                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    selectedClothing === option.value
-                      ? 'bg-primary text-white ring-2 ring-primary/50'
-                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
-                  ]"
-                >
-                  {{ option.label }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Pose/Acción -->
-            <div>
-              <label class="block text-text-secondary font-medium mb-2 text-sm">
-                {{ t('guest.physicalOptions.poseAction') }}
-              </label>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                <button
-                  v-for="option in poseOptions"
-                  :key="option.value"
-                  @click="selectedPose = selectedPose === option.value ? '' : option.value"
-                  :class="[
-                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    selectedPose === option.value
-                      ? 'bg-primary text-white ring-2 ring-primary/50'
-                      : 'bg-background-elevated text-text-primary hover:bg-background-elevated/70 border border-white/10'
-                  ]"
-                >
-                  {{ option.label }}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Prompt Input -->
+          <!-- Campos de PROMPT y NEGATIVE PROMPT -->
           <div class="mb-8">
             <label class="block text-text-primary font-semibold mb-3 text-lg">
-              3. {{ t('guest.steps.finalDescription') }}
+              2. {{ t('guest.steps.promptLabel') }}
             </label>
             
-            <!-- Chips/Burbujas de opciones seleccionadas -->
-            <div v-if="selectedTags.length > 0" class="flex flex-wrap gap-2 mb-3 p-3 bg-background-elevated/50 rounded-lg border border-white/10">
-              <TransitionGroup name="tag">
-                <div
-                  v-for="tag in selectedTags"
-                  :key="tag.key"
-                  class="inline-flex items-center space-x-2 px-3 py-1.5 bg-primary/20 border border-primary/40 rounded-full text-sm text-primary font-medium group hover:bg-primary/30 transition-all"
-                >
-                  <span>{{ tag.label }}</span>
-                  <button
-                    @click="removeTag(tag.key)"
-                    class="ml-1 hover:bg-primary/40 rounded-full p-0.5 transition-colors"
-                  >
-                    <XMarkIcon class="h-4 w-4" />
-                  </button>
-                </div>
-              </TransitionGroup>
+            <!-- PROMPT -->
+            <div class="mb-4">
+              <label class="block text-text-secondary font-medium mb-2 text-sm">
+                {{ t('guest.steps.promptDescription') }}
+                <span class="text-accent-crimson">*</span>
+              </label>
+              <textarea
+                v-model="prompt"
+                :placeholder="t('guest.steps.promptPlaceholder')"
+                rows="4"
+                class="w-full px-5 py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
+              ></textarea>
+              <p class="text-text-tertiary text-sm mt-2">
+                💡 {{ t('guest.steps.promptExample') }}
+              </p>
             </div>
             
-            <!-- Textarea para texto manual adicional -->
-            <div class="mb-3">
+            <!-- NEGATIVE PROMPT -->
+            <div>
+              <label class="block text-text-secondary font-medium mb-2 text-sm">
+                {{ t('guest.steps.negativePromptDescription') }}
+              </label>
               <textarea
-                v-model="manualPrompt"
-                :placeholder="t('guest.steps.additionalDetails')"
+                v-model="negativePrompt"
+                :placeholder="t('guest.steps.negativePromptPlaceholder')"
                 rows="3"
                 class="w-full px-5 py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
               ></textarea>
               <p class="text-text-tertiary text-sm mt-2">
-                💡 {{ t('guest.steps.additionalExample') }}
-              </p>
-            </div>
-            
-            <!-- Prompt final combinado (solo lectura) -->
-            <div class="p-4 bg-background-deep/50 rounded-xl border border-white/10">
-              <label class="block text-text-secondary text-xs font-medium mb-2">
-                📝 {{ t('guest.steps.finalPrompt') }}
-              </label>
-              <p class="text-text-primary text-sm">
-                {{ prompt || t('guest.steps.selectOrWrite') }}
+                💡 {{ t('guest.steps.negativePromptExample') }}
               </p>
             </div>
           </div>
@@ -598,25 +352,5 @@ const skipToLogin = () => {
 .modal-enter-from .bg-background-card,
 .modal-leave-to .bg-background-card {
   transform: scale(0.95);
-}
-
-/* Animaciones para los tags/chips */
-.tag-enter-active,
-.tag-leave-active {
-  transition: all 0.3s ease;
-}
-
-.tag-enter-from {
-  opacity: 0;
-  transform: scale(0.8);
-}
-
-.tag-leave-to {
-  opacity: 0;
-  transform: scale(0.8);
-}
-
-.tag-move {
-  transition: transform 0.3s ease;
 }
 </style>

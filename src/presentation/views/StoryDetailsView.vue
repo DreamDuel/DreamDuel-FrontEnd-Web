@@ -3,7 +3,6 @@ import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStoryStore } from '@/stores/storyStore';
 import { ArrowLeftIcon, ShareIcon, HeartIcon } from '@heroicons/vue/24/outline';
-import { HeartIcon as HeartIconSolid } from '@heroicons/vue/24/solid';
 import { PlayIcon } from '@heroicons/vue/24/solid';
 
 const route = useRoute();

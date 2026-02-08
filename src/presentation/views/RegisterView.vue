@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '@/stores/userStore';
 import { SparklesIcon, UserIcon, EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon, GiftIcon } from '@heroicons/vue/24/outline';
@@ -9,7 +9,6 @@ import { getReferralCodeFromUrl, saveReferralAttribution, getSavedReferralCode }
 const { t } = useI18n();
 
 const router = useRouter();
-const route = useRoute();
 const userStore = useUserStore();
 const username = ref('');
 const email = ref('');

@@ -1,15 +1,8 @@
 // Upload Service
 // Servicio para subir archivos al backend/cloud storage
 
-import { HttpClient } from './HttpClient';
-
 export class UploadService {
-  private http: HttpClient;
   private uploadEndpoint = '/api/upload';
-
-  constructor() {
-    this.http = new HttpClient();
-  }
 
   /**
    * Sube una imagen al servidor

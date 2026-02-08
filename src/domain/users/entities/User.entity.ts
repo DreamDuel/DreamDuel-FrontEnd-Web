@@ -2,16 +2,34 @@
 // Representa un usuario del sistema
 
 export class User {
+  readonly id: string;
+  username: string;
+  email: string;
+  avatarUrl: string;
+  bio: string;
+  stats: UserStats;
+  isPremium: boolean;
+  createdAt: Date;
+
   constructor(
-    public readonly id: string,
-    public username: string,
-    public email: string,
-    public avatarUrl: string,
-    public bio: string = '',
-    public stats: UserStats = new UserStats(),
-    public isPremium: boolean = false,
-    public createdAt: Date = new Date()
-  ) {}
+    id: string,
+    username: string,
+    email: string,
+    avatarUrl: string,
+    bio: string = '',
+    stats: UserStats = new UserStats(),
+    isPremium: boolean = false,
+    createdAt: Date = new Date()
+  ) {
+    this.id = id;
+    this.username = username;
+    this.email = email;
+    this.avatarUrl = avatarUrl;
+    this.bio = bio;
+    this.stats = stats;
+    this.isPremium = isPremium;
+    this.createdAt = createdAt;
+  }
 
   canGenerateStory(): boolean {
     // Los usuarios premium tienen generaciones ilimitadas
@@ -33,10 +51,20 @@ export class User {
 }
 
 export class UserStats {
+  storiesCreated: number;
+  totalLikes: number;
+  followers: number;
+  following: number;
+
   constructor(
-    public storiesCreated: number = 0,
-    public totalLikes: number = 0,
-    public followers: number = 0,
-    public following: number = 0
-  ) {}
+    storiesCreated: number = 0,
+    totalLikes: number = 0,
+    followers: number = 0,
+    following: number = 0
+  ) {
+    this.storiesCreated = storiesCreated;
+    this.totalLikes = totalLikes;
+    this.followers = followers;
+    this.following = following;
+  }
 }

@@ -11,6 +11,7 @@ import UpgradeSlideout from '@/presentation/components/UpgradeSlideout.vue';
 interface Character {
   id: string;
   name: string;
+  description: string;
   imageFile: File;
   imagePreview: string;
 }
@@ -103,6 +104,7 @@ const addCharacter = (file: File) => {
       const newCharacter: Character = {
         id: `char-${Date.now()}-${Math.random()}`,
         name: '',
+        description: '',
         imageFile: file,
         imagePreview: e.target.result as string
       };
@@ -116,6 +118,13 @@ const updateCharacterName = (characterId: string, name: string) => {
   const character = characters.value.find(c => c.id === characterId);
   if (character) {
     character.name = name;
+  }
+};
+
+const updateCharacterDescription = (characterId: string, description: string) => {
+  const character = characters.value.find(c => c.id === characterId);
+  if (character) {
+    character.description = description;
   }
 };
 
@@ -164,7 +173,11 @@ const generateStory = async () => {
       style: selectedStyle.value,
       genre: selectedGenre.value,
       isPublic: isPublic.value,
-      characters: characters.value.map(c => ({ name: c.name, image: c.imageFile.name }))
+      characters: characters.value.map(c => ({ 
+        name: c.name, 
+        description: c.description,
+        image: c.imageFile.name 
+      }))
     });
     
     // Crear la historia en el storyStore
@@ -322,15 +335,15 @@ const handleUpgrade = () => {
             <div
               v-for="character in characters"
               :key="character.id"
-              class="flex items-center space-x-3 bg-background-elevated border border-white/10 rounded-xl p-3 group hover:border-primary/30 transition-all"
+              class="flex items-start space-x-3 bg-background-elevated border border-white/10 rounded-xl p-3 group hover:border-primary/30 transition-all"
             >
               <!-- Imagen del personaje -->
               <div class="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 border-white/10">
                 <img :src="character.imagePreview" alt="Character" class="w-full h-full object-cover" />
               </div>
 
-              <!-- Campo de nombre -->
-              <div class="flex-1">
+              <!-- Campos de nombre y descripción -->
+              <div class="flex-1 space-y-2">
                 <input
                   type="text"
                   :value="character.name"
@@ -338,7 +351,14 @@ const handleUpgrade = () => {
                   :placeholder="t('create.characters.namePlaceholder')"
                   class="w-full px-3 py-2 bg-background-deep border border-white/10 rounded-lg text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                 />
-                <p class="text-text-tertiary text-xs mt-1">
+                <textarea
+                  :value="character.description"
+                  @input="(e) => updateCharacterDescription(character.id, (e.target as HTMLTextAreaElement).value)"
+                  :placeholder="t('create.characters.descriptionPlaceholder')"
+                  rows="2"
+                  class="w-full px-3 py-2 bg-background-deep border border-white/10 rounded-lg text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none text-sm"
+                />
+                <p class="text-text-tertiary text-xs">
                   <UserIcon class="inline h-3 w-3 mr-1" />
                   {{ character.imageFile.name }}
                 </p>
