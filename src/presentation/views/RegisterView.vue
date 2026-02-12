@@ -221,16 +221,16 @@ const goToLogin = () => {
             />
             <label for="terms" class="ml-3 text-sm text-text-secondary">
               {{ t('auth.register.acceptTerms') }} 
-              <a href="#" class="text-primary hover:text-primary-light">{{ t('auth.register.terms') }}</a>
+              <router-link to="/terms" class="text-primary hover:text-primary-light underline" target="_blank">{{ t('auth.register.terms') }}</router-link>
               {{ t('auth.register.and') }} 
-              <a href="#" class="text-primary hover:text-primary-light">{{ t('auth.register.privacy') }}</a>
+              <router-link to="/privacy" class="text-primary hover:text-primary-light underline" target="_blank">{{ t('auth.register.privacy') }}</router-link>
             </label>
           </div>
 
           <!-- Botón Register -->
           <button
             type="submit"
-            :disabled="isLoading"
+            :disabled="isLoading || !acceptTerms"
             class="w-full py-3 bg-gradient-to-r from-primary to-primary-light text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
           >
             <span v-if="!isLoading">{{ t('auth.register.button') }}</span>

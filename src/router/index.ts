@@ -18,6 +18,8 @@ import StoryViewerScreen from '@/presentation/views/StoryViewerScreen.vue';
 import PricingView from '@/presentation/views/PricingView.vue';
 import GuestCreateView from '@/presentation/views/GuestCreateView.vue';
 import NicheLandingView from '@/presentation/views/NicheLandingView.vue';
+import TermsView from '@/presentation/views/TermsView.vue';
+import PrivacyView from '@/presentation/views/PrivacyView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -122,6 +124,18 @@ const router = createRouter({
       name: 'reader',
       component: ReaderView,
       meta: { hideNavigation: true, fullscreen: true }
+    },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: TermsView,
+      meta: { hideNavigation: true }
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: PrivacyView,
+      meta: { hideNavigation: true }
     }
   ],
   scrollBehavior(to, from, savedPosition) {

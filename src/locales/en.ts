@@ -414,5 +414,69 @@ export default {
       errorAcceptTerms: 'You must accept the terms and conditions',
       footer: '© 2026 DreamDuel. All rights reserved.'
     }
+  },
+  legal: {
+    terms: {
+      title: 'Terms and Conditions',
+      lastUpdated: 'Last updated',
+      contact: 'Contact',
+      section1: {
+        title: 'Acceptance of Terms',
+        content: 'By accessing and using DreamDuel, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you should not use our service.'
+      },
+      section2: {
+        title: 'Service Description',
+        content: 'DreamDuel is a platform that allows users to create, share, and discover visual stories generated using artificial intelligence. We reserve the right to modify or discontinue the service at any time.'
+      },
+      section3: {
+        title: 'User Account',
+        content: 'You are responsible for maintaining the confidentiality of your account and password. You accept responsibility for all activities that occur under your account. You must be at least 13 years old to use this service.'
+      },
+      section4: {
+        title: 'User Content',
+        content: 'You retain all rights to the content you create on DreamDuel. By publishing content, you grant us a non-exclusive, worldwide, royalty-free license to use, display, and distribute your content on the platform.'
+      },
+      section5: {
+        title: 'Prohibited Conduct',
+        content: 'You must not use DreamDuel to create, publish, or share illegal, offensive, harassing, violent content, or content that infringes on third-party rights. We reserve the right to remove content and suspend accounts that violate these terms.'
+      },
+      section6: {
+        title: 'Intellectual Property',
+        content: 'All content, features, and functionality of the service are the exclusive property of DreamDuel and are protected by copyright, trademarks, and other intellectual property laws.'
+      },
+      section7: {
+        title: 'Limitation of Liability',
+        content: 'DreamDuel is provided "as is" without warranties of any kind. We will not be liable for indirect, incidental, or consequential damages resulting from the use or inability to use the service.'
+      }
+    },
+    privacy: {
+      title: 'Privacy Policy',
+      lastUpdated: 'Last updated',
+      contact: 'Contact',
+      section1: {
+        title: 'Information We Collect',
+        content: 'We collect information you provide directly to us, such as your name, email, and the content you create. We also automatically collect information about your use of the service, including IP address, browser type, and pages visited.'
+      },
+      section2: {
+        title: 'Use of Information',
+        content: 'We use your information to provide, maintain, and improve our services, process transactions, send you communications, personalize your experience, and protect platform security.'
+      },
+      section3: {
+        title: 'Sharing Information',
+        content: 'We do not sell your personal information. We may share your information with service providers who help us operate the platform, when required by law, or with your consent.'
+      },
+      section4: {
+        title: 'Cookies and Similar Technologies',
+        content: 'We use cookies and similar technologies to remember your preferences, understand how you use the service, and improve your experience. You can set your browser to reject cookies, but this may affect service functionality.'
+      },
+      section5: {
+        title: 'Data Security',
+        content: 'We implement technical and organizational security measures to protect your personal information. However, no method of Internet transmission is 100% secure, so we cannot guarantee absolute security.'
+      },
+      section6: {
+        title: 'Your Rights',
+        content: 'You have the right to access, correct, delete, or transfer your personal information. You may also object to the processing of your data or request its limitation. Contact us to exercise these rights.'
+      }
+    }
   }
 };

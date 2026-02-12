@@ -414,5 +414,69 @@ export default {
       errorAcceptTerms: 'Debes aceptar los términos y condiciones',
       footer: '© 2026 DreamDuel. Todos los derechos reservados.'
     }
+  },
+  legal: {
+    terms: {
+      title: 'Términos y Condiciones',
+      lastUpdated: 'Última actualización',
+      contact: 'Contacto',
+      section1: {
+        title: 'Aceptación de los Términos',
+        content: 'Al acceder y utilizar DreamDuel, aceptas estar sujeto a estos Términos y Condiciones. Si no estás de acuerdo con alguna parte de estos términos, no deberás utilizar nuestro servicio.'
+      },
+      section2: {
+        title: 'Descripción del Servicio',
+        content: 'DreamDuel es una plataforma que permite a los usuarios crear, compartir y descubrir historias visuales generadas mediante inteligencia artificial. Nos reservamos el derecho de modificar o discontinuar el servicio en cualquier momento.'
+      },
+      section3: {
+        title: 'Cuenta de Usuario',
+        content: 'Eres responsable de mantener la confidencialidad de tu cuenta y contraseña. Aceptas la responsabilidad de todas las actividades que ocurran bajo tu cuenta. Debes ser mayor de 13 años para usar este servicio.'
+      },
+      section4: {
+        title: 'Contenido del Usuario',
+        content: 'Conservas todos los derechos sobre el contenido que crees en DreamDuel. Al publicar contenido, nos otorgas una licencia no exclusiva, mundial y libre de regalías para usar, mostrar y distribuir tu contenido en la plataforma.'
+      },
+      section5: {
+        title: 'Conducta Prohibida',
+        content: 'No debes usar DreamDuel para crear, publicar o compartir contenido ilegal, ofensivo, acosador, violento o que infrinja los derechos de terceros. Nos reservamos el derecho de eliminar contenido y suspender cuentas que violen estos términos.'
+      },
+      section6: {
+        title: 'Propiedad Intelectual',
+        content: 'Todo el contenido, características y funcionalidad del servicio son propiedad exclusiva de DreamDuel y están protegidos por derechos de autor, marcas registradas y otras leyes de propiedad intelectual.'
+      },
+      section7: {
+        title: 'Limitación de Responsabilidad',
+        content: 'DreamDuel se proporciona "tal cual" sin garantías de ningún tipo. No seremos responsables de daños indirectos, incidentales o consecuentes que resulten del uso o la imposibilidad de usar el servicio.'
+      }
+    },
+    privacy: {
+      title: 'Política de Privacidad',
+      lastUpdated: 'Última actualización',
+      contact: 'Contacto',
+      section1: {
+        title: 'Información que Recopilamos',
+        content: 'Recopilamos información que nos proporcionas directamente, como tu nombre, correo electrónico, y el contenido que creas. También recopilamos información automáticamente sobre tu uso del servicio, incluyendo dirección IP, tipo de navegador y páginas visitadas.'
+      },
+      section2: {
+        title: 'Uso de la Información',
+        content: 'Utilizamos tu información para proporcionar, mantener y mejorar nuestros servicios, procesar transacciones, enviarte comunicaciones, personalizar tu experiencia y proteger la seguridad de la plataforma.'
+      },
+      section3: {
+        title: 'Compartir Información',
+        content: 'No vendemos tu información personal. Podemos compartir tu información con proveedores de servicios que nos ayudan a operar la plataforma, cuando la ley lo requiera, o con tu consentimiento.'
+      },
+      section4: {
+        title: 'Cookies y Tecnologías Similares',
+        content: 'Utilizamos cookies y tecnologías similares para recordar tus preferencias, entender cómo usas el servicio y mejorar tu experiencia. Puedes configurar tu navegador para rechazar cookies, pero esto puede afectar la funcionalidad del servicio.'
+      },
+      section5: {
+        title: 'Seguridad de los Datos',
+        content: 'Implementamos medidas de seguridad técnicas y organizativas para proteger tu información personal. Sin embargo, ningún método de transmisión por Internet es 100% seguro, por lo que no podemos garantizar seguridad absoluta.'
+      },
+      section6: {
+        title: 'Tus Derechos',
+        content: 'Tienes derecho a acceder, corregir, eliminar o transferir tu información personal. También puedes oponerte al procesamiento de tus datos o solicitar la limitación del mismo. Contáctanos para ejercer estos derechos.'
+      }
+    }
   }
 };
