@@ -14,6 +14,7 @@ const showRegisterPrompt = ref(false);
 const characterImage = ref<File | null>(null);
 const imagePreviewUrl = ref<string>('');
 const generatedImageUrl = ref<string>('');
+const showAdvancedOptions = ref(false);
 
 // El prompt ya no se genera automáticamente, el usuario lo escribe directamente
 
@@ -134,7 +135,7 @@ const skipToLogin = () => {
           <p class="text-text-secondary text-xl mb-6">
             {{ t('guest.hero.subtitle') }}
           </p>
-          <div class="flex items-center justify-center space-x-6 text-sm text-text-tertiary">
+          <div class="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-text-tertiary">
             <div class="flex items-center space-x-2">
               <span class="text-accent-teal">✓</span>
               <span>{{ t('guest.hero.features.noCard') }}</span>
@@ -151,10 +152,10 @@ const skipToLogin = () => {
         </div>
 
         <!-- Formulario de Creación -->
-        <div class="bg-background-card border border-white/10 rounded-2xl p-8 shadow-2xl backdrop-blur-sm mb-8">
+        <div class="bg-background-card border border-white/10 rounded-2xl p-4 md:p-8 shadow-2xl backdrop-blur-sm mb-8">
           <!-- Upload de Imagen -->
           <div class="mb-8">
-            <label class="block text-text-primary font-semibold mb-3 text-lg">
+            <label class="block text-text-primary font-semibold mb-3 text-base md:text-lg">
               1. {{ t('guest.steps.uploadImage') }}
             </label>
             
@@ -189,7 +190,7 @@ const skipToLogin = () => {
 
           <!-- Campos de PROMPT y NEGATIVE PROMPT -->
           <div class="mb-8">
-            <label class="block text-text-primary font-semibold mb-3 text-lg">
+            <label class="block text-text-primary font-semibold mb-3 text-base md:text-lg">
               2. {{ t('guest.steps.promptLabel') }}
             </label>
             
@@ -225,6 +226,100 @@ const skipToLogin = () => {
                 💡 {{ t('guest.steps.negativePromptExample') }}
               </p>
             </div>
+          </div>
+
+          <!-- Opciones Avanzadas (Bloqueadas) -->
+          <div class="mb-8">
+            <button
+              @click="showAdvancedOptions = !showAdvancedOptions"
+              class="flex items-center justify-between w-full text-left text-text-primary font-semibold mb-3 text-base md:text-lg hover:text-primary transition-colors"
+            >
+              <span>⚙️ {{ t('guest.steps.advancedOptions') }}</span>
+              <svg
+                :class="['w-5 h-5 transition-transform', showAdvancedOptions ? 'rotate-180' : '']"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            <Transition name="slide-fade">
+              <div v-if="showAdvancedOptions" class="space-y-6">
+                <!-- Género del Personaje (Bloqueado) -->
+                <div>
+                  <label class="block text-text-secondary font-medium mb-3 text-sm">
+                    {{ t('guest.steps.genderLabel') }}
+                    <span class="ml-2 px-2 py-0.5 bg-accent-gold/20 text-accent-gold rounded text-xs">🔒 {{ t('guest.steps.registerRequired') }}</span>
+                  </label>
+                  
+                  <button
+                    @click="goToRegister"
+                    class="w-full flex items-center justify-center space-x-3 py-6 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-primary hover:bg-primary/5 transition-all cursor-pointer group"
+                  >
+                    <div class="text-center">
+                      <div class="text-4xl mb-2">🔒</div>
+                      <span class="text-primary font-semibold group-hover:text-primary-light transition-colors">
+                        {{ t('guest.steps.registerToUnlockButton') }}
+                      </span>
+                    </div>
+                  </button>
+                  
+                  <p class="text-text-tertiary text-sm mt-2">
+                    💡 {{ t('guest.steps.genderDescription') }}
+                  </p>
+                </div>
+
+                <!-- Tipo de Cuerpo (Bloqueado) -->
+                <div>
+                  <label class="block text-text-secondary font-medium mb-3 text-sm">
+                    {{ t('guest.steps.bodyTypeLabel') }}
+                    <span class="ml-2 px-2 py-0.5 bg-accent-gold/20 text-accent-gold rounded text-xs">🔒 {{ t('guest.steps.registerRequired') }}</span>
+                  </label>
+                  
+                  <button
+                    @click="goToRegister"
+                    class="w-full flex items-center justify-center space-x-3 py-6 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-primary hover:bg-primary/5 transition-all cursor-pointer group"
+                  >
+                    <div class="text-center">
+                      <div class="text-4xl mb-2">🔒</div>
+                      <span class="text-primary font-semibold group-hover:text-primary-light transition-colors">
+                        {{ t('guest.steps.registerToUnlockButton') }}
+                      </span>
+                    </div>
+                  </button>
+                  
+                  <p class="text-text-tertiary text-sm mt-2">
+                    💡 {{ t('guest.steps.bodyTypeDescription') }}
+                  </p>
+                </div>
+
+                <!-- Pose del Personaje (Bloqueada) -->
+                <div>
+                  <label class="block text-text-secondary font-medium mb-2 text-sm">
+                    {{ t('guest.steps.poseLabelLocked') }}
+                    <span class="ml-2 px-2 py-0.5 bg-accent-gold/20 text-accent-gold rounded text-xs">🔒 {{ t('guest.steps.registerRequired') }}</span>
+                  </label>
+                  
+                  <button
+                    @click="goToRegister"
+                    class="w-full flex items-center justify-center space-x-3 py-6 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-primary hover:bg-primary/5 transition-all cursor-pointer group"
+                  >
+                    <div class="text-center">
+                      <div class="text-4xl mb-2">🔒</div>
+                      <span class="text-primary font-semibold group-hover:text-primary-light transition-colors">
+                        {{ t('guest.steps.registerToUnlockButton') }}
+                      </span>
+                    </div>
+                  </button>
+                  
+                  <p class="text-text-tertiary text-sm mt-2">
+                    💡 {{ t('guest.steps.poseExample') }}
+                  </p>
+                </div>
+              </div>
+            </Transition>
           </div>
 
           <!-- Botón de Generar -->
@@ -352,5 +447,16 @@ const skipToLogin = () => {
 .modal-enter-from .bg-background-card,
 .modal-leave-to .bg-background-card {
   transform: scale(0.95);
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>

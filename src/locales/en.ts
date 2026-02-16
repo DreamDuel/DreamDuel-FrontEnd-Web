@@ -92,6 +92,19 @@ export default {
       private: 'Private',
       privateDesc: 'Only you will see it'
     },
+    advancedOptions: {
+      title: 'Advanced Options',
+      genderLabel: 'Character Gender',
+      female: 'Female',
+      male: 'Male',
+      bodyTypeLabel: 'Body Type',
+      femaleBody: 'Feminine',
+      maleBody: 'Masculine',
+      poseLabel: 'Character Pose Reference',
+      poseUpload: 'Click to upload a pose reference',
+      poseMaxSize: 'PNG, JPG (max. 5MB)',
+      poseDescription: 'Upload a reference image showing the desired pose for your character'
+    },
     generate: 'MATERIALIZE',
     generating: 'CREATING MAGIC...',
     features: {
@@ -299,7 +312,22 @@ export default {
       additionalDetails: 'Add additional details: scenery, environment, accessories, special effects...',
       additionalExample: 'Example: "on a beach at sunset with palm trees in the background"',
       finalPrompt: 'Final Prompt (will be sent to AI):',
-      selectOrWrite: 'Select options or write a description...'
+      selectOrWrite: 'Select options or write a description...',
+      advancedOptions: 'Advanced Options',
+      poseLabelLocked: 'Character Pose Reference',
+      registerRequired: 'Registration Required',
+      poseUploadLocked: 'Upload a pose reference image',
+      registerToUnlock: 'Register to unlock',
+      registerToUnlockButton: 'Sign Up to Unlock',
+      poseExample: 'Upload an image showing the desired character pose',
+      genderLabel: 'Character Gender',
+      female: 'Female',
+      male: 'Male',
+      genderDescription: 'Select the gender for your generated character',
+      bodyTypeLabel: 'Body Type',
+      femaleBody: 'Feminine',
+      maleBody: 'Masculine',
+      bodyTypeDescription: 'Choose the body type for your character'
     },
     physicalOptions: {
       gender: 'Gender / Features',

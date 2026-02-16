@@ -92,6 +92,19 @@ export default {
       private: 'Privada',
       privateDesc: 'Solo tú la verás'
     },
+    advancedOptions: {
+      title: 'Opciones Avanzadas',
+      genderLabel: 'Género del Personaje',
+      female: 'Femenino',
+      male: 'Masculino',
+      bodyTypeLabel: 'Tipo de Cuerpo',
+      femaleBody: 'Femenino',
+      maleBody: 'Masculino',
+      poseLabel: 'Referencia de Pose del Personaje',
+      poseUpload: 'Haz click para subir una referencia de pose',
+      poseMaxSize: 'PNG, JPG (máx. 5MB)',
+      poseDescription: 'Sube una imagen de referencia mostrando la pose deseada para tu personaje'
+    },
     generate: 'MATERIALIZAR',
     generating: 'GENERANDO MAGIA...',
     features: {
@@ -299,7 +312,22 @@ export default {
       additionalDetails: 'Agrega detalles adicionales: escenario, ambiente, accesorios, efectos especiales...',
       additionalExample: 'Ejemplo: "en una playa al atardecer con palmeras de fondo"',
       finalPrompt: 'Prompt Final (se enviará a la IA):',
-      selectOrWrite: 'Selecciona opciones o escribe una descripción...'
+      selectOrWrite: 'Selecciona opciones o escribe una descripción...',
+      advancedOptions: 'Opciones Avanzadas',
+      poseLabelLocked: 'Referencia de Pose del Personaje',
+      registerRequired: 'Registro Requerido',
+      poseUploadLocked: 'Sube una imagen de referencia de pose',
+      registerToUnlock: 'Regístrate para desbloquear',
+      registerToUnlockButton: 'Regístrate para Desbloquear',
+      poseExample: 'Sube una imagen mostrando la pose deseada del personaje',
+      genderLabel: 'Género del Personaje',
+      female: 'Femenino',
+      male: 'Masculino',
+      genderDescription: 'Selecciona el género para tu personaje generado',
+      bodyTypeLabel: 'Tipo de Cuerpo',
+      femaleBody: 'Femenino',
+      maleBody: 'Masculino',
+      bodyTypeDescription: 'Elige el tipo de cuerpo para tu personaje'
     },
     physicalOptions: {
       gender: 'Género / Rasgos',

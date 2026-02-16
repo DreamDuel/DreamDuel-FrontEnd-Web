@@ -29,6 +29,11 @@ const isGenerating = ref(false);
 const characters = ref<Character[]>([]);
 const showLimitModal = ref(false);
 const showUpgradeSlideout = ref(false);
+const poseImage = ref<File | null>(null);
+const posePreviewUrl = ref<string>('');
+const showAdvancedOptions = ref(false);
+const selectedGender = ref<string>('');
+const selectedBodyType = ref<string>('');
 
 // Límites de personajes según plan
 const maxCharacters = computed(() => {
@@ -133,6 +138,41 @@ const removeCharacter = (characterId: string) => {
   if (index > -1) {
     characters.value.splice(index, 1);
   }
+};
+
+const handlePoseFileSelect = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files[0]) {
+    const file = target.files[0];
+    
+    // Validar tipo de archivo
+    if (!file.type.startsWith('image/')) {
+      alert(t('profile.avatar.errorFormat'));
+      return;
+    }
+    
+    // Validar tamaño (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert(t('profile.avatar.errorSize'));
+      return;
+    }
+    
+    poseImage.value = file;
+    
+    // Crear preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        posePreviewUrl.value = e.target.result as string;
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const removePoseImage = () => {
+  poseImage.value = null;
+  posePreviewUrl.value = '';
 };
 
 const canGenerate = computed(() => {
@@ -419,6 +459,138 @@ const handleUpgrade = () => {
           </div>
         </div>
 
+        <!-- Opciones Avanzadas -->
+        <div class="mb-8">
+          <button
+            @click="showAdvancedOptions = !showAdvancedOptions"
+            class="flex items-center justify-between w-full text-left text-text-primary font-semibold mb-3 text-lg hover:text-primary transition-colors"
+          >
+            <span>⚙️ {{ t('create.advancedOptions.title') }}</span>
+            <svg
+              :class="['w-5 h-5 transition-transform', showAdvancedOptions ? 'rotate-180' : '']"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          <Transition name="slide-fade">
+            <div v-if="showAdvancedOptions" class="space-y-6">
+              <!-- Género del Personaje -->
+              <div>
+                <label class="block text-text-secondary font-medium mb-3 text-sm">
+                  {{ t('create.advancedOptions.genderLabel') }}
+                  <span class="ml-2 text-text-tertiary text-xs">({{ t('create.characters.optional') }})</span>
+                </label>
+                
+                <div class="grid grid-cols-2 gap-3">
+                  <button
+                    @click="selectedGender = selectedGender === 'female' ? '' : 'female'"
+                    :class="[
+                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-4 px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
+                      selectedGender === 'female'
+                        ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20'
+                        : 'border-white/10 bg-background-elevated hover:border-primary/50 hover:bg-background-elevated/80'
+                    ]"
+                  >
+                    <span class="text-2xl mb-1 md:mb-0">👩</span>
+                    <span class="text-text-primary font-medium text-sm md:text-base">{{ t('create.advancedOptions.female') }}</span>
+                  </button>
+                  <button
+                    @click="selectedGender = selectedGender === 'male' ? '' : 'male'"
+                    :class="[
+                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-4 px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
+                      selectedGender === 'male'
+                        ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20'
+                        : 'border-white/10 bg-background-elevated hover:border-primary/50 hover:bg-background-elevated/80'
+                    ]"
+                  >
+                    <span class="text-2xl mb-1 md:mb-0">👨</span>
+                    <span class="text-text-primary font-medium text-sm md:text-base">{{ t('create.advancedOptions.male') }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tipo de Cuerpo -->
+              <div>
+                <label class="block text-text-secondary font-medium mb-3 text-sm">
+                  {{ t('create.advancedOptions.bodyTypeLabel') }}
+                  <span class="ml-2 text-text-tertiary text-xs">({{ t('create.characters.optional') }})</span>
+                </label>
+                
+                <div class="grid grid-cols-2 gap-3">
+                  <button
+                    @click="selectedBodyType = selectedBodyType === 'female' ? '' : 'female'"
+                    :class="[
+                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-4 px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
+                      selectedBodyType === 'female'
+                        ? 'border-accent-teal bg-accent-teal/10 shadow-lg shadow-accent-teal/20'
+                        : 'border-white/10 bg-background-elevated hover:border-accent-teal/50 hover:bg-background-elevated/80'
+                    ]"
+                  >
+                    <span class="text-2xl mb-1 md:mb-0">💃</span>
+                    <span class="text-text-primary font-medium text-sm md:text-base">{{ t('create.advancedOptions.femaleBody') }}</span>
+                  </button>
+                  <button
+                    @click="selectedBodyType = selectedBodyType === 'male' ? '' : 'male'"
+                    :class="[
+                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-4 px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
+                      selectedBodyType === 'male'
+                        ? 'border-accent-teal bg-accent-teal/10 shadow-lg shadow-accent-teal/20'
+                        : 'border-white/10 bg-background-elevated hover:border-accent-teal/50 hover:bg-background-elevated/80'
+                    ]"
+                  >
+                    <span class="text-2xl mb-1 md:mb-0">💪</span>
+                    <span class="text-text-primary font-medium text-sm md:text-base">{{ t('create.advancedOptions.maleBody') }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Pose del Personaje -->
+              <div>
+                <label class="block text-text-secondary font-medium mb-2 text-sm">
+                  {{ t('create.advancedOptions.poseLabel') }}
+                  <span class="ml-2 text-text-tertiary text-xs">({{ t('create.characters.optional') }})</span>
+                </label>
+                
+                <div v-if="!posePreviewUrl" class="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    @change="handlePoseFileSelect"
+                    class="hidden"
+                    id="poseImageInput"
+                  />
+                  <label
+                    for="poseImageInput"
+                    class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-primary hover:bg-background-elevated/50 transition-all cursor-pointer group"
+                  >
+                    <PhotoIcon class="h-12 w-12 text-text-tertiary group-hover:text-primary transition-colors mb-2" />
+                    <span class="text-text-primary font-medium mb-1">{{ t('create.advancedOptions.poseUpload') }}</span>
+                    <span class="text-text-tertiary text-sm">{{ t('create.advancedOptions.poseMaxSize') }}</span>
+                  </label>
+                </div>
+                
+                <div v-else class="relative">
+                  <img :src="posePreviewUrl" alt="Pose Preview" class="w-full max-h-64 object-contain rounded-xl bg-background-elevated border border-white/10" />
+                  <button
+                    @click="removePoseImage"
+                    class="absolute top-3 right-3 p-2 bg-error/90 hover:bg-error text-white rounded-lg transition-colors"
+                  >
+                    <XMarkIcon class="h-5 w-5" />
+                  </button>
+                </div>
+                
+                <p class="text-text-tertiary text-sm mt-2">
+                  💡 {{ t('create.advancedOptions.poseDescription') }}
+                </p>
+              </div>
+            </div>
+          </Transition>
+        </div>
+
         <!-- Privacidad -->
         <div class="mb-8">
           <label class="block text-text-secondary text-sm font-medium mb-3">
@@ -509,3 +681,16 @@ const handleUpgrade = () => {
     />
   </div>
 </template>
+
+<style scoped>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>
