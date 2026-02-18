@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { HomeIcon, MagnifyingGlassIcon, SparklesIcon, UserCircleIcon } from '@heroicons/vue/24/outline';
-import { HomeIcon as HomeIconSolid, MagnifyingGlassIcon as MagnifyingGlassIconSolid, SparklesIcon as SparklesIconSolid, UserCircleIcon as UserCircleIconSolid } from '@heroicons/vue/24/solid';
+import { HomeIcon, MagnifyingGlassIcon, SparklesIcon, PhotoIcon, UserCircleIcon } from '@heroicons/vue/24/outline';
+import { HomeIcon as HomeIconSolid, MagnifyingGlassIcon as MagnifyingGlassIconSolid, SparklesIcon as SparklesIconSolid, PhotoIcon as PhotoIconSolid, UserCircleIcon as UserCircleIconSolid } from '@heroicons/vue/24/solid';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
@@ -13,6 +13,7 @@ const currentTab = computed(() => {
   if (path === '/' || path.startsWith('/home')) return 'home';
   if (path === '/search') return 'search';
   if (path === '/create') return 'create';
+  if (path === '/images') return 'images';
   if (path === '/profile') return 'profile';
   return 'home';
 });
@@ -21,6 +22,7 @@ const navItems = computed(() => [
   { id: 'home', label: t('nav.home'), icon: HomeIcon, iconSolid: HomeIconSolid, path: '/home' },
   { id: 'search', label: t('nav.search'), icon: MagnifyingGlassIcon, iconSolid: MagnifyingGlassIconSolid, path: '/search' },
   { id: 'create', label: t('nav.create'), icon: SparklesIcon, iconSolid: SparklesIconSolid, path: '/create' },
+  { id: 'images', label: 'Imágenes', icon: PhotoIcon, iconSolid: PhotoIconSolid, path: '/images' },
   { id: 'profile', label: t('nav.profile'), icon: UserCircleIcon, iconSolid: UserCircleIconSolid, path: '/profile' }
 ]);
 </script>

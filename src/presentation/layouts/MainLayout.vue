@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { SparklesIcon, PlusCircleIcon, UserCircleIcon, MagnifyingGlassIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline';
+import { SparklesIcon, UserCircleIcon, MagnifyingGlassIcon, Cog6ToothIcon, PhotoIcon } from '@heroicons/vue/24/outline';
 import BottomNavigation from '@/presentation/components/BottomNavigation.vue';
 import WelcomeBanner from '@/presentation/components/WelcomeBanner.vue';
 import { useUserStore } from '@/stores/userStore';
@@ -70,8 +69,15 @@ onBeforeUnmount(() => {
               to="/create" 
               class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors font-medium"
             >
-              <PlusCircleIcon class="h-5 w-5" />
-              <span>{{ t('nav.create') }}</span>
+              <SparklesIcon class="h-5 w-5" />
+              <span>Historias</span>
+            </router-link>
+            <router-link 
+              to="/images" 
+              class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors font-medium"
+            >
+              <PhotoIcon class="h-5 w-5" />
+              <span>Imágenes</span>
             </router-link>
             <router-link 
               to="/search" 

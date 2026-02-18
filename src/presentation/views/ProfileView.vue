@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
-import { Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon, SparklesIcon, ClockIcon, GiftIcon } from '@heroicons/vue/24/outline';
+import { Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon, SparklesIcon, ClockIcon, GiftIcon, PhotoIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { useStoryStore } from '@/stores/storyStore';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
@@ -11,7 +11,7 @@ const { t } = useI18n();
 const storyStore = useStoryStore();
 const userStore = useUserStore();
 const router = useRouter();
-const currentTab = ref<'stories' | 'saved' | 'liked'>('stories');
+const currentTab = ref<'stories' | 'saved' | 'liked' | 'images'>('stories');
 const isEditingProfile = ref(false);
 const editForm = ref({
   username: '',
@@ -383,6 +383,17 @@ const handleAvatarChange = async (event: Event) => {
         >
           {{ t('profile.tabs.liked') }} ({{ likedStoriesList.length }})
         </button>
+        <button
+          @click="currentTab = 'images'"
+          :class="[
+            'px-6 py-3 rounded-xl font-semibold transition-all',
+            currentTab === 'images'
+              ? 'bg-primary text-white'
+              : 'bg-background-card text-text-secondary hover:text-text-primary'
+          ]"
+        >
+          {{ t('profile.tabs.images') }} ({{ userStore.currentUser?.myImages?.length || 0 }})
+        </button>
       </div>
 
       <!-- Content -->
@@ -428,6 +439,48 @@ const handleAvatarChange = async (event: Event) => {
             :key="story.id"
             :story="story"
           />
+        </div>
+      </div>
+
+      <div v-if="currentTab === 'images'">
+        <div v-if="!userStore.currentUser?.myImages || userStore.currentUser.myImages.length === 0" class="text-center py-20">
+          <PhotoIcon class="h-16 w-16 text-text-tertiary mx-auto mb-4" />
+          <p class="text-text-secondary text-lg mb-4">{{ t('profile.empty.noImages') }}</p>
+          <router-link
+            to="/images"
+            class="inline-flex items-center space-x-2 px-6 py-3 bg-primary hover:bg-primary-light text-white rounded-xl transition-colors"
+          >
+            <PhotoIcon class="h-5 w-5" />
+            <span>{{ t('profile.empty.generateFirst') }}</span>
+          </router-link>
+        </div>
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div
+            v-for="image in userStore.currentUser.myImages"
+            :key="image.id"
+            class="group relative bg-background-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <div class="aspect-square overflow-hidden">
+              <img
+                :src="image.imageUrl"
+                :alt="image.prompt"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <p class="text-white text-sm font-medium line-clamp-2 mb-2">{{ image.prompt }}</p>
+                <p class="text-white/60 text-xs">{{ new Date(image.createdAt).toLocaleDateString() }}</p>
+              </div>
+              <button
+                @click="userStore.deleteImage(image.id)"
+                class="absolute top-3 right-3 p-2 bg-red-500/90 hover:bg-red-600 text-white rounded-lg transition-colors"
+                :title="t('common.delete')"
+              >
+                <TrashIcon class="h-5 w-5" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

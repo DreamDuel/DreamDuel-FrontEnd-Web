@@ -459,13 +459,18 @@ const handleUpgrade = () => {
           </div>
         </div>
 
-        <!-- Opciones Avanzadas -->
+        <!-- Opciones Avanzadas (PREMIUM ONLY) -->
         <div class="mb-8">
           <button
             @click="showAdvancedOptions = !showAdvancedOptions"
             class="flex items-center justify-between w-full text-left text-text-primary font-semibold mb-3 text-lg hover:text-primary transition-colors"
           >
-            <span>⚙️ {{ t('create.advancedOptions.title') }}</span>
+            <span class="flex items-center space-x-2">
+              <span>⚙️ {{ t('create.advancedOptions.title') }}</span>
+              <span v-if="!userStore.currentUser?.isPremium" class="px-2 py-0.5 bg-accent-gold/20 text-accent-gold rounded text-xs">
+                🔒 Premium
+              </span>
+            </span>
             <svg
               :class="['w-5 h-5 transition-transform', showAdvancedOptions ? 'rotate-180' : '']"
               fill="none"
@@ -478,14 +483,33 @@ const handleUpgrade = () => {
           
           <Transition name="slide-fade">
             <div v-if="showAdvancedOptions" class="space-y-6">
-              <!-- Género del Personaje -->
+              <!-- Género del Personaje (PREMIUM) -->
               <div>
                 <label class="block text-text-secondary font-medium mb-3 text-sm">
                   {{ t('create.advancedOptions.genderLabel') }}
-                  <span class="ml-2 text-text-tertiary text-xs">({{ t('create.characters.optional') }})</span>
+                  <span v-if="!userStore.currentUser?.isPremium" class="ml-2 px-2 py-0.5 bg-accent-gold/20 text-accent-gold rounded text-xs">
+                    🔒 Premium
+                  </span>
+                  <span v-else class="ml-2 text-text-tertiary text-xs">({{ t('create.characters.optional') }})</span>
                 </label>
                 
-                <div class="grid grid-cols-2 gap-3">
+                <!-- Si NO es premium, mostrar bloqueado -->
+                <div v-if="!userStore.currentUser?.isPremium">
+                  <button
+                    @click="showUpgradeSlideout = true"
+                    class="w-full flex items-center justify-center space-x-3 py-6 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-accent-gold hover:bg-accent-gold/5 transition-all cursor-pointer group"
+                  >
+                    <div class="text-center">
+                      <div class="text-4xl mb-2">🔒</div>
+                      <span class="text-accent-gold font-semibold group-hover:text-accent-gold/80 transition-colors">
+                        Actualiza a Premium para desbloquear
+                      </span>
+                    </div>
+                  </button>
+                </div>
+                
+                <!-- Si ES premium, mostrar opciones -->
+                <div v-else class="grid grid-cols-2 gap-3">
                   <button
                     @click="selectedGender = selectedGender === 'female' ? '' : 'female'"
                     :class="[
@@ -513,14 +537,33 @@ const handleUpgrade = () => {
                 </div>
               </div>
 
-              <!-- Tipo de Cuerpo -->
+              <!-- Tipo de Cuerpo (PREMIUM) -->
               <div>
                 <label class="block text-text-secondary font-medium mb-3 text-sm">
                   {{ t('create.advancedOptions.bodyTypeLabel') }}
-                  <span class="ml-2 text-text-tertiary text-xs">({{ t('create.characters.optional') }})</span>
+                  <span v-if="!userStore.currentUser?.isPremium" class="ml-2 px-2 py-0.5 bg-accent-gold/20 text-accent-gold rounded text-xs">
+                    🔒 Premium
+                  </span>
+                  <span v-else class="ml-2 text-text-tertiary text-xs">({{ t('create.characters.optional') }})</span>
                 </label>
                 
-                <div class="grid grid-cols-2 gap-3">
+                <!-- Si NO es premium, mostrar bloqueado -->
+                <div v-if="!userStore.currentUser?.isPremium">
+                  <button
+                    @click="showUpgradeSlideout = true"
+                    class="w-full flex items-center justify-center space-x-3 py-6 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-accent-gold hover:bg-accent-gold/5 transition-all cursor-pointer group"
+                  >
+                    <div class="text-center">
+                      <div class="text-4xl mb-2">🔒</div>
+                      <span class="text-accent-gold font-semibold group-hover:text-accent-gold/80 transition-colors">
+                        Actualiza a Premium para desbloquear
+                      </span>
+                    </div>
+                  </button>
+                </div>
+                
+                <!-- Si ES premium, mostrar opciones -->
+                <div v-else class="grid grid-cols-2 gap-3">
                   <button
                     @click="selectedBodyType = selectedBodyType === 'female' ? '' : 'female'"
                     :class="[
@@ -548,13 +591,33 @@ const handleUpgrade = () => {
                 </div>
               </div>
 
-              <!-- Pose del Personaje -->
+              <!-- Pose del Personaje (PREMIUM) -->
               <div>
                 <label class="block text-text-secondary font-medium mb-2 text-sm">
                   {{ t('create.advancedOptions.poseLabel') }}
-                  <span class="ml-2 text-text-tertiary text-xs">({{ t('create.characters.optional') }})</span>
+                  <span v-if="!userStore.currentUser?.isPremium" class="ml-2 px-2 py-0.5 bg-accent-gold/20 text-accent-gold rounded text-xs">
+                    🔒 Premium
+                  </span>
+                  <span v-else class="ml-2 text-text-tertiary text-xs">({{ t('create.characters.optional') }})</span>
                 </label>
                 
+                <!-- Si NO es premium, mostrar bloqueado -->
+                <div v-if="!userStore.currentUser?.isPremium">
+                  <button
+                    @click="showUpgradeSlideout = true"
+                    class="w-full flex items-center justify-center space-x-3 py-6 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-accent-gold hover:bg-accent-gold/5 transition-all cursor-pointer group"
+                  >
+                    <div class="text-center">
+                      <div class="text-4xl mb-2">🔒</div>
+                      <span class="text-accent-gold font-semibold group-hover:text-accent-gold/80 transition-colors">
+                        Actualiza a Premium para desbloquear
+                      </span>
+                    </div>
+                  </button>
+                </div>
+                
+                <!-- Si ES premium, mostrar input -->
+                <div v-else>
                 <div v-if="!posePreviewUrl" class="relative">
                   <input
                     type="file"
@@ -581,6 +644,7 @@ const handleUpgrade = () => {
                   >
                     <XMarkIcon class="h-5 w-5" />
                   </button>
+                </div>
                 </div>
                 
                 <p class="text-text-tertiary text-sm mt-2">

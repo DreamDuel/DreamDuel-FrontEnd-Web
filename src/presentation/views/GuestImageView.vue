@@ -7,16 +7,12 @@ import { SparklesIcon, PhotoIcon, XMarkIcon, ArrowRightIcon } from '@heroicons/v
 const { t } = useI18n();
 
 const router = useRouter();
-const prompt = ref('');
-const negativePrompt = ref('');
 const isGenerating = ref(false);
 const showRegisterPrompt = ref(false);
 const characterImage = ref<File | null>(null);
 const imagePreviewUrl = ref<string>('');
 const generatedImageUrl = ref<string>('');
 const showAdvancedOptions = ref(false);
-
-// El prompt ya no se genera automáticamente, el usuario lo escribe directamente
 
 const handleFileSelect = (event: Event) => {
   const target = event.target as HTMLInputElement;
@@ -57,7 +53,7 @@ const canGenerate = computed(() => {
   return characterImage.value !== null && !isGenerating.value;
 });
 
-const generateStory = async () => {
+const generateImage = async () => {
   if (!canGenerate.value) return;
   
   isGenerating.value = true;
@@ -65,8 +61,6 @@ const generateStory = async () => {
   // Simular generación de imagen única
   setTimeout(() => {
     console.log('Generating guest image:', {
-      prompt: prompt.value,
-      negativePrompt: negativePrompt.value,
       characterImage: characterImage.value?.name
     });
     
@@ -81,9 +75,7 @@ const generateStory = async () => {
 
 const goToRegister = () => {
   // Guardar datos en sessionStorage para recuperar después del registro
-  sessionStorage.setItem('guestStory', JSON.stringify({
-    prompt: prompt.value,
-    negativePrompt: negativePrompt.value,
+  sessionStorage.setItem('guestImage', JSON.stringify({
     imageUrl: generatedImageUrl.value
   }));
   router.push('/register');
@@ -127,13 +119,13 @@ const skipToLogin = () => {
         <!-- Hero Section -->
         <div class="text-center mb-12">
           <div class="inline-flex items-center space-x-3 mb-4">
-            <SparklesIcon class="h-12 w-12 text-primary animate-pulse" />
+            <PhotoIcon class="h-12 w-12 text-primary animate-pulse" />
           </div>
           <h1 class="text-5xl md:text-6xl font-bold text-text-primary mb-4">
-            {{ t('guest.hero.title') }}
+            Generador de Imágenes IA
           </h1>
           <p class="text-text-secondary text-xl mb-6">
-            {{ t('guest.hero.subtitle') }}
+            Crea imágenes únicas con inteligencia artificial
           </p>
           <div class="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-text-tertiary">
             <div class="flex items-center space-x-2">
@@ -156,7 +148,7 @@ const skipToLogin = () => {
           <!-- Upload de Imagen -->
           <div class="mb-8">
             <label class="block text-text-primary font-semibold mb-3 text-base md:text-lg">
-              1. {{ t('guest.steps.uploadImage') }}
+              1. Sube tu imagen de referencia
             </label>
             
             <div v-if="!imagePreviewUrl" class="relative">
@@ -188,7 +180,7 @@ const skipToLogin = () => {
             </div>
           </div>
 
-          <!-- Campos de PROMPT y NEGATIVE PROMPT BLOQUEADOS -->
+          <!-- PROMPT y NEGATIVE PROMPT BLOQUEADOS -->
           <div class="mb-8">
             <label class="block text-text-primary font-semibold mb-3 text-base md:text-lg">
               2. Opciones de Generación
@@ -198,7 +190,7 @@ const skipToLogin = () => {
             <!-- PROMPT Bloqueado -->
             <div class="mb-4">
               <label class="block text-text-secondary font-medium mb-2 text-sm">
-                {{ t('guest.steps.promptDescription') }}
+                Prompt (Descripción)
               </label>
               <button
                 @click="goToRegister"
@@ -212,14 +204,14 @@ const skipToLogin = () => {
                 </div>
               </button>
               <p class="text-text-tertiary text-sm mt-2">
-                💡 {{ t('guest.steps.promptExample') }}
+                💡 Describe cómo quieres que se vea la imagen
               </p>
             </div>
             
             <!-- NEGATIVE PROMPT Bloqueado -->
             <div>
               <label class="block text-text-secondary font-medium mb-2 text-sm">
-                {{ t('guest.steps.negativePromptDescription') }}
+                Negative Prompt (Qué evitar)
               </label>
               <button
                 @click="goToRegister"
@@ -233,7 +225,7 @@ const skipToLogin = () => {
                 </div>
               </button>
               <p class="text-text-tertiary text-sm mt-2">
-                💡 {{ t('guest.steps.negativePromptExample') }}
+                💡 Define qué elementos no quieres en la imagen
               </p>
             </div>
           </div>
@@ -334,7 +326,7 @@ const skipToLogin = () => {
 
           <!-- Botón de Generar -->
           <button
-            @click="generateStory"
+            @click="generateImage"
             :disabled="!canGenerate"
             :class="[
               'w-full py-5 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-3',
@@ -348,16 +340,16 @@ const skipToLogin = () => {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <span>{{ t('guest.generate.generating') }}</span>
+              <span>Generando Imagen...</span>
             </template>
             <template v-else>
-              <SparklesIcon class="h-6 w-6" />
-              <span>{{ t('guest.generate.button') }}</span>
+              <PhotoIcon class="h-6 w-6" />
+              <span>Generar Imagen</span>
             </template>
           </button>
 
           <p v-if="!canGenerate && !isGenerating" class="text-text-tertiary text-sm mt-3 text-center">
-            {{ !characterImage ? t('guest.generate.uploadRequired') : 'Sube una imagen para comenzar' }}
+            {{ !characterImage ? 'Sube una imagen para comenzar' : '' }}
           </p>
         </div>
 
@@ -378,9 +370,9 @@ const skipToLogin = () => {
               <div class="text-text-tertiary">{{ t('guest.benefits.saveDesc') }}</div>
             </div>
             <div class="text-center">
-              <div class="text-2xl mb-2">👥</div>
-              <div class="text-text-primary font-semibold">{{ t('guest.benefits.inviteFriends') }}</div>
-              <div class="text-text-tertiary">{{ t('guest.benefits.inviteDesc') }}</div>
+              <div class="text-2xl mb-2">🎨</div>
+              <div class="text-text-primary font-semibold">Prompts Personalizados</div>
+              <div class="text-text-tertiary">Controla cada detalle de tus imágenes</div>
             </div>
           </div>
         </div>
@@ -399,10 +391,10 @@ const skipToLogin = () => {
             <div class="text-center mb-6">
               <div class="text-6xl mb-4">🎉</div>
               <h2 class="text-2xl font-bold text-text-primary mb-2">
-                {{ t('guest.modal.ready') }}
+                ¡Tu imagen está lista!
               </h2>
               <p class="text-text-secondary">
-                {{ t('guest.modal.subtitle') }}
+                Regístrate gratis para descargarla y crear más
               </p>
             </div>
 

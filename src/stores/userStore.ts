@@ -2,6 +2,14 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 
+interface GeneratedImage {
+  id: string;
+  imageUrl: string;
+  prompt: string;
+  negativePrompt?: string;
+  createdAt: Date;
+}
+
 interface User {
   id: string;
   username: string;
@@ -17,6 +25,7 @@ interface User {
   isPremium: boolean;
   createdAt: Date;
   myStories: string[]; // IDs de historias creadas
+  myImages: GeneratedImage[]; // Imágenes generadas (siempre privadas)
   savedStories: string[]; // IDs de historias guardadas
   likedStories: string[]; // IDs de historias con like
   following: string[]; // IDs de usuarios que sigo
@@ -70,6 +79,7 @@ export const useUserStore = defineStore('user', () => {
       isPremium: false,
       createdAt: new Date(),
       myStories: [],
+      myImages: [],
       savedStories: [],
       likedStories: [],
       following: [],
@@ -174,6 +184,7 @@ export const useUserStore = defineStore('user', () => {
       
       // Inicializar arrays si no existen
       if (!user.myStories) user.myStories = [];
+      if (!user.myImages) user.myImages = [];
       if (!user.savedStories) user.savedStories = [];
       if (!user.likedStories) user.likedStories = [];
       
@@ -247,6 +258,31 @@ export const useUserStore = defineStore('user', () => {
       currentUser.value.myStories.push(storyId);
       currentUser.value.stats.storiesCreated++;
       localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+    }
+  }
+
+  function addImageToProfile(imageUrl: string, prompt: string, negativePrompt?: string) {
+    if (currentUser.value) {
+      if (!currentUser.value.myImages) currentUser.value.myImages = [];
+      const newImage = {
+        id: `img-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        imageUrl,
+        prompt,
+        negativePrompt,
+        createdAt: new Date()
+      };
+      currentUser.value.myImages.unshift(newImage); // Agregar al inicio
+      localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+    }
+  }
+
+  function deleteImage(imageId: string) {
+    if (currentUser.value?.myImages) {
+      const index = currentUser.value.myImages.findIndex(img => img.id === imageId);
+      if (index > -1) {
+        currentUser.value.myImages.splice(index, 1);
+        localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+      }
     }
   }
 
@@ -408,6 +444,8 @@ export const useUserStore = defineStore('user', () => {
     updateProfile,
     updateAvatar,
     addStoryToProfile,
+    addImageToProfile,
+    deleteImage,
     toggleSaveStory,
     toggleLikeStory,
     toggleFollowUser,

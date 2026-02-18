@@ -17,6 +17,8 @@ import StoryDetailsView from '@/presentation/views/StoryDetailsView.vue';
 import StoryViewerScreen from '@/presentation/views/StoryViewerScreen.vue';
 import PricingView from '@/presentation/views/PricingView.vue';
 import GuestCreateView from '@/presentation/views/GuestCreateView.vue';
+import GuestImageView from '@/presentation/views/GuestImageView.vue';
+import ImageGeneratorView from '@/presentation/views/ImageGeneratorView.vue';
 import NicheLandingView from '@/presentation/views/NicheLandingView.vue';
 import TermsView from '@/presentation/views/TermsView.vue';
 import PrivacyView from '@/presentation/views/PrivacyView.vue';
@@ -61,6 +63,12 @@ const router = createRouter({
       meta: { hideNavigation: true }
     },
     {
+      path: '/guest-image',
+      name: 'guest-image',
+      component: GuestImageView,
+      meta: { hideNavigation: true }
+    },
+    {
       path: '/generador/:niche',
       name: 'niche-landing',
       component: NicheLandingView,
@@ -75,6 +83,11 @@ const router = createRouter({
       path: '/create',
       name: 'create',
       component: CreateView
+    },
+    {
+      path: '/images',
+      name: 'images',
+      component: ImageGeneratorView
     },
     {
       path: '/profile',

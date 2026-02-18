@@ -139,14 +139,17 @@ export default {
     tabs: {
       myStories: 'My Stories',
       saved: 'Saved',
-      liked: 'Liked'
+      liked: 'Liked',
+      images: 'Images'
     },
     empty: {
       noStories: 'You haven\'t created any stories yet',
       createFirst: 'Create your first story',
       noSaved: 'You have no saved stories',
       noLiked: 'You haven\'t liked any stories',
-      explore: 'Explore stories'
+      explore: 'Explore stories',
+      noImages: 'You haven\'t generated any images yet',
+      generateFirst: 'Generate your first image'
     },
     credits: {
       freeImages: 'Free images',
