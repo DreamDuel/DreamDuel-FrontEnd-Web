@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 import { Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon, SparklesIcon, ClockIcon, GiftIcon, PhotoIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import { useStoryStore } from '@/stores/storyStore';
+// IMPORTS DE HISTORIAS - Comentados temporalmente (futuro uso)
+// import { useStoryStore } from '@/stores/storyStore';
+// import StoryCard from '@/presentation/components/StoryCard.vue';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import StoryCard from '@/presentation/components/StoryCard.vue';
 
 const { t } = useI18n();
-const storyStore = useStoryStore();
+// STORES DE HISTORIAS - Comentado temporalmente (futuro uso)
+// const storyStore = useStoryStore();
 const userStore = useUserStore();
 const router = useRouter();
-const currentTab = ref<'stories' | 'saved' | 'liked' | 'images'>('stories');
+// TABS DE HISTORIAS - Comentados temporalmente (futuro uso)
+// const currentTab = ref<'stories' | 'saved' | 'liked' | 'images'>('stories');
+const currentTab = ref<'images'>('images');
 const isEditingProfile = ref(false);
 const editForm = ref({
   username: '',
@@ -26,12 +30,12 @@ onMounted(async () => {
   // Cargar usuario desde localStorage si existe
   userStore.loadUserFromStorage();
   
-  // Cargar historias
-  await Promise.all([
-    storyStore.fetchStories(),
-    storyStore.fetchTrendingStories(),
-    storyStore.fetchNewStories()
-  ]);
+  // CARGA DE HISTORIAS - Comentada temporalmente (futuro uso)
+  // await Promise.all([
+  //   storyStore.fetchStories(),
+  //   storyStore.fetchTrendingStories(),
+  //   storyStore.fetchNewStories()
+  // ]);
   
   // Inicializar formulario de edición
   if (userStore.currentUser) {
@@ -75,6 +79,8 @@ const userStats = computed(() => {
   };
 });
 
+// COMPUTED PARA HISTORIAS - Comentados temporalmente (futuro uso)
+/*
 const myStories = computed(() => {
   if (!userStore.currentUser?.myStories) return [];
   const allStories = [...storyStore.stories, ...storyStore.trendingStories, ...storyStore.newStories];
@@ -104,6 +110,7 @@ const likedStoriesList = computed(() => {
     userStore.currentUser?.likedStories.includes(s.id)
   );
 });
+*/
 
 const handleLogout = () => {
   userStore.logout();
@@ -350,6 +357,7 @@ const handleAvatarChange = async (event: Event) => {
 
       <!-- Tabs -->
       <div class="flex space-x-4 mb-6">
+        <!-- TABS DE HISTORIAS - Comentados temporalmente (futuro uso)
         <button
           @click="currentTab = 'stories'"
           :class="[
@@ -383,6 +391,7 @@ const handleAvatarChange = async (event: Event) => {
         >
           {{ t('profile.tabs.liked') }} ({{ likedStoriesList.length }})
         </button>
+        -->
         <button
           @click="currentTab = 'images'"
           :class="[
@@ -397,6 +406,7 @@ const handleAvatarChange = async (event: Event) => {
       </div>
 
       <!-- Content -->
+      <!-- CONTENIDO DE HISTORIAS - Comentado temporalmente (futuro uso)
       <div v-if="currentTab === 'stories'">
         <div v-if="myStories.length === 0" class="text-center py-20">
           <p class="text-text-secondary text-lg mb-4">{{ t('profile.empty.noStories') }}</p>
@@ -441,6 +451,7 @@ const handleAvatarChange = async (event: Event) => {
           />
         </div>
       </div>
+      -->
 
       <div v-if="currentTab === 'images'">
         <div v-if="!userStore.currentUser?.myImages || userStore.currentUser.myImages.length === 0" class="text-center py-20">

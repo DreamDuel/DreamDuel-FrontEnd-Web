@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
 import { useI18n } from 'vue-i18n';
 import { PhotoIcon, XMarkIcon } from '@heroicons/vue/24/solid';
@@ -9,6 +9,7 @@ import UpgradeSlideout from '@/presentation/components/UpgradeSlideout.vue';
 
 const { t } = useI18n();
 const router = useRouter();
+const route = useRoute();
 const userStore = useUserStore();
 
 const prompt = ref('');
@@ -23,6 +24,13 @@ const posePreviewUrl = ref<string>('');
 const showAdvancedOptions = ref(false);
 const selectedGender = ref<string>('');
 const selectedBodyType = ref<string>('');
+
+// Cargar prompt desde query params si viene desde HomeView
+onMounted(() => {
+  if (route.query.prompt && typeof route.query.prompt === 'string') {
+    prompt.value = route.query.prompt;
+  }
+});
 
 const handleFileSelect = (event: Event) => {
   const target = event.target as HTMLInputElement;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SparklesIcon, UserCircleIcon, MagnifyingGlassIcon, Cog6ToothIcon, PhotoIcon } from '@heroicons/vue/24/outline';
+import { SparklesIcon, UserCircleIcon, /* MagnifyingGlassIcon, */ Cog6ToothIcon, PhotoIcon } from '@heroicons/vue/24/outline';
 import BottomNavigation from '@/presentation/components/BottomNavigation.vue';
 import WelcomeBanner from '@/presentation/components/WelcomeBanner.vue';
 import { useUserStore } from '@/stores/userStore';
@@ -65,6 +65,7 @@ onBeforeUnmount(() => {
             >
               {{ t('nav.home') }}
             </router-link>
+            <!-- NAVEGACIÓN DE HISTORIAS - Comentada temporalmente (futuro uso)
             <router-link 
               to="/create" 
               class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors font-medium"
@@ -73,17 +74,18 @@ onBeforeUnmount(() => {
               <span>Historias</span>
             </router-link>
             <router-link 
+              to="/search" 
+              class="text-text-secondary hover:text-primary transition-colors font-medium"
+            >
+              <MagnifyingGlassIcon class="h-6 w-6" />
+            </router-link>
+            -->
+            <router-link 
               to="/images" 
               class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors font-medium"
             >
               <PhotoIcon class="h-5 w-5" />
               <span>Imágenes</span>
-            </router-link>
-            <router-link 
-              to="/search" 
-              class="text-text-secondary hover:text-primary transition-colors font-medium"
-            >
-              <MagnifyingGlassIcon class="h-6 w-6" />
             </router-link>
           </div>
 

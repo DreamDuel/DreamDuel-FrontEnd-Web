@@ -35,6 +35,7 @@ const languages = [
 ];
 
 onMounted(() => {
+  userStore.loadUserFromStorage();
   if (userStore.currentUser) {
     formData.value.username = userStore.currentUser.username;
     formData.value.email = userStore.currentUser.email;

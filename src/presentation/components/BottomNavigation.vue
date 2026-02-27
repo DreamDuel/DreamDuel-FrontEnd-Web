@@ -11,8 +11,8 @@ const { t } = useI18n();
 const currentTab = computed(() => {
   const path = route.path;
   if (path === '/' || path.startsWith('/home')) return 'home';
-  if (path === '/search') return 'search';
-  if (path === '/create') return 'create';
+  // if (path === '/search') return 'search'; // HISTORIAS - Comentado temporalmente
+  // if (path === '/create') return 'create'; // HISTORIAS - Comentado temporalmente
   if (path === '/images') return 'images';
   if (path === '/profile') return 'profile';
   return 'home';
@@ -20,8 +20,9 @@ const currentTab = computed(() => {
 
 const navItems = computed(() => [
   { id: 'home', label: t('nav.home'), icon: HomeIcon, iconSolid: HomeIconSolid, path: '/home' },
-  { id: 'search', label: t('nav.search'), icon: MagnifyingGlassIcon, iconSolid: MagnifyingGlassIconSolid, path: '/search' },
-  { id: 'create', label: t('nav.create'), icon: SparklesIcon, iconSolid: SparklesIconSolid, path: '/create' },
+  // NAVEGACIÓN DE HISTORIAS - Comentada temporalmente (futuro uso)
+  // { id: 'search', label: t('nav.search'), icon: MagnifyingGlassIcon, iconSolid: MagnifyingGlassIconSolid, path: '/search' },
+  // { id: 'create', label: t('nav.create'), icon: SparklesIcon, iconSolid: SparklesIconSolid, path: '/create' },
   { id: 'images', label: 'Imágenes', icon: PhotoIcon, iconSolid: PhotoIconSolid, path: '/images' },
   { id: 'profile', label: t('nav.profile'), icon: UserCircleIcon, iconSolid: UserCircleIconSolid, path: '/profile' }
 ]);

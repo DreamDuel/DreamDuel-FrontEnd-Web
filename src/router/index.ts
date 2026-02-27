@@ -79,11 +79,12 @@ const router = createRouter({
       name: 'home',
       component: HomeView
     },
-    {
-      path: '/create',
-      name: 'create',
-      component: CreateView
-    },
+    // RUTAS DE HISTORIAS - Comentadas temporalmente (futuro uso)
+    // {
+    //   path: '/create',
+    //   name: 'create',
+    //   component: CreateView
+    // },
     {
       path: '/images',
       name: 'images',
@@ -94,16 +95,16 @@ const router = createRouter({
       name: 'profile',
       component: ProfileView
     },
-    {
-      path: '/user/:userId',
-      name: 'publicProfile',
-      component: PublicProfileView
-    },
-    {
-      path: '/search',
-      name: 'search',
-      component: SearchView
-    },
+    // {
+    //   path: '/user/:userId',
+    //   name: 'publicProfile',
+    //   component: PublicProfileView
+    // },
+    // {
+    //   path: '/search',
+    //   name: 'search',
+    //   component: SearchView
+    // },
     {
       path: '/settings',
       name: 'settings',
@@ -121,23 +122,23 @@ const router = createRouter({
       component: LoadingScreen,
       meta: { hideNavigation: true }
     },
-    {
-      path: '/story-details/:id',
-      name: 'story-details',
-      component: StoryDetailsView
-    },
-    {
-      path: '/story-viewer/:id',
-      name: 'story-viewer',
-      component: StoryViewerScreen,
-      meta: { hideNavigation: true }
-    },
-    {
-      path: '/story/:id',
-      name: 'reader',
-      component: ReaderView,
-      meta: { hideNavigation: true, fullscreen: true }
-    },
+    // {
+    //   path: '/story-details/:id',
+    //   name: 'story-details',
+    //   component: StoryDetailsView
+    // },
+    // {
+    //   path: '/story-viewer/:id',
+    //   name: 'story-viewer',
+    //   component: StoryViewerScreen,
+    //   meta: { hideNavigation: true }
+    // },
+    // {
+    //   path: '/story/:id',
+    //   name: 'reader',
+    //   component: ReaderView,
+    //   meta: { hideNavigation: true, fullscreen: true }
+    // },
     {
       path: '/terms',
       name: 'terms',
