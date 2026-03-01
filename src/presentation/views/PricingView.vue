@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/userStore';
 import { 
   SparklesIcon, 
   BoltIcon, 
@@ -12,48 +10,87 @@ import {
 } from '@heroicons/vue/24/outline';
 
 const router = useRouter();
-const userStore = useUserStore();
-const selectedPlan = ref<'monthly' | 'yearly'>('monthly');
 
-const plans = {
-  free: {
-    name: 'Gratis',
-    price: 0,
+// Paquetes de créditos para comprar imágenes
+const pricingPackages = [
+  {
+    id: 'single',
+    name: 'Imagen Individual',
+    price: 0.99,
+    images: 1,
+    pricePerImage: 0.99,
+    badge: null,
+    popular: false,
     features: [
-      { text: '3 imágenes gratis cada 12 horas', included: true },
-      { text: 'Historias con texto ilimitadas', included: true },
-      { text: 'Marca de agua en descargas', included: false },
-      { text: 'Blur en imágenes', included: false },
-      { text: 'Estilos básicos', included: true },
-      { text: 'Soporte prioritario', included: false },
-    ],
+      'Generación en alta calidad',
+      'Sin marca de agua',
+      'Descarga inmediata',
+      'Válido por 30 días'
+    ]
   },
-  premium: {
-    name: 'Premium',
-    monthlyPrice: 9.99,
-    yearlyPrice: 99.99,
+  {
+    id: 'pack-10',
+    name: 'Paquete Básico',
+    price: 7.99,
+    images: 10,
+    pricePerImage: 0.79,
+    badge: 'Ahorro 20%',
+    popular: false,
     features: [
-      { text: 'Imágenes ilimitadas', included: true },
-      { text: 'Sin marcas de agua', included: true },
-      { text: 'Sin blur - Calidad máxima', included: true },
-      { text: 'Todos los estilos premium', included: true },
-      { text: 'Exportar a video para TikTok', included: true },
-      { text: 'Soporte prioritario 24/7', included: true },
-      { text: 'Acceso anticipado a funciones', included: true },
-    ],
+      'Generación en alta calidad',
+      'Sin marca de agua',
+      'Descarga inmediata',
+      'Válido por 60 días',
+      'Ahorra $2.00'
+    ]
   },
-};
+  {
+    id: 'pack-25',
+    name: 'Paquete Popular',
+    price: 17.99,
+    images: 25,
+    pricePerImage: 0.72,
+    badge: 'Ahorro 27%',
+    popular: true,
+    features: [
+      'Generación en alta calidad',
+      'Sin marca de agua',
+      'Descarga inmediata',
+      'Válido por 90 días',
+      'Ahorra $6.75',
+      'Soporte prioritario'
+    ]
+  },
+  {
+    id: 'pack-100',
+    name: 'Paquete Pro',
+    price: 59.99,
+    images: 100,
+    pricePerImage: 0.60,
+    badge: 'Ahorro 40%',
+    popular: false,
+    features: [
+      'Generación en alta calidad',
+      'Sin marca de agua',
+      'Descarga inmediata',
+      'Sin fecha de expiración',
+      'Ahorra $39.00',
+      'Soporte prioritario 24/7',
+      'Acceso anticipado a nuevas funciones'
+    ]
+  }
+];
 
-const handleCheckout = (plan: 'monthly' | 'yearly') => {
+const handlePurchase = (packageId: string) => {
   // Aquí iría la integración con Stripe/PayPal
-  console.log('Iniciando checkout para plan:', plan);
+  console.log('Iniciando compra de paquete:', packageId);
   alert('Próximamente: Integración con pasarela de pago');
 };
 </script>
 
 <template>
   <div class="min-h-screen bg-background-deep py-20 px-4">
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-7xl mx-auto">
       <!-- Header -->
       <div class="text-center mb-12">
         <button @click="router.back()" class="absolute top-6 left-6 text-text-secondary hover:text-text-primary transition-colors">
@@ -63,142 +100,127 @@ const handleCheckout = (plan: 'monthly' | 'yearly') => {
         <div class="flex items-center justify-center space-x-3 mb-4">
           <SparklesIcon class="h-12 w-12 text-primary" />
           <h1 class="text-4xl md:text-5xl font-bold text-text-primary">
-            Elige tu plan
+            Compra Créditos
           </h1>
         </div>
-        <p class="text-text-secondary text-lg max-w-2xl mx-auto">
-          Empieza gratis y actualiza cuando estés listo para crear sin límites
+        <p class="text-text-secondary text-lg max-w-2xl mx-auto mb-4">
+          Tu primera imagen es <span class="text-primary font-bold">GRATIS</span> 🎉
+        </p>
+        <p class="text-text-secondary text-base max-w-2xl mx-auto">
+          Después, elige el paquete que mejor se adapte a tus necesidades
         </p>
       </div>
 
-      <!-- Toggle Monthly/Yearly -->
-      <div class="flex justify-center mb-12">
-        <div class="bg-background-elevated rounded-full p-1 inline-flex">
+      <!-- Pricing Cards Grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-12">
+        <div
+          v-for="pkg in pricingPackages"
+          :key="pkg.id"
+          :class="[
+            'relative rounded-2xl p-6 border transition-all duration-300 hover:scale-105',
+            pkg.popular 
+              ? 'bg-gradient-to-br from-primary/20 via-accent-crimson/10 to-accent-gold/20 border-2 border-primary shadow-xl shadow-primary/20' 
+              : 'bg-background-card border-white/10 hover:border-primary/30'
+          ]"
+        >
+          <!-- Popular Badge -->
+          <div v-if="pkg.popular" class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+            <div class="bg-gradient-to-r from-primary to-accent-crimson text-white px-4 py-1 rounded-full text-xs font-bold flex items-center space-x-1">
+              <StarIcon class="h-3 w-3 fill-current" />
+              <span>MÁS POPULAR</span>
+            </div>
+          </div>
+
+          <!-- Savings Badge -->
+          <div v-else-if="pkg.badge" class="absolute top-4 right-4">
+            <div class="bg-accent-teal/20 text-accent-teal px-2 py-1 rounded text-xs font-bold">
+              {{ pkg.badge }}
+            </div>
+          </div>
+
+          <!-- Package Info -->
+          <div class="text-center mb-6">
+            <h3 class="text-xl font-bold text-text-primary mb-2">{{ pkg.name }}</h3>
+            <div class="flex items-baseline justify-center space-x-1 mb-1">
+              <span class="text-4xl font-bold text-primary">${{ pkg.price }}</span>
+            </div>
+            <p class="text-text-secondary text-sm mb-2">{{ pkg.images }} {{ pkg.images === 1 ? 'imagen' : 'imágenes' }}</p>
+            <p class="text-accent-teal text-xs font-semibold">${{ pkg.pricePerImage.toFixed(2) }} por imagen</p>
+          </div>
+
+          <!-- Features -->
+          <ul class="space-y-3 mb-6">
+            <li 
+              v-for="(feature, index) in pkg.features" 
+              :key="index"
+              class="flex items-start space-x-2 text-sm"
+            >
+              <CheckIcon class="h-5 w-5 text-accent-teal flex-shrink-0 mt-0.5" />
+              <span class="text-text-primary">{{ feature }}</span>
+            </li>
+          </ul>
+
+          <!-- CTA Button -->
           <button
-            @click="selectedPlan = 'monthly'"
+            @click="handlePurchase(pkg.id)"
             :class="[
-              'px-6 py-2 rounded-full font-semibold transition-all',
-              selectedPlan === 'monthly' 
-                ? 'bg-primary text-white' 
-                : 'text-text-secondary hover:text-text-primary'
+              'w-full py-3 rounded-lg font-semibold transition-all duration-300',
+              pkg.popular
+                ? 'bg-gradient-to-r from-primary to-accent-crimson hover:from-primary-light hover:to-accent-crimson/80 text-white shadow-lg hover:shadow-xl'
+                : 'bg-background-elevated hover:bg-primary/20 text-text-primary border border-white/10 hover:border-primary'
             ]"
           >
-            Mensual
-          </button>
-          <button
-            @click="selectedPlan = 'yearly'"
-            :class="[
-              'px-6 py-2 rounded-full font-semibold transition-all relative',
-              selectedPlan === 'yearly' 
-                ? 'bg-primary text-white' 
-                : 'text-text-secondary hover:text-text-primary'
-            ]"
-          >
-            Anual
-            <span class="absolute -top-2 -right-2 bg-accent-crimson text-white text-xs px-2 py-0.5 rounded-full">
-              -17%
-            </span>
+            Comprar Ahora
           </button>
         </div>
       </div>
 
-      <!-- Pricing Cards -->
-      <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-        <!-- Free Plan -->
-        <div class="bg-background-card rounded-2xl p-8 border border-white/10">
-          <div class="text-center mb-6">
-            <h3 class="text-2xl font-bold text-text-primary mb-2">{{ plans.free.name }}</h3>
-            <div class="flex items-baseline justify-center space-x-2">
-              <span class="text-5xl font-bold text-primary">$0</span>
-              <span class="text-text-secondary">/mes</span>
+      <!-- Benefits Section -->
+      <div class="bg-background-card rounded-2xl p-8 border border-white/10 mb-12">
+        <h2 class="text-2xl font-bold text-text-primary text-center mb-6">¿Por qué comprar créditos?</h2>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-primary to-primary-light rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <BoltIcon class="h-8 w-8 text-white" />
             </div>
-          </div>
-
-          <ul class="space-y-4 mb-8">
-            <li 
-              v-for="(feature, index) in plans.free.features" 
-              :key="index"
-              class="flex items-start space-x-3"
-            >
-              <component 
-                :is="feature.included ? CheckIcon : XMarkIcon" 
-                :class="[
-                  'h-6 w-6 flex-shrink-0',
-                  feature.included ? 'text-accent-teal' : 'text-text-tertiary'
-                ]" 
-              />
-              <span :class="feature.included ? 'text-text-primary' : 'text-text-tertiary line-through'">
-                {{ feature.text }}
-              </span>
-            </li>
-          </ul>
-
-          <button
-            @click="router.push('/register')"
-            class="w-full py-3 bg-background-elevated hover:bg-background-card text-text-primary rounded-lg font-semibold transition-all border border-white/10"
-          >
-            Empezar gratis
-          </button>
-        </div>
-
-        <!-- Premium Plan -->
-        <div class="bg-gradient-to-br from-primary/20 via-accent-crimson/10 to-accent-gold/20 rounded-2xl p-8 border-2 border-primary relative overflow-hidden">
-          <div class="absolute top-0 right-0 bg-accent-crimson text-white px-4 py-1 text-sm font-bold">
-            POPULAR
-          </div>
-          
-          <div class="text-center mb-6 relative z-10">
-            <h3 class="text-2xl font-bold text-text-primary mb-2 flex items-center justify-center space-x-2">
-              <span>{{ plans.premium.name }}</span>
-              <StarIcon class="h-6 w-6 text-accent-gold fill-current" />
-            </h3>
-            <div class="flex items-baseline justify-center space-x-2">
-              <span class="text-5xl font-bold text-primary">
-                ${{ selectedPlan === 'monthly' ? plans.premium.monthlyPrice : (plans.premium.yearlyPrice / 12).toFixed(2) }}
-              </span>
-              <span class="text-text-secondary">/mes</span>
-            </div>
-            <p v-if="selectedPlan === 'yearly'" class="text-sm text-text-secondary mt-2">
-              Facturado como ${{ plans.premium.yearlyPrice }}/año
+            <h3 class="font-semibold text-text-primary mb-2">Sin Suscripciones</h3>
+            <p class="text-text-secondary text-sm">
+              Paga solo por lo que usas. Sin cargos recurrentes ni sorpresas.
             </p>
           </div>
 
-          <ul class="space-y-4 mb-8 relative z-10">
-            <li 
-              v-for="(feature, index) in plans.premium.features" 
-              :key="index"
-              class="flex items-start space-x-3"
-            >
-              <CheckIcon class="h-6 w-6 text-accent-teal flex-shrink-0" />
-              <span class="text-text-primary font-medium">
-                {{ feature.text }}
-              </span>
-            </li>
-          </ul>
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <SparklesIcon class="h-8 w-8 text-white" />
+            </div>
+            <h3 class="font-semibold text-text-primary mb-2">Calidad Premium</h3>
+            <p class="text-text-secondary text-sm">
+              Todas las imágenes en alta resolución, sin marcas de agua.
+            </p>
+          </div>
 
-          <button
-            @click="handleCheckout(selectedPlan)"
-            class="w-full py-4 bg-gradient-to-r from-primary to-accent-crimson hover:from-primary-light hover:to-accent-crimson/80 text-white rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-lg relative z-10"
-          >
-            <template v-if="userStore.currentUser?.isPremium">
-              Plan actual
-            </template>
-            <template v-else>
-              Activar Premium
-            </template>
-          </button>
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-accent-teal to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <HeartIcon class="h-8 w-8 text-white" />
+            </div>
+            <h3 class="font-semibold text-text-primary mb-2">Flexibilidad Total</h3>
+            <p class="text-text-secondary text-sm">
+              Usa tus créditos cuando quieras, a tu propio ritmo.
+            </p>
+          </div>
         </div>
       </div>
 
       <!-- FAQ Section -->
-      <div class="mt-20 max-w-3xl mx-auto">
+      <div class="max-w-3xl mx-auto">
         <h2 class="text-3xl font-bold text-text-primary text-center mb-8">Preguntas frecuentes</h2>
         
         <div class="space-y-6">
           <div class="bg-background-card rounded-xl p-6 border border-white/5">
-            <h3 class="font-semibold text-text-primary mb-2">¿Puedo cancelar en cualquier momento?</h3>
+            <h3 class="font-semibold text-text-primary mb-2">¿Expiran los créditos?</h3>
             <p class="text-text-secondary">
-              Sí, puedes cancelar tu suscripción en cualquier momento sin penalización. Seguirás teniendo acceso premium hasta el final del período facturado.
+              La mayoría de los paquetes tienen validez de 30-90 días. El paquete Pro no expira nunca.
             </p>
           </div>
 
@@ -210,16 +232,16 @@ const handleCheckout = (plan: 'monthly' | 'yearly') => {
           </div>
 
           <div class="bg-background-card rounded-xl p-6 border border-white/5">
-            <h3 class="font-semibold text-text-primary mb-2">¿Puedo cambiar de plan?</h3>
+            <h3 class="font-semibold text-text-primary mb-2">¿Puedo obtener un reembolso?</h3>
             <p class="text-text-secondary">
-              Por supuesto. Puedes actualizar o degradar tu plan en cualquier momento desde la configuración de tu cuenta.
+              Sí, ofrecemos reembolso completo dentro de los primeros 7 días si no has usado ningún crédito del paquete.
             </p>
           </div>
 
           <div class="bg-background-card rounded-xl p-6 border border-white/5">
-            <h3 class="font-semibold text-text-primary mb-2">¿Hay descuentos para estudiantes?</h3>
+            <h3 class="font-semibold text-text-primary mb-2">¿La primera imagen realmente es gratis?</h3>
             <p class="text-text-secondary">
-              Sí, ofrecemos un 30% de descuento para estudiantes con email .edu verificado. Contáctanos para más información.
+              ¡Sí! Todos los usuarios nuevos reciben su primera generación completamente gratis, sin tarjeta de crédito requerida.
             </p>
           </div>
         </div>
@@ -233,15 +255,15 @@ const handleCheckout = (plan: 'monthly' | 'yearly') => {
         </div>
         <div class="flex items-center space-x-2">
           <span class="text-2xl">✓</span>
-          <span>Sin permanencia</span>
+          <span>Sin suscripciones</span>
         </div>
         <div class="flex items-center space-x-2">
           <span class="text-2xl">💳</span>
-          <span>Reembolso 14 días</span>
+          <span>Reembolso 7 días</span>
         </div>
         <div class="flex items-center space-x-2">
           <span class="text-2xl">⚡</span>
-          <span>Activación instantánea</span>
+          <span>Créditos instantáneos</span>
         </div>
       </div>
     </div>

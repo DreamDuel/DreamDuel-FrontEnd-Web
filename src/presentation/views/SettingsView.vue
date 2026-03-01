@@ -12,7 +12,6 @@ const { t, locale } = useI18n();
 const formData = ref({
   username: '',
   email: '',
-  bio: '',
   notifications: true,
   theme: 'dark'
 });
@@ -39,7 +38,6 @@ onMounted(() => {
   if (userStore.currentUser) {
     formData.value.username = userStore.currentUser.username;
     formData.value.email = userStore.currentUser.email;
-    formData.value.bio = userStore.currentUser.bio;
   }
 });
 
@@ -57,9 +55,7 @@ const goBack = () => {
 
 const saveProfile = () => {
   userStore.updateProfile({
-    username: formData.value.username,
-    email: formData.value.email,
-    bio: formData.value.bio
+    username: formData.value.username
   });
   successMessage.value = t('settings.account.saved');
   setTimeout(() => successMessage.value = '', 3000);
@@ -150,17 +146,6 @@ const logout = () => {
             />
           </div>
 
-          <!-- Bio -->
-          <div>
-            <label class="block text-text-secondary text-sm font-medium mb-2">{{ t('settings.account.bio') }}</label>
-            <textarea
-              v-model="formData.bio"
-              rows="3"
-              :placeholder="t('settings.account.bioPlaceholder')"
-              class="w-full px-4 py-3 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none resize-none"
-            />
-          </div>
-
           <!-- Change Password -->
           <button
             @click="showPasswordModal = true"
@@ -235,36 +220,6 @@ const logout = () => {
             </button>
           </div>
         </div>
-      </div>
-
-      <!-- Premium Section -->
-      <div class="bg-gradient-to-r from-accent-purple/20 to-primary/20 rounded-2xl p-6 mb-6 border border-accent-purple/30">
-        <div class="flex items-start justify-between mb-4">
-          <div>
-            <div class="flex items-center space-x-2 mb-2">
-              <span class="text-2xl">💎</span>
-              <h2 class="text-xl font-bold text-text-primary">{{ t('settings.premium.title') }}</h2>
-            </div>
-            <p class="text-text-secondary mb-4">{{ t('settings.premium.description') }}</p>
-            <ul class="space-y-2 mb-6">
-              <li class="flex items-center space-x-2 text-text-secondary">
-                <span class="text-accent-teal">✓</span>
-                <span>{{ t('settings.premium.features.unlimited') }}</span>
-              </li>
-              <li class="flex items-center space-x-2 text-text-secondary">
-                <span class="text-accent-teal">✓</span>
-                <span>{{ t('settings.premium.features.exclusiveStyles') }}</span>
-              </li>
-              <li class="flex items-center space-x-2 text-text-secondary">
-                <span class="text-accent-teal">✓</span>
-                <span>{{ t('settings.premium.features.noAds') }}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <button class="w-full px-6 py-3 bg-gradient-to-r from-accent-purple to-primary hover:from-accent-purple/80 hover:to-primary/80 text-white font-semibold rounded-xl transition-all">
-          {{ t('settings.premium.upgradeButton') }}
-        </button>
       </div>
 
       <!-- Legal Section -->

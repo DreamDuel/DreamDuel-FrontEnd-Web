@@ -15,30 +15,12 @@ interface User {
   username: string;
   email: string;
   avatarUrl: string;
-  bio: string;
-  stats: {
-    storiesCreated: number;
-    totalLikes: number;
-    followers: number;
-    following: number;
-  };
-  isPremium: boolean;
+  hasUsedFreeGeneration: boolean; // Primera imagen gratis
+  totalImagesGenerated: number;
   createdAt: Date;
-  myStories: string[]; // IDs de historias creadas
-  myImages: GeneratedImage[]; // Imágenes generadas (siempre privadas)
-  savedStories: string[]; // IDs de historias guardadas
-  likedStories: string[]; // IDs de historias con like
-  following: string[]; // IDs de usuarios que sigo
-  followers: string[]; // IDs de seguidores
-  // Sistema de créditos y límites
-  credits: {
-    freeImagesLeft: number; // 3 imágenes gratis al registrarse
-    lastImageResetDate: Date; // Para restauración de 12h
-    totalImagesGenerated: number;
-    referralCode: string; // Código único para invitar amigos
-    referralsCount: number; // Amigos invitados
-  };
-  // Métricas de uso (PQLs)
+  myStories: string[]; // IDs de historias creadas (comentado - futuro uso)
+  myImages: GeneratedImage[]; // Imágenes generadas
+  // Métricas de uso
   usageMetrics: {
     generationsToday: number;
     blurClicksToday: number;
@@ -62,35 +44,16 @@ export const useUserStore = defineStore('user', () => {
   // Actions
   function register(username: string, email: string, _password: string) {
     // Crear usuario simulado
-    const referralCode = `DD${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-    
     const newUser: User = {
       id: `user-${Date.now()}`,
       username,
       email,
       avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=0099FF&color=fff&size=200`,
-      bio: '',
-      stats: {
-        storiesCreated: 0,
-        totalLikes: 0,
-        followers: 0,
-        following: 0
-      },
-      isPremium: false,
+      hasUsedFreeGeneration: false, // Primera imagen es gratis
+      totalImagesGenerated: 0,
       createdAt: new Date(),
       myStories: [],
       myImages: [],
-      savedStories: [],
-      likedStories: [],
-      following: [],
-      followers: [],
-      credits: {
-        freeImagesLeft: 3, // Pack de bienvenida: 3 imágenes gratis
-        lastImageResetDate: new Date(),
-        totalImagesGenerated: 0,
-        referralCode: referralCode,
-        referralsCount: 0
-      },
       usageMetrics: {
         generationsToday: 0,
         blurClicksToday: 0,
@@ -161,15 +124,28 @@ export const useUserStore = defineStore('user', () => {
     if (savedUser && savedAuth === 'true') {
       const user = JSON.parse(savedUser);
       
-      // Inicializar propiedades nuevas si no existen (retrocompatibilidad)
-      if (!user.credits) {
-        user.credits = {
-          freeImagesLeft: 3,
-          lastImageResetDate: new Date(),
-          totalImagesGenerated: 0,
-          referralCode: 'DD' + Math.random().toString(36).substring(2, 8).toUpperCase(),
-          referralsCount: 0
-        };
+      // Migrar de sistema antiguo (créditos) a nuevo (pago por imagen)
+      if (user.credits !== undefined) {
+        // Si tenía créditos, considerar que ya usó su imagen gratis
+        user.hasUsedFreeGeneration = user.credits.freeImagesLeft < 3;
+        user.totalImagesGenerated = user.credits.totalImagesGenerated || 0;
+        delete user.credits; // Eliminar sistema antiguo
+        delete user.isPremium; // Eliminar sistema premium
+      }
+      
+      // Eliminar propiedades de red social si existen
+      if (user.stats !== undefined) delete user.stats;
+      if (user.followers !== undefined) delete user.followers;
+      if (user.following !== undefined) delete user.following;
+      if (user.savedStories !== undefined) delete user.savedStories;
+      if (user.likedStories !== undefined) delete user.likedStories;
+      
+      // Inicializar propiedades nuevas si no existen
+      if (user.hasUsedFreeGeneration === undefined) {
+        user.hasUsedFreeGeneration = false;
+      }
+      if (user.totalImagesGenerated === undefined) {
+        user.totalImagesGenerated = 0;
       }
       
       if (!user.usageMetrics) {
@@ -185,17 +161,12 @@ export const useUserStore = defineStore('user', () => {
       // Inicializar arrays si no existen
       if (!user.myStories) user.myStories = [];
       if (!user.myImages) user.myImages = [];
-      if (!user.savedStories) user.savedStories = [];
-      if (!user.likedStories) user.likedStories = [];
       
       currentUser.value = user;
       isAuthenticated.value = true;
       
       // Guardar usuario actualizado
       localStorage.setItem('dreamduel_user', JSON.stringify(user));
-      
-      // Verificar y resetear créditos si es necesario
-      setTimeout(() => checkAndResetCredits(), 100);
       
       // Sincronizar con storyStore
       // Nota: Hacemos esto de forma diferida para evitar dependencias circulares
@@ -256,7 +227,6 @@ export const useUserStore = defineStore('user', () => {
     if (currentUser.value) {
       if (!currentUser.value.myStories) currentUser.value.myStories = [];
       currentUser.value.myStories.push(storyId);
-      currentUser.value.stats.storiesCreated++;
       localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
     }
   }
@@ -272,6 +242,7 @@ export const useUserStore = defineStore('user', () => {
         createdAt: new Date()
       };
       currentUser.value.myImages.unshift(newImage); // Agregar al inicio
+      currentUser.value.totalImagesGenerated++;
       localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
     }
   }
@@ -286,107 +257,35 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  function toggleSaveStory(storyId: string) {
-    if (currentUser.value) {
-      if (!currentUser.value.savedStories) currentUser.value.savedStories = [];
-      const index = currentUser.value.savedStories.indexOf(storyId);
-      if (index > -1) {
-        currentUser.value.savedStories.splice(index, 1);
-      } else {
-        currentUser.value.savedStories.push(storyId);
-      }
-      localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
-    }
-  }
-
-  function toggleLikeStory(storyId: string) {
-    if (currentUser.value) {
-      if (!currentUser.value.likedStories) currentUser.value.likedStories = [];
-      const index = currentUser.value.likedStories.indexOf(storyId);
-      if (index > -1) {
-        currentUser.value.likedStories.splice(index, 1);
-        currentUser.value.stats.totalLikes--;
-      } else {
-        currentUser.value.likedStories.push(storyId);
-        currentUser.value.stats.totalLikes++;
-      }
-      localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
-    }
-  }
-
-  function toggleFollowUser(userId: string) {
-    if (currentUser.value) {
-      if (!currentUser.value.following) currentUser.value.following = [];
-      const index = currentUser.value.following.indexOf(userId);
-      
-      if (index > -1) {
-        // Dejar de seguir
-        currentUser.value.following.splice(index, 1);
-        currentUser.value.stats.following--;
-      } else {
-        // Seguir
-        currentUser.value.following.push(userId);
-        currentUser.value.stats.following++;
-      }
-      
-      localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
-    }
-  }
-
-  function isFollowing(userId: string): boolean {
-    if (!currentUser.value?.following) return false;
-    return currentUser.value.following.includes(userId);
-  }
-
-  // Sistema de créditos e imágenes
-  function canGenerateImage(): boolean {
+  // Sistema de pago por imagen
+  function canGenerateFreeImage(): boolean {
     if (!currentUser.value) return false;
-    if (currentUser.value.isPremium) return true;
-    return currentUser.value.credits?.freeImagesLeft > 0;
+    return !currentUser.value.hasUsedFreeGeneration;
   }
 
-  function useImageCredit(): boolean {
+  function useFreeGeneration(): boolean {
     if (!currentUser.value) return false;
-    if (currentUser.value.isPremium) return true; // Premium: ilimitado
     
-    if (!currentUser.value.credits) return false;
-    
-    if (currentUser.value.credits.freeImagesLeft > 0) {
-      currentUser.value.credits.freeImagesLeft--;
-      currentUser.value.credits.totalImagesGenerated++;
+    if (!currentUser.value.hasUsedFreeGeneration) {
+      currentUser.value.hasUsedFreeGeneration = true;
       localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
       return true;
     }
     return false;
   }
 
-  function checkAndResetCredits() {
-    if (!currentUser.value || currentUser.value.isPremium || !currentUser.value.credits) return;
-    
-    const now = new Date();
-    const lastReset = new Date(currentUser.value.credits.lastImageResetDate);
-    const hoursSinceReset = (now.getTime() - lastReset.getTime()) / (1000 * 60 * 60);
-    
-    // Reiniciar a 3 si han pasado 12 horas Y está en 0, O si han pasado más de 12 horas
-    if (hoursSinceReset >= 12) {
-      if (currentUser.value.credits.freeImagesLeft === 0) {
-        currentUser.value.credits.freeImagesLeft = 3;
-        currentUser.value.credits.lastImageResetDate = now;
-        localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
-        console.log('✅ Créditos reiniciados a 3');
-      } else if (hoursSinceReset >= 24) {
-        // Si han pasado más de 24 horas, forzar reset
-        currentUser.value.credits.lastImageResetDate = now;
-        localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
-      }
-    }
-  }
-
-  function addReferralBonus() {
-    if (!currentUser.value?.credits) return;
-    currentUser.value.credits.freeImagesLeft += 3; // +3 imágenes por referido
-    currentUser.value.credits.referralsCount++;
-    localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
+  function purchaseImageGeneration(): Promise<boolean> {
+    // Aquí iría la integración con pasarela de pago (Stripe, PayPal, etc.)
+    return new Promise((resolve) => {
+      // Simulación: En producción, esto llamaría al backend para procesar el pago
+      console.log('💳 Procesando pago por generación de imagen...');
+      
+      // Simular delay de procesamiento
+      setTimeout(() => {
+        // En producción, esto retornaría true solo si el pago fue exitoso
+        resolve(true);
+      }, 1000);
+    });
   }
 
   // Métricas de uso y PQLs
@@ -414,25 +313,6 @@ export const useUserStore = defineStore('user', () => {
     localStorage.setItem('dreamduel_user', JSON.stringify(currentUser.value));
   }
 
-  function getTimeUntilReset(): string {
-    if (!currentUser.value?.credits?.lastImageResetDate) return '12:00:00';
-    
-    try {
-      const now = new Date();
-      const lastReset = new Date(currentUser.value.credits.lastImageResetDate);
-      const hoursSinceReset = (now.getTime() - lastReset.getTime()) / (1000 * 60 * 60);
-      const hoursUntilReset = Math.max(0, 12 - hoursSinceReset);
-      
-      const hours = Math.floor(hoursUntilReset);
-      const minutes = Math.floor((hoursUntilReset - hours) * 60);
-      const seconds = Math.floor(((hoursUntilReset - hours) * 60 - minutes) * 60);
-      
-      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    } catch {
-      return '12:00:00';
-    }
-  }
-
   return {
     currentUser,
     isAuthenticated,
@@ -446,17 +326,11 @@ export const useUserStore = defineStore('user', () => {
     addStoryToProfile,
     addImageToProfile,
     deleteImage,
-    toggleSaveStory,
-    toggleLikeStory,
-    toggleFollowUser,
-    isFollowing,
-    canGenerateImage,
-    useImageCredit,
-    checkAndResetCredits,
-    addReferralBonus,
+    canGenerateFreeImage,
+    useFreeGeneration,
+    purchaseImageGeneration,
     trackGeneration,
     trackBlurClick,
-    trackDownloadAttempt,
-    getTimeUntilReset
+    trackDownloadAttempt
   };
 });

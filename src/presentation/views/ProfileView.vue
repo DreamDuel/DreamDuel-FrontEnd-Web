@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
-import { Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon, SparklesIcon, ClockIcon, GiftIcon, PhotoIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { ref, onMounted } from 'vue';
+import { Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon, PhotoIcon, TrashIcon } from '@heroicons/vue/24/outline';
 // IMPORTS DE HISTORIAS - Comentados temporalmente (futuro uso)
 // import { useStoryStore } from '@/stores/storyStore';
 // import StoryCard from '@/presentation/components/StoryCard.vue';
@@ -18,13 +18,8 @@ const router = useRouter();
 const currentTab = ref<'images'>('images');
 const isEditingProfile = ref(false);
 const editForm = ref({
-  username: '',
-  bio: ''
+  username: ''
 });
-
-const timeUntilReset = ref('12:00:00');
-
-let timeUpdateInterval: number | null = null;
 
 onMounted(async () => {
   // Cargar usuario desde localStorage si existe
@@ -40,43 +35,7 @@ onMounted(async () => {
   // Inicializar formulario de edición
   if (userStore.currentUser) {
     editForm.value.username = userStore.currentUser.username;
-    editForm.value.bio = userStore.currentUser.bio;
   }
-  
-  // Actualizar el tiempo cada segundo
-  const updateTime = () => {
-    try {
-      timeUntilReset.value = userStore.getTimeUntilReset();
-    } catch {
-      timeUntilReset.value = '12:00:00';
-    }
-  };
-  
-  updateTime();
-  timeUpdateInterval = window.setInterval(updateTime, 1000);
-  
-  // Verificar créditos cada minuto
-  window.setInterval(() => {
-    userStore.checkAndResetCredits();
-  }, 60000);
-});
-
-onBeforeUnmount(() => {
-  if (timeUpdateInterval) {
-    clearInterval(timeUpdateInterval);
-  }
-});
-
-const userStats = computed(() => {
-  if (userStore.currentUser) {
-    return userStore.currentUser.stats;
-  }
-  return {
-    storiesCreated: 0,
-    totalLikes: 0,
-    followers: 0,
-    following: 0
-  };
 });
 
 // COMPUTED PARA HISTORIAS - Comentados temporalmente (futuro uso)
@@ -121,24 +80,15 @@ const toggleEditProfile = () => {
   if (isEditingProfile.value) {
     // Guardar cambios
     userStore.updateProfile({
-      username: editForm.value.username,
-      bio: editForm.value.bio
+      username: editForm.value.username
     });
   } else {
     // Iniciar edición
     if (userStore.currentUser) {
       editForm.value.username = userStore.currentUser.username;
-      editForm.value.bio = userStore.currentUser.bio;
     }
   }
   isEditingProfile.value = !isEditingProfile.value;
-};
-
-const copyReferralCode = () => {
-  if (!userStore.currentUser?.credits?.referralCode) return;
-  const referralLink = `https://dreamduel.com/ref/${userStore.currentUser.credits.referralCode}`;
-  navigator.clipboard.writeText(referralLink);
-  alert(t('profile.credits.referralCopied'));
 };
 
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -226,8 +176,6 @@ const handleAvatarChange = async (event: Event) => {
               <div v-if="!isEditingProfile">
                 <h1 class="text-3xl font-bold text-text-primary mb-2">{{ userStore.currentUser?.username || 'Usuario' }}</h1>
                 <p class="text-text-secondary">{{ userStore.currentUser?.email || 'usuario@dreamduel.com' }}</p>
-                <p v-if="userStore.currentUser?.bio" class="text-text-tertiary mt-2 text-sm">{{ userStore.currentUser.bio }}</p>
-                <p v-else class="text-text-tertiary mt-2 text-sm italic">{{ t('profile.edit.noBio') }}</p>
               </div>
               <div v-else class="space-y-3">
                 <input
@@ -235,12 +183,6 @@ const handleAvatarChange = async (event: Event) => {
                   type="text"
                   :placeholder="t('profile.edit.username')"
                   class="w-full px-4 py-2 bg-background-elevated border border-white/10 rounded-lg text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-                />
-                <textarea
-                  v-model="editForm.bio"
-                  :placeholder="t('profile.edit.bioPlaceholder')"
-                  rows="2"
-                  class="w-full px-4 py-2 bg-background-elevated border border-white/10 rounded-lg text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
                 />
               </div>
             </div>
@@ -276,81 +218,6 @@ const handleAvatarChange = async (event: Event) => {
             >
               <ArrowRightOnRectangleIcon class="h-6 w-6 text-text-secondary group-hover:text-error transition-colors" />
             </button>
-          </div>
-        </div>
-
-        <!-- Credits & Premium Status -->
-        <div v-if="!userStore.currentUser?.isPremium" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Credits Remaining -->
-          <div class="bg-gradient-to-br from-primary/10 to-accent-teal/10 rounded-xl p-4 border border-primary/20">
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex items-center space-x-2">
-                <SparklesIcon class="h-5 w-5 text-primary" />
-                <span class="font-semibold text-text-primary">{{ t('profile.credits.freeImages') }}</span>
-              </div>
-              <span class="text-2xl font-bold text-primary">{{ userStore.currentUser?.credits.freeImagesLeft || 0 }}</span>
-            </div>
-            <div class="flex items-center space-x-2 text-xs text-text-secondary">
-              <ClockIcon class="h-4 w-4" />
-              <span>{{ t('profile.credits.resetIn') }} {{ timeUntilReset }}</span>
-            </div>
-          </div>
-
-          <!-- Referral Code -->
-          <div class="bg-gradient-to-br from-accent-gold/10 to-accent-crimson/10 rounded-xl p-4 border border-accent-gold/20">
-            <div class="flex items-center space-x-2 mb-2">
-              <GiftIcon class="h-5 w-5 text-accent-gold" />
-              <span class="font-semibold text-text-primary">{{ t('profile.credits.referralCode') }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-              <code class="flex-1 px-3 py-2 bg-background-deep rounded-lg text-primary font-mono text-sm">
-                {{ userStore.currentUser?.credits.referralCode }}
-              </code>
-              <button 
-                @click="copyReferralCode"
-                class="px-3 py-2 bg-accent-gold hover:bg-accent-gold/80 text-white rounded-lg text-xs font-semibold transition-colors"
-              >
-                {{ t('profile.credits.copy') }}
-              </button>
-            </div>
-            <p class="text-xs text-text-tertiary mt-2">
-              {{ t('profile.credits.referralDesc') }} ({{ userStore.currentUser?.credits.referralsCount || 0 }} {{ t('profile.credits.referrals') }})
-            </p>
-          </div>
-        </div>
-
-        <!-- Premium Badge -->
-        <div v-else class="mt-6">
-          <div class="bg-gradient-to-r from-primary to-accent-gold rounded-xl p-4 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-              <SparklesIcon class="h-6 w-6 text-white" />
-              <div>
-                <h3 class="font-bold text-white">{{ t('profile.premium.active') }}</h3>
-                <p class="text-white/80 text-sm">{{ t('profile.premium.features') }}</p>
-              </div>
-            </div>
-            <router-link 
-              to="/settings"
-              class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg text-sm font-semibold transition-colors"
-            >
-              {{ t('profile.premium.manage') }}
-            </router-link>
-          </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="grid grid-cols-3 gap-6 mt-6">
-          <div class="text-center">
-            <p class="text-3xl font-bold text-primary">{{ userStats.storiesCreated }}</p>
-            <p class="text-text-secondary text-sm">{{ t('profile.stats.stories') }}</p>
-          </div>
-          <div class="text-center">
-            <p class="text-3xl font-bold text-accent-crimson">{{ userStats.totalLikes }}</p>
-            <p class="text-text-secondary text-sm">{{ t('profile.stats.totalLikes') }}</p>
-          </div>
-          <div class="text-center">
-            <p class="text-3xl font-bold text-accent-teal">{{ userStats.followers }}</p>
-            <p class="text-text-secondary text-sm">{{ t('profile.stats.followers') }}</p>
           </div>
         </div>
       </div>

@@ -1,49 +1,15 @@
 <script setup lang="ts">
-import { EyeIcon, HeartIcon, BookmarkIcon } from '@heroicons/vue/24/outline';
-import { HeartIcon as HeartIconSolid, BookmarkIcon as BookmarkIconSolid } from '@heroicons/vue/24/solid';
-import { computed } from 'vue';
-import { useStoryStore } from '@/stores/storyStore';
-import { useUserStore } from '@/stores/userStore';
+import { EyeIcon } from '@heroicons/vue/24/outline';
 import type { Story } from '@/models/Story';
 
 const props = defineProps<{
   story: Story;
 }>();
 
-const storyStore = useStoryStore();
-const userStore = useUserStore();
-
-const isSaved = computed(() => storyStore.isStorySaved(props.story.id));
-const isLiked = computed(() => storyStore.isStoryLiked(props.story.id));
-
 const formatNumber = (num: number): string => {
   if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
   if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
   return num.toString();
-};
-
-const toggleSave = async (event: Event) => {
-  event.preventDefault();
-  event.stopPropagation();
-  
-  if (!userStore.currentUser) {
-    console.warn('User not logged in');
-    return;
-  }
-  
-  await storyStore.saveStory(props.story.id, userStore.currentUser.id);
-};
-
-const toggleLike = async (event: Event) => {
-  event.preventDefault();
-  event.stopPropagation();
-  
-  if (!userStore.currentUser) {
-    console.warn('User not logged in');
-    return;
-  }
-  
-  await storyStore.likeStory(props.story.id, userStore.currentUser.id);
 };
 </script>
 
@@ -82,14 +48,6 @@ const toggleLike = async (event: Event) => {
           {{ tag }}
         </span>
       </div>
-
-      <!-- Save Button -->
-      <button
-        @click="toggleSave"
-        class="absolute top-2 right-2 p-2 bg-background-elevated/90 backdrop-blur-sm rounded-full text-text-secondary hover:text-primary hover:bg-background-card transition-all opacity-0 group-hover:opacity-100"
-      >
-        <component :is="isSaved ? BookmarkIconSolid : BookmarkIcon" class="h-5 w-5" />
-      </button>
     </div>
 
     <!-- Info Section -->
@@ -114,20 +72,10 @@ const toggleLike = async (event: Event) => {
       </router-link>
 
       <!-- Stats -->
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-4 text-text-tertiary text-sm">
-          <div class="flex items-center space-x-1">
-            <EyeIcon class="h-4 w-4" />
-            <span>{{ formatNumber(story.stats.views) }}</span>
-          </div>
-          <button
-            @click="toggleLike"
-            class="flex items-center space-x-1 hover:text-accent-crimson transition-colors"
-            :class="{ 'text-accent-crimson': isLiked }"
-          >
-            <component :is="isLiked ? HeartIconSolid : HeartIcon" class="h-4 w-4" />
-            <span>{{ formatNumber(story.stats.likes) }}</span>
-          </button>
+      <div class="flex items-center space-x-4 text-text-tertiary text-sm">
+        <div class="flex items-center space-x-1">
+          <EyeIcon class="h-4 w-4" />
+          <span>{{ formatNumber(story.stats.views) }}</span>
         </div>
       </div>
     </div>

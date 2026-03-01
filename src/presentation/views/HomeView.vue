@@ -6,7 +6,6 @@ import { useUserStore } from '@/stores/userStore';
 import { 
   SparklesIcon, 
   PhotoIcon, 
-  BoltIcon,
   FireIcon
 } from '@heroicons/vue/24/outline';
 import { HeartIcon } from '@heroicons/vue/24/solid';
@@ -67,13 +66,6 @@ const stats = computed(() => [
     label: 'Imágenes Creadas',
     gradient: 'from-blue-500 to-cyan-500',
     bgGradient: 'from-blue-500/10 to-cyan-500/10'
-  },
-  {
-    icon: BoltIcon,
-    value: userStore.currentUser?.credits?.freeImagesLeft || 0,
-    label: 'Créditos Disponibles',
-    gradient: 'from-purple-500 to-pink-500',
-    bgGradient: 'from-purple-500/10 to-pink-500/10'
   }
 ]);
 
@@ -140,12 +132,12 @@ const recentImages = computed(() => {
         </div>
 
         <!-- Stats Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-12 sm:mt-16 md:mt-20 max-w-4xl mx-auto">
+        <div class="flex justify-center mt-12 sm:mt-16 md:mt-20">
           <div
             v-for="(stat, index) in stats"
             :key="index"
             :class="[
-              'group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-white/10 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-white/20 cursor-pointer overflow-hidden',
+              'w-full max-w-sm group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-white/10 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-white/20 cursor-pointer overflow-hidden',
               'animate-fade-in-up'
             ]"
             :style="{ animationDelay: `${index * 100}ms` }"

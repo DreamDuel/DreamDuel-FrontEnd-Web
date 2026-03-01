@@ -4,7 +4,6 @@ import { XMarkIcon, SparklesIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps<{
   show: boolean;
-  imagesRemaining: number;
 }>();
 
 const emit = defineEmits<{
@@ -32,7 +31,7 @@ const handleClose = () => {
               🎉 ¡Bienvenido a DreamDuel!
             </h3>
             <p class="text-white/90 text-xs sm:text-sm">
-              Tienes <span class="font-bold">{{ imagesRemaining }} imágenes gratis</span> para empezar. Crea tu primera historia ahora.
+              Tu <span class="font-bold">primera imagen es GRATIS</span>. Comienza a crear ahora.
             </p>
           </div>
         </div>

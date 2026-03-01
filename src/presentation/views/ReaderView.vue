@@ -3,22 +3,15 @@ import { onMounted, computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStoryStore } from '@/stores/storyStore';
 import { useUserStore } from '@/stores/userStore';
-import { HeartIcon, ShareIcon, ArrowLeftIcon, LockClosedIcon, ArrowDownTrayIcon, GlobeAltIcon } from '@heroicons/vue/24/outline';
-import { HeartIcon as HeartIconSolid, LockClosedIcon as LockClosedIconSolid } from '@heroicons/vue/24/solid';
-import UpgradeSlideout from '@/presentation/components/UpgradeSlideout.vue';
+import { ShareIcon, ArrowLeftIcon, ArrowDownTrayIcon, GlobeAltIcon } from '@heroicons/vue/24/outline';
+import { LockClosedIcon as LockClosedIconSolid } from '@heroicons/vue/24/solid';
 import { shareStory, downloadImageWithWatermark } from '@/utils/watermark';
 
 const route = useRoute();
 const router = useRouter();
 const storyStore = useStoryStore();
 const userStore = useUserStore();
-const showUpgradeSlideout = ref(false);
 const isTogglingVisibility = ref(false);
-
-const isLiked = computed(() => {
-  if (!storyStore.currentStory) return false;
-  return storyStore.isStoryLiked(storyStore.currentStory.id);
-});
 
 const isAuthor = computed(() => {
   if (!storyStore.currentStory || !userStore.currentUser) return false;
@@ -28,10 +21,6 @@ const isAuthor = computed(() => {
 const isPublic = computed(() => {
   if (!storyStore.currentStory) return true;
   return storyStore.currentStory.visibility === 'public';
-});
-
-const shouldBlurImages = computed(() => {
-  return !userStore.currentUser?.isPremium;
 });
 
 onMounted(async () => {
@@ -48,26 +37,10 @@ const goBack = () => {
   }
 };
 
-const toggleLike = async () => {
-  if (!storyStore.currentStory) return;
-  const userId = 'current-user-id';
-  await storyStore.likeStory(storyStore.currentStory.id, userId);
-};
-
 const formatNumber = (num: number): string => {
   if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
   if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
   return num.toString();
-};
-
-const handleBlurClick = () => {
-  userStore.trackBlurClick();
-  showUpgradeSlideout.value = true;
-};
-
-const handleUpgrade = () => {
-  showUpgradeSlideout.value = false;
-  router.push('/pricing');
 };
 
 const handleShare = async () => {
@@ -76,11 +49,12 @@ const handleShare = async () => {
   const storyUrl = `${window.location.origin}/story/${storyStore.currentStory.id}`;
   const imageUrl = storyStore.currentStory.scenes[0]?.imageUrl || '';
   
+  // Always add watermark (no premium users)
   await shareStory(
     storyStore.currentStory.title,
     imageUrl,
     storyUrl,
-    userStore.currentUser?.isPremium || false
+    false
   );
 };
 
@@ -92,18 +66,11 @@ const handleDownload = async (sceneIndex: number) => {
   
   const filename = `dreamduel-${storyStore.currentStory.id}-scene-${sceneIndex + 1}.png`;
   
-  // Rastrear intento de descarga para PQL
-  userStore.trackDownloadAttempt();
-  
-  // Si no es premium, mostrar slideout de upgrade después de descargar con marca de agua
-  if (!userStore.currentUser?.isPremium) {
-    showUpgradeSlideout.value = true;
-  }
-  
+  // Always add watermark (no premium users)
   await downloadImageWithWatermark(
     scene.imageUrl,
     filename,
-    userStore.currentUser?.isPremium || false
+    false
   );
 };
 
@@ -216,14 +183,6 @@ const toggleVisibility = async () => {
             <span>•</span>
             <span>{{ formatNumber(storyStore.currentStory.stats.views) }} lecturas</span>
           </div>
-          <button 
-            @click="toggleLike"
-            class="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all"
-            :class="isLiked ? 'bg-accent-crimson text-white' : 'bg-background-elevated text-text-primary hover:bg-background-card'"
-          >
-            <component :is="isLiked ? HeartIconSolid : HeartIcon" class="h-5 w-5" />
-            <span>{{ formatNumber(storyStore.currentStory.stats.likes) }}</span>
-          </button>
         </div>
       </div>
 
@@ -238,10 +197,7 @@ const toggleVisibility = async () => {
             <img 
               :src="scene.imageUrl" 
               :alt="`Escena ${index + 1}`"
-              :class="[
-                'w-full h-auto max-h-[400px] sm:max-h-[500px] md:max-h-[600px] object-contain mx-auto transition-all duration-300',
-                shouldBlurImages ? 'blur-md' : ''
-              ]"
+              class="w-full h-auto max-h-[400px] sm:max-h-[500px] md:max-h-[600px] object-contain mx-auto transition-all duration-300"
             />
             
             <!-- Download Button (top-right) -->
@@ -252,22 +208,6 @@ const toggleVisibility = async () => {
             >
               <ArrowDownTrayIcon class="h-5 w-5" />
             </button>
-            
-            <!-- Blur Overlay for Free Users -->
-            <div 
-              v-if="shouldBlurImages" 
-              @click="handleBlurClick"
-              class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-center cursor-pointer group hover:from-black/90 transition-all"
-            >
-              <div class="text-center px-6">
-                <LockClosedIcon class="h-12 w-12 text-white mx-auto mb-3 group-hover:scale-110 transition-transform" />
-                <h3 class="text-white font-bold text-lg mb-2">Ver imagen sin blur</h3>
-                <p class="text-white/80 text-sm mb-4">Hazte Premium para desbloquear todas las imágenes en alta calidad</p>
-                <div class="px-4 py-2 bg-primary rounded-lg inline-block font-semibold text-white group-hover:bg-primary-light transition-colors">
-                  Desbloquear
-                </div>
-              </div>
-            </div>
           </div>
           
           <div class="p-4 sm:p-6">
@@ -283,19 +223,7 @@ const toggleVisibility = async () => {
         <div class="text-5xl mb-4">✨</div>
         <h3 class="text-2xl font-bold text-text-primary mb-4">Fin del Capítulo</h3>
         <p class="text-text-secondary mb-6">¿Te gustó esta historia?</p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <button 
-            @click="toggleLike"
-            :class="[
-              'flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-semibold transition-all',
-              isLiked 
-                ? 'bg-accent-crimson text-white' 
-                : 'bg-background-card text-text-primary hover:bg-accent-crimson/20'
-            ]"
-          >
-            <component :is="isLiked ? HeartIconSolid : HeartIcon" class="h-5 w-5" />
-            <span>{{ isLiked ? 'Te gusta' : 'Me gusta' }}</span>
-          </button>
+        <div class="flex justify-center">
           <button 
             @click="goBack"
             class="px-6 py-3 bg-primary hover:bg-primary-light text-white rounded-lg font-semibold transition-all"
@@ -305,14 +233,6 @@ const toggleVisibility = async () => {
         </div>
       </div>
     </div>
-
-    <!-- Upgrade Slideout -->
-    <UpgradeSlideout
-      :show="showUpgradeSlideout"
-      trigger="blur"
-      @close="showUpgradeSlideout = false"
-      @upgrade="handleUpgrade"
-    />
   </div>
 </template>
 

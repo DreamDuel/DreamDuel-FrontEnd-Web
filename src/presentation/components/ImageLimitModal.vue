@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useUserStore } from '@/stores/userStore';
-import { XMarkIcon, ClockIcon, UserPlusIcon, SparklesIcon } from '@heroicons/vue/24/outline';
+import { XMarkIcon, SparklesIcon, BoltIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps<{
   show: boolean;
@@ -10,35 +9,9 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'close'): void;
   (e: 'upgrade'): void;
-  (e: 'invite'): void;
 }>();
 
 const userStore = useUserStore();
-const timeLeft = ref('12:00:00');
-const copied = ref(false);
-
-const referralLink = computed(() => {
-  if (!userStore.currentUser) return '';
-  return `https://dreamduel.com/ref/${userStore.currentUser.credits.referralCode}`;
-});
-
-let interval: NodeJS.Timeout;
-
-onMounted(() => {
-  interval = setInterval(() => {
-    timeLeft.value = userStore.getTimeUntilReset();
-  }, 1000);
-});
-
-onUnmounted(() => {
-  if (interval) clearInterval(interval);
-});
-
-const copyReferralLink = () => {
-  navigator.clipboard.writeText(referralLink.value);
-  copied.value = true;
-  setTimeout(() => copied.value = false, 2000);
-};
 </script>
 
 <template>
@@ -54,64 +27,27 @@ const copyReferralLink = () => {
           <div class="text-center">
             <div class="text-6xl mb-3">🎨</div>
             <h2 class="text-2xl font-bold text-text-primary mb-2">
-              ¡Has usado tus imágenes gratis!
+              ¡Ya usaste tu imagen gratis!
             </h2>
             <p class="text-text-secondary text-sm">
-              Pero tienes varias opciones para continuar...
+              Compra créditos para seguir creando
             </p>
           </div>
         </div>
 
         <!-- Content -->
         <div class="p-6 space-y-4">
-          <!-- Opción 1: Esperar -->
-          <div class="bg-background-elevated rounded-xl p-4 border border-white/5 hover:border-primary/30 transition-colors">
-            <div class="flex items-start space-x-3">
-              <div class="flex-shrink-0 w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                <ClockIcon class="h-5 w-5 text-primary" />
-              </div>
-              <div class="flex-1">
-                <h3 class="font-semibold text-text-primary mb-1">Espera y recarga gratis</h3>
-                <p class="text-sm text-text-secondary mb-2">
-                  Recupera 3 imágenes gratis en:
-                </p>
-                <div class="text-2xl font-mono font-bold text-primary">
-                  {{ timeLeft }}
-                </div>
-              </div>
-            </div>
+          <!-- Info Box -->
+          <div class="bg-primary/10 border border-primary/30 rounded-xl p-4 text-center">
+            <p class="text-text-secondary text-sm mb-1">
+              Has generado <span class="font-bold text-primary">{{ userStore.currentUser?.totalImagesGenerated || 0 }}</span> imágenes en total
+            </p>
+            <p class="text-text-tertiary text-xs">
+              Cada generación adicional requiere comprar créditos
+            </p>
           </div>
 
-          <!-- Opción 2: Invitar -->
-          <div class="bg-background-elevated rounded-xl p-4 border border-white/5 hover:border-accent-teal/30 transition-colors">
-            <div class="flex items-start space-x-3">
-              <div class="flex-shrink-0 w-10 h-10 bg-accent-teal/20 rounded-lg flex items-center justify-center">
-                <UserPlusIcon class="h-5 w-5 text-accent-teal" />
-              </div>
-              <div class="flex-1">
-                <h3 class="font-semibold text-text-primary mb-1">Invita a un amigo</h3>
-                <p class="text-sm text-text-secondary mb-3">
-                  Obtén +3 imágenes gratis por cada amigo que se registre
-                </p>
-                <div class="flex space-x-2">
-                  <input
-                    type="text"
-                    readonly
-                    :value="referralLink"
-                    class="flex-1 px-3 py-2 bg-background-deep border border-white/10 rounded-lg text-sm text-text-primary focus:border-accent-teal focus:ring-1 focus:ring-accent-teal outline-none"
-                  />
-                  <button
-                    @click="copyReferralLink"
-                    class="px-4 py-2 bg-accent-teal hover:bg-accent-teal/80 text-white rounded-lg font-semibold text-sm transition-colors"
-                  >
-                    {{ copied ? '✓ Copiado' : 'Copiar' }}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Opción 3: Premium -->
+          <!-- Opción Principal: Comprar Créditos -->
           <div class="bg-gradient-to-br from-primary/20 to-accent-crimson/20 rounded-xl p-4 border border-primary/30">
             <div class="flex items-start space-x-3">
               <div class="flex-shrink-0 w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
@@ -119,7 +55,7 @@ const copyReferralLink = () => {
               </div>
               <div class="flex-1">
                 <div class="flex items-center space-x-2 mb-1">
-                  <h3 class="font-semibold text-text-primary">Hazte Premium</h3>
+                  <h3 class="font-semibold text-text-primary">Compra Créditos</h3>
                   <span class="px-2 py-0.5 bg-accent-crimson text-white text-xs font-bold rounded-full">
                     POPULAR
                   </span>
@@ -127,27 +63,51 @@ const copyReferralLink = () => {
                 <ul class="space-y-1 mb-3 text-sm text-text-secondary">
                   <li class="flex items-center space-x-2">
                     <span class="text-accent-teal">✓</span>
-                    <span>Imágenes ilimitadas sin esperas</span>
+                    <span>Paga solo por lo que usas</span>
                   </li>
                   <li class="flex items-center space-x-2">
                     <span class="text-accent-teal">✓</span>
-                    <span>Sin marcas de agua</span>
+                    <span>Calidad premium sin marca de agua</span>
                   </li>
                   <li class="flex items-center space-x-2">
                     <span class="text-accent-teal">✓</span>
-                    <span>Estilos premium exclusivos</span>
+                    <span>Desde $0.99 por imagen</span>
                   </li>
                   <li class="flex items-center space-x-2">
                     <span class="text-accent-teal">✓</span>
-                    <span>Soporte prioritario</span>
+                    <span>Paquetes con descuento hasta 40%</span>
                   </li>
                 </ul>
                 <button
                   @click="emit('upgrade')"
-                  class="w-full px-4 py-3 bg-primary hover:bg-primary-light text-white rounded-lg font-semibold transition-all hover:scale-105"
+                  class="w-full px-4 py-3 bg-gradient-to-r from-primary to-accent-crimson hover:from-primary-light hover:to-accent-crimson/80 text-white rounded-lg font-bold transition-all hover:scale-105 shadow-lg"
                 >
-                  Desbloquear Premium - $9.99/mes
+                  Ver Paquetes de Créditos
                 </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alternativa: Precio Individual -->
+          <div class="bg-background-elevated rounded-xl p-4 border border-white/5 hover:border-accent-teal/30 transition-colors">
+            <div class="flex items-start space-x-3">
+              <div class="flex-shrink-0 w-10 h-10 bg-accent-teal/20 rounded-lg flex items-center justify-center">
+                <BoltIcon class="h-5 w-5 text-accent-teal" />
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-text-primary mb-1">Imagen Individual</h3>
+                <p class="text-sm text-text-secondary mb-3">
+                  Solo necesitas una imagen más? Compra una generación individual por $0.99
+                </p>
+                <div class="flex items-center justify-between">
+                  <span class="text-2xl font-bold text-primary">$0.99</span>
+                  <button
+                    @click="emit('upgrade')"
+                    class="px-4 py-2 bg-accent-teal hover:bg-accent-teal/80 text-white rounded-lg font-semibold text-sm transition-colors"
+                  >
+                    Comprar Ahora
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -156,7 +116,7 @@ const copyReferralLink = () => {
         <!-- Footer -->
         <div class="p-4 bg-background-deep border-t border-white/5 text-center">
           <p class="text-xs text-text-tertiary">
-            💡 Tip: Sigue creando historias ilimitadas con texto mientras esperas
+            💳 Pago seguro con Stripe | Sin suscripciones | Cancela cuando quieras
           </p>
         </div>
       </div>
