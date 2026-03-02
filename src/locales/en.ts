@@ -414,8 +414,7 @@ export default {
       signUp: 'Sign up',
       welcome: 'Welcome back',
       subtitle: 'Continue creating amazing stories',
-      orLoginWith: 'Or log in with',
-      google: 'Google',
+      orLoginWith: 'Or log in with',      continueWithGoogle: 'Continue with Google',      google: 'Google',
       apple: 'Apple',
       creating: 'Logging in...'
     },
@@ -439,6 +438,7 @@ export default {
       and: 'and the',
       privacy: 'privacy policy',
       orRegisterWith: 'Or sign up with',
+      continueWithGoogle: 'Continue with Google',
       referralBonus: 'Referral Bonus!',
       referralDesc: 'You will get +3 free images when you sign up',
       errorPasswordMismatch: 'Passwords do not match',

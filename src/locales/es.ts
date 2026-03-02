@@ -415,6 +415,7 @@ export default {
       welcome: 'Bienvenido de vuelta',
       subtitle: 'Continúa creando historias increíbles',
       orLoginWith: 'O inicia sesión con',
+      continueWithGoogle: 'Continuar con Google',
       google: 'Google',
       apple: 'Apple',
       creating: 'Iniciando sesión...'
@@ -439,6 +440,7 @@ export default {
       and: 'y la',
       privacy: 'política de privacidad',
       orRegisterWith: 'O regístrate con',
+      continueWithGoogle: 'Continuar con Google',
       referralBonus: '¡Bonus de invitación!',
       referralDesc: 'Obtendrás +3 imágenes gratis adicionales al registrarte',
       errorPasswordMismatch: 'Las contraseñas no coinciden',
