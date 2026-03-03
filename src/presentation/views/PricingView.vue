@@ -174,7 +174,6 @@ const handlePurchase = () => {
           <span class="text-2xl">🔒</span>
           <span>No se almacena</span>
         </div>
-        </div>
       </div>
     </div>
   </div>
