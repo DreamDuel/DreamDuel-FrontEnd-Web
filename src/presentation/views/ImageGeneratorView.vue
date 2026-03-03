@@ -3,7 +3,8 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
 import { useI18n } from 'vue-i18n';
-import { PhotoIcon, XMarkIcon } from '@heroicons/vue/24/solid';
+import { PhotoIcon, XMarkIcon, ArrowDownTrayIcon } from '@heroicons/vue/24/solid';
+import { SparklesIcon } from '@heroicons/vue/24/outline';
 import ImageLimitModal from '@/presentation/components/ImageLimitModal.vue';
 import UpgradeSlideout from '@/presentation/components/UpgradeSlideout.vue';
 
@@ -24,6 +25,9 @@ const posePreviewUrl = ref<string>('');
 const showAdvancedOptions = ref(false);
 const selectedGender = ref<string>('');
 const selectedBodyType = ref<string>('');
+const generatedImageUrl = ref<string>('');
+const generatedPrompt = ref<string>('');
+const showResultModal = ref(false);
 
 // Cargar prompt desde query params si viene desde HomeView
 onMounted(() => {
@@ -128,7 +132,7 @@ const generateImage = async () => {
   // Rastrear la generación para PQL
   userStore.trackGeneration();
   
-  // Simular generación
+  // Simular generación (3-5 segundos)
   setTimeout(() => {
     console.log('Generating image with:', {
       prompt: prompt.value,
@@ -142,21 +146,50 @@ const generateImage = async () => {
     // Generar URL de imagen simulada (en producción, esto vendría de la API)
     const simulatedImageUrl = `https://picsum.photos/seed/${Date.now()}/800/800`;
     
-    // Guardar la imagen en el perfil del usuario
-    userStore.addImageToProfile(
-      simulatedImageUrl,
-      prompt.value,
-      negativePrompt.value || undefined
-    );
+    // Guardar datos para mostrar en modal
+    generatedImageUrl.value = simulatedImageUrl;
+    generatedPrompt.value = prompt.value;
     
-    // Navegar a resultado o mostrar imagen
-    alert('¡Imagen generada exitosamente y guardada en tu perfil!');
+    // Mostrar modal de resultado
     isGenerating.value = false;
-    
-    // Limpiar campos después de generar
-    prompt.value = '';
-    negativePrompt.value = '';
-  }, 3000);
+    showResultModal.value = true;
+  }, 4000);
+};
+
+const downloadImage = async () => {
+  if (!generatedImageUrl.value) return;
+  
+  try {
+    const response = await fetch(generatedImageUrl.value);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `dreamduel-${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error downloading image:', error);
+    alert('Error al descargar la imagen');
+  }
+};
+
+const closeResultModal = () => {
+  showResultModal.value = false;
+  generatedImageUrl.value = '';
+  generatedPrompt.value = '';
+  
+  // Limpiar campos del formulario
+  prompt.value = '';
+  negativePrompt.value = '';
+  characterImage.value = null;
+  imagePreviewUrl.value = '';
+  poseImage.value = null;
+  posePreviewUrl.value = '';
+  selectedGender.value = '';
+  selectedBodyType.value = '';
 };
 
 const handleUpgrade = () => {
@@ -421,6 +454,74 @@ const handleUpgrade = () => {
       </div>
     </div>
 
+    <!-- Modal de imagen generada -->
+    <Transition name="modal">
+      <div v-if="showResultModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+        <div class="bg-gradient-to-br from-background-card via-background-elevated to-background-card rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative border-2 border-primary/20 shadow-2xl shadow-primary/10">
+          <!-- Botón cerrar -->
+          <button
+            @click="closeResultModal"
+            class="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm transition-all hover:scale-110 group"
+          >
+            <XMarkIcon class="w-5 h-5 text-white group-hover:text-primary transition-colors" />
+          </button>
+          
+          <!-- Contenido del modal -->
+          <div class="p-8">
+            <div class="text-center mb-6">
+              <div class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary/20 to-accent-crimson/20 rounded-full border border-primary/30 mb-2">
+                <SparklesIcon class="w-6 h-6 text-primary animate-pulse" />
+                <h2 class="text-2xl font-bold bg-gradient-to-r from-primary to-accent-crimson bg-clip-text text-transparent">
+                  ¡Imagen Generada!
+                </h2>
+              </div>
+              <p class="text-text-secondary text-sm mt-2">Tu creación está lista para descargar</p>
+            </div>
+            
+            <!-- Imagen con marco elegante -->
+            <div class="relative mb-6 rounded-2xl overflow-hidden border-4 border-white/5 shadow-2xl">
+              <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent-crimson/5"></div>
+              <img 
+                :src="generatedImageUrl" 
+                :alt="generatedPrompt"
+                class="w-full h-auto relative z-10"
+              />
+            </div>
+            
+            <!-- Prompt usado con diseño mejorado -->
+            <div class="mb-6 p-5 bg-gradient-to-br from-background-elevated to-background-card rounded-xl border border-white/10 backdrop-blur-sm">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                <p class="text-xs font-semibold text-primary uppercase tracking-wider">Prompt usado</p>
+              </div>
+              <p class="text-sm text-text-primary leading-relaxed">{{ generatedPrompt }}</p>
+            </div>
+            
+            <!-- Botón de descarga mejorado -->
+            <button
+              @click="downloadImage"
+              class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-primary via-primary-light to-accent-crimson hover:from-primary-light hover:via-accent-crimson hover:to-primary text-white font-bold text-lg rounded-xl transition-all duration-300 shadow-lg shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 hover:scale-105 active:scale-95 group"
+            >
+              <ArrowDownTrayIcon class="w-6 h-6 group-hover:animate-bounce" />
+              Descargar Imagen
+            </button>
+            
+            <div class="text-center mt-4 p-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-lg border-2 border-amber-500/30">
+              <p class="text-sm font-semibold text-amber-400 flex items-center justify-center gap-2 mb-1">
+                <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                ¡No olvides descargar tu imagen!
+              </p>
+              <p class="text-xs text-text-secondary">
+                La imagen solo estará disponible en esta ventana. Descárgala ahora para conservarla.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
     <!-- Modals -->
     <ImageLimitModal 
       :show="showLimitModal" 
@@ -447,5 +548,26 @@ const handleUpgrade = () => {
 .slide-fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-enter-active > div,
+.modal-leave-active > div {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from > div,
+.modal-leave-to > div {
+  transform: scale(0.95);
+  opacity: 0;
 }
 </style>

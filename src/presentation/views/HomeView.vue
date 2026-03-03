@@ -59,21 +59,6 @@ const navigateToGenerator = () => {
   router.push('/images');
 };
 
-const stats = computed(() => [
-  {
-    icon: PhotoIcon,
-    value: userStore.currentUser?.myImages?.length || 0,
-    label: 'Imágenes Creadas',
-    gradient: 'from-blue-500 to-cyan-500',
-    bgGradient: 'from-blue-500/10 to-cyan-500/10'
-  }
-]);
-
-const recentImages = computed(() => {
-  const images = userStore.currentUser?.myImages || [];
-  return images.slice(0, 6);
-});
-
 </script>
 
 <template>
@@ -121,89 +106,7 @@ const recentImages = computed(() => {
                 <span class="text-sm sm:text-base">Crear Imagen Ahora</span>
               </span>
             </button>
-            
-            <router-link
-              to="/profile"
-              class="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-background-card border border-white/10 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-background-elevated hover:border-primary/50 hover:scale-105 text-center text-sm sm:text-base"
-            >
-              Ver Mis Imágenes
-            </router-link>
           </div>
-        </div>
-
-        <!-- Stats Grid -->
-        <div class="flex justify-center mt-12 sm:mt-16 md:mt-20">
-          <div
-            v-for="(stat, index) in stats"
-            :key="index"
-            :class="[
-              'w-full max-w-sm group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-white/10 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-white/20 cursor-pointer overflow-hidden',
-              'animate-fade-in-up'
-            ]"
-            :style="{ animationDelay: `${index * 100}ms` }"
-          >
-            <!-- Background Gradient -->
-            <div :class="['absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300', stat.bgGradient]"></div>
-            
-            <!-- Content -->
-            <div class="relative">
-              <div :class="['w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300', stat.gradient]">
-                <component :is="stat.icon" class="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-              </div>
-              <div :class="['text-3xl sm:text-4xl font-bold bg-gradient-to-r bg-clip-text text-transparent mb-2', stat.gradient]">
-                {{ stat.value }}
-              </div>
-              <div class="text-text-secondary text-sm sm:text-base font-medium">{{ stat.label }}</div>
-            </div>
-
-            <!-- Shine Effect -->
-            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Recent Images Gallery -->
-    <section v-if="recentImages.length > 0" class="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-background-deep to-background-card/30">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-8 sm:mb-12">
-          <div class="inline-flex items-center space-x-2 mb-4">
-            <FireIcon class="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white">Tus Creaciones Recientes</h2>
-          </div>
-          <p class="text-base sm:text-lg text-text-secondary">Las últimas imágenes que has generado con IA</p>
-        </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-          <div
-            v-for="(image, index) in recentImages"
-            :key="index"
-            class="group relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-background-elevated border border-white/10 hover:border-primary/50 transition-all duration-300 hover:scale-105 cursor-pointer"
-          >
-            <img
-              :src="image.imageUrl"
-              :alt="`Imagen ${index + 1}`"
-              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div class="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                <div class="flex items-center justify-between text-white">
-                  <span class="text-xs sm:text-sm font-medium truncate">{{ image.prompt?.slice(0, 30) || 'Imagen generada' }}...</span>
-                  <HeartIcon class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="text-center mt-8 sm:mt-12">
-          <router-link
-            to="/profile"
-            class="inline-flex items-center space-x-2 px-6 sm:px-8 py-3 sm:py-4 bg-background-card border border-white/10 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-background-elevated hover:border-primary/50 hover:scale-105 text-sm sm:text-base"
-          >
-            <PhotoIcon class="w-5 h-5" />
-            <span>Ver Todas Mis Imágenes</span>
-          </router-link>
         </div>
       </div>
     </section>

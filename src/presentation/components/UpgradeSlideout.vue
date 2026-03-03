@@ -15,32 +15,32 @@ const triggerMessages = {
   blur: {
     emoji: '🔓',
     title: '¿Quieres ver la imagen completa?',
-    subtitle: 'Desbloquea todas tus historias sin blur',
+    subtitle: 'Genera tu imagen por solo $1',
   },
   download: {
     emoji: '⬇️',
-    title: '¿Quieres descargar sin marca de agua?',
-    subtitle: 'Obtén descargas ilimitadas en alta calidad',
+    title: '¿Quieres descargar tu imagen?',
+    subtitle: 'Genera y descarga en alta calidad',
   },
   limit: {
     emoji: '⚡',
-    title: '¿Sin tiempo para esperar?',
-    subtitle: 'Crea historias ilimitadas sin pausas',
+    title: '¿Necesitas generar más imágenes?',
+    subtitle: 'Cada imagen cuesta solo $1',
   },
   feature: {
     emoji: '✨',
-    title: 'Desbloquea todo el potencial',
-    subtitle: 'Accede a funciones exclusivas premium',
+    title: 'Genera imágenes con IA',
+    subtitle: '$1 por imagen, sin suscripciones',
   },
 };
 
 const currentMessage = triggerMessages[props.trigger || 'feature'];
 
 const features = [
-  { icon: BoltIcon, text: 'Imágenes ilimitadas', color: 'text-accent-teal' },
-  { icon: SparklesIcon, text: 'Sin marcas de agua', color: 'text-primary' },
-  { icon: HeartIcon, text: 'Estilos premium exclusivos', color: 'text-accent-crimson' },
-  { icon: StarIcon, text: 'Soporte prioritario 24/7', color: 'text-accent-gold' },
+  { icon: BoltIcon, text: 'Generación en alta calidad', color: 'text-accent-teal' },
+  { icon: SparklesIcon, text: 'Descarga inmediata', color: 'text-primary' },
+  { icon: HeartIcon, text: 'Solo $1 por imagen', color: 'text-accent-crimson' },
+  { icon: StarIcon, text: 'Sin suscripciones', color: 'text-accent-gold' },
 ];
 </script>
 
@@ -126,13 +126,13 @@ const features = [
           <!-- Trust Indicators -->
           <div class="flex items-center justify-center space-x-4 text-xs text-text-tertiary">
             <div class="flex items-center space-x-1">
-              <span>🔒</span>
-              <span>Pago seguro</span>
+              <span>�</span>
+              <span>Solo $1</span>
             </div>
             <div class="w-px h-4 bg-white/10"></div>
             <div class="flex items-center space-x-1">
               <span>✓</span>
-              <span>Sin permanencia</span>
+              <span>Sin suscripciones</span>
             </div>
           </div>
         </div>

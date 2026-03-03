@@ -131,6 +131,9 @@ export default {
   },
   profile: {
     stats: {
+      title: 'Información del Perfil',
+      memberSince: 'Miembro desde',
+      email: 'Correo electrónico',
       stories: 'Historias',
       followers: 'Seguidores',
       following: 'Siguiendo',

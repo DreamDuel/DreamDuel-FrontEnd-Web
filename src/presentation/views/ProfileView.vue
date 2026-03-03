@@ -1,21 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon, PhotoIcon, TrashIcon } from '@heroicons/vue/24/outline';
-// IMPORTS DE HISTORIAS - Comentados temporalmente (futuro uso)
-// import { useStoryStore } from '@/stores/storyStore';
-// import StoryCard from '@/presentation/components/StoryCard.vue';
+import { Cog6ToothIcon, ArrowRightOnRectangleIcon, PencilIcon } from '@heroicons/vue/24/outline';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
-// STORES DE HISTORIAS - Comentado temporalmente (futuro uso)
-// const storyStore = useStoryStore();
 const userStore = useUserStore();
 const router = useRouter();
-// TABS DE HISTORIAS - Comentados temporalmente (futuro uso)
-// const currentTab = ref<'stories' | 'saved' | 'liked' | 'images'>('stories');
-const currentTab = ref<'images'>('images');
 const isEditingProfile = ref(false);
 const editForm = ref({
   username: ''
@@ -25,51 +17,11 @@ onMounted(async () => {
   // Cargar usuario desde localStorage si existe
   userStore.loadUserFromStorage();
   
-  // CARGA DE HISTORIAS - Comentada temporalmente (futuro uso)
-  // await Promise.all([
-  //   storyStore.fetchStories(),
-  //   storyStore.fetchTrendingStories(),
-  //   storyStore.fetchNewStories()
-  // ]);
-  
   // Inicializar formulario de edición
   if (userStore.currentUser) {
     editForm.value.username = userStore.currentUser.username;
   }
 });
-
-// COMPUTED PARA HISTORIAS - Comentados temporalmente (futuro uso)
-/*
-const myStories = computed(() => {
-  if (!userStore.currentUser?.myStories) return [];
-  const allStories = [...storyStore.stories, ...storyStore.trendingStories, ...storyStore.newStories];
-  const uniqueMap = new Map();
-  allStories.forEach(s => uniqueMap.set(s.id, s));
-  return Array.from(uniqueMap.values()).filter(s => 
-    userStore.currentUser?.myStories.includes(s.id)
-  );
-});
-
-const savedStoriesList = computed(() => {
-  if (!userStore.currentUser?.savedStories) return [];
-  const allStories = [...storyStore.stories, ...storyStore.trendingStories, ...storyStore.newStories, ...storyStore.savedStories];
-  const uniqueMap = new Map();
-  allStories.forEach(s => uniqueMap.set(s.id, s));
-  return Array.from(uniqueMap.values()).filter(s => 
-    userStore.currentUser?.savedStories.includes(s.id)
-  );
-});
-
-const likedStoriesList = computed(() => {
-  if (!userStore.currentUser?.likedStories) return [];
-  const allStories = [...storyStore.stories, ...storyStore.trendingStories, ...storyStore.newStories, ...storyStore.savedStories];
-  const uniqueMap = new Map();
-  allStories.forEach(s => uniqueMap.set(s.id, s));
-  return Array.from(uniqueMap.values()).filter(s => 
-    userStore.currentUser?.likedStories.includes(s.id)
-  );
-});
-*/
 
 const handleLogout = () => {
   userStore.logout();
@@ -222,142 +174,21 @@ const handleAvatarChange = async (event: Event) => {
         </div>
       </div>
 
-      <!-- Tabs -->
-      <div class="flex space-x-4 mb-6">
-        <!-- TABS DE HISTORIAS - Comentados temporalmente (futuro uso)
-        <button
-          @click="currentTab = 'stories'"
-          :class="[
-            'px-6 py-3 rounded-xl font-semibold transition-all',
-            currentTab === 'stories'
-              ? 'bg-primary text-white'
-              : 'bg-background-card text-text-secondary hover:text-text-primary'
-          ]"
-        >
-          {{ t('profile.tabs.myStories') }} ({{ myStories.length }})
-        </button>
-        <button
-          @click="currentTab = 'saved'"
-          :class="[
-            'px-6 py-3 rounded-xl font-semibold transition-all',
-            currentTab === 'saved'
-              ? 'bg-primary text-white'
-              : 'bg-background-card text-text-secondary hover:text-text-primary'
-          ]"
-        >
-          {{ t('profile.tabs.saved') }} ({{ savedStoriesList.length }})
-        </button>
-        <button
-          @click="currentTab = 'liked'"
-          :class="[
-            'px-6 py-3 rounded-xl font-semibold transition-all',
-            currentTab === 'liked'
-              ? 'bg-primary text-white'
-              : 'bg-background-card text-text-secondary hover:text-text-primary'
-          ]"
-        >
-          {{ t('profile.tabs.liked') }} ({{ likedStoriesList.length }})
-        </button>
-        -->
-        <button
-          @click="currentTab = 'images'"
-          :class="[
-            'px-6 py-3 rounded-xl font-semibold transition-all',
-            currentTab === 'images'
-              ? 'bg-primary text-white'
-              : 'bg-background-card text-text-secondary hover:text-text-primary'
-          ]"
-        >
-          {{ t('profile.tabs.images') }} ({{ userStore.currentUser?.myImages?.length || 0 }})
-        </button>
-      </div>
-
-      <!-- Content -->
-      <!-- CONTENIDO DE HISTORIAS - Comentado temporalmente (futuro uso)
-      <div v-if="currentTab === 'stories'">
-        <div v-if="myStories.length === 0" class="text-center py-20">
-          <p class="text-text-secondary text-lg mb-4">{{ t('profile.empty.noStories') }}</p>
-          <router-link
-            to="/create"
-            class="inline-flex items-center space-x-2 px-6 py-3 bg-primary hover:bg-primary-light text-white rounded-xl transition-colors"
-          >
-            <span>{{ t('profile.empty.createFirst') }}</span>
-          </router-link>
-        </div>
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <StoryCard
-            v-for="story in myStories"
-            :key="story.id"
-            :story="story"
-          />
-        </div>
-      </div>
-
-      <div v-if="currentTab === 'saved'">
-        <div v-if="savedStoriesList.length === 0" class="text-center py-20">
-          <p class="text-text-secondary text-lg">{{ t('profile.empty.noSaved') }}</p>
-        </div>
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <StoryCard
-            v-for="story in savedStoriesList"
-            :key="story.id"
-            :story="story"
-          />
-        </div>
-      </div>
-
-      <div v-if="currentTab === 'liked'">
-        <div v-if="likedStoriesList.length === 0" class="text-center py-20">
-          <p class="text-text-secondary text-lg">{{ t('profile.empty.noLiked') }}</p>
-        </div>
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <StoryCard
-            v-for="story in likedStoriesList"
-            :key="story.id"
-            :story="story"
-          />
-        </div>
-      </div>
-      -->
-
-      <div v-if="currentTab === 'images'">
-        <div v-if="!userStore.currentUser?.myImages || userStore.currentUser.myImages.length === 0" class="text-center py-20">
-          <PhotoIcon class="h-16 w-16 text-text-tertiary mx-auto mb-4" />
-          <p class="text-text-secondary text-lg mb-4">{{ t('profile.empty.noImages') }}</p>
-          <router-link
-            to="/images"
-            class="inline-flex items-center space-x-2 px-6 py-3 bg-primary hover:bg-primary-light text-white rounded-xl transition-colors"
-          >
-            <PhotoIcon class="h-5 w-5" />
-            <span>{{ t('profile.empty.generateFirst') }}</span>
-          </router-link>
-        </div>
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <div
-            v-for="image in userStore.currentUser.myImages"
-            :key="image.id"
-            class="group relative bg-background-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
-          >
-            <div class="aspect-square overflow-hidden">
-              <img
-                :src="image.imageUrl"
-                :alt="image.prompt"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-            </div>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div class="absolute bottom-0 left-0 right-0 p-4">
-                <p class="text-white text-sm font-medium line-clamp-2 mb-2">{{ image.prompt }}</p>
-                <p class="text-white/60 text-xs">{{ new Date(image.createdAt).toLocaleDateString() }}</p>
-              </div>
-              <button
-                @click="userStore.deleteImage(image.id)"
-                class="absolute top-3 right-3 p-2 bg-red-500/90 hover:bg-red-600 text-white rounded-lg transition-colors"
-                :title="t('common.delete')"
-              >
-                <TrashIcon class="h-5 w-5" />
-              </button>
-            </div>
+      <!-- Profile Stats -->
+      <div class="bg-background-card rounded-2xl p-6 border border-white/5">
+        <h2 class="text-lg font-semibold text-text-primary mb-4">{{ t('profile.stats.title') }}</h2>
+        <div class="grid grid-cols-1 gap-4">
+          <div class="bg-background-elevated rounded-xl p-4">
+            <p class="text-text-tertiary text-sm mb-1">{{ t('profile.stats.memberSince') }}</p>
+            <p class="text-text-primary text-lg font-semibold">
+              {{ userStore.currentUser?.createdAt ? new Date(userStore.currentUser.createdAt).toLocaleDateString() : 'N/A' }}
+            </p>
+          </div>
+          <div class="bg-background-elevated rounded-xl p-4">
+            <p class="text-text-tertiary text-sm mb-1">{{ t('profile.stats.email') }}</p>
+            <p class="text-text-primary text-lg font-semibold">
+              {{ userStore.currentUser?.email || 'N/A' }}
+            </p>
           </div>
         </div>
       </div>
