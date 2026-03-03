@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { LanguageIcon } from '@heroicons/vue/24/outline';
+import { LanguageIcon, ArrowLeftIcon } from '@heroicons/vue/24/outline';
 
+const router = useRouter();
 const { t, locale } = useI18n();
 const showLanguageMenu = ref(false);
 
@@ -11,6 +13,10 @@ const changeLanguage = (lang: string) => {
   localStorage.setItem('locale', lang);
   showLanguageMenu.value = false;
 };
+
+const goBack = () => {
+  router.back();
+};
 </script>
 
 <template>
@@ -18,8 +24,16 @@ const changeLanguage = (lang: string) => {
     <div class="max-w-4xl mx-auto">
       <!-- Header -->
       <div class="mb-8">
-        <!-- Language Selector -->
-        <div class="flex justify-end mb-6">
+        <!-- Back Button and Language Selector -->
+        <div class="flex justify-between items-center mb-6">
+          <button
+            @click="goBack"
+            class="flex items-center space-x-2 px-4 py-2 bg-background-elevated border border-white/10 rounded-lg hover:bg-background-elevated/80 transition-all text-text-secondary"
+          >
+            <ArrowLeftIcon class="h-5 w-5" />
+            <span class="text-sm">{{ locale === 'es' ? 'Volver' : 'Back' }}</span>
+          </button>
+          <div class="relative">
           <div class="relative">
             <button
               @click="showLanguageMenu = !showLanguageMenu"
@@ -48,6 +62,7 @@ const changeLanguage = (lang: string) => {
                 English
               </button>
             </div>
+          </div>
           </div>
         </div>
         

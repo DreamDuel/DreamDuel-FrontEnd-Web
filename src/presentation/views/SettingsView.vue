@@ -226,15 +226,15 @@ const logout = () => {
       <div class="bg-background-card rounded-2xl p-6 mb-6">
         <h2 class="text-xl font-bold text-text-primary mb-4">{{ t('settings.legal.title') }}</h2>
         <div class="space-y-3">
-          <button class="w-full text-left px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-background-elevated rounded-xl transition-colors">
+          <button @click="router.push('/terms')" class="w-full text-left px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-background-elevated rounded-xl transition-colors">
             {{ t('settings.legal.terms') }}
           </button>
-          <button class="w-full text-left px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-background-elevated rounded-xl transition-colors">
+          <button @click="router.push('/privacy')" class="w-full text-left px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-background-elevated rounded-xl transition-colors">
             {{ t('settings.legal.privacy') }}
           </button>
-          <button class="w-full text-left px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-background-elevated rounded-xl transition-colors">
+          <a href="https://www.dreamduel.lat" target="_blank" class="block w-full text-left px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-background-elevated rounded-xl transition-colors">
             {{ t('settings.legal.about') }}
-          </button>
+          </a>
         </div>
       </div>
 

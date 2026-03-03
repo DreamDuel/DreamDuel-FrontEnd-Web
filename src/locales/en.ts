@@ -460,19 +460,19 @@ export default {
       },
       section2: {
         title: 'Service Description',
-        content: 'DreamDuel is a platform that allows users to create, share, and discover visual stories generated using artificial intelligence. We reserve the right to modify or discontinue the service at any time.'
+        content: 'DreamDuel is an AI-powered image generation service. Users pay $1 per generated image and download it directly. We do not store generated images on our servers. We reserve the right to modify or discontinue the service at any time.'
       },
       section3: {
         title: 'User Account',
         content: 'You are responsible for maintaining the confidentiality of your account and password. You accept responsibility for all activities that occur under your account. You must be at least 13 years old to use this service.'
       },
       section4: {
-        title: 'User Content',
-        content: 'You retain all rights to the content you create on DreamDuel. By publishing content, you grant us a non-exclusive, worldwide, royalty-free license to use, display, and distribute your content on the platform.'
+        title: 'Generated Images and Rights',
+        content: 'Images generated through our service are downloaded directly by you and are not stored on our servers. You retain all rights to the images you generate and download. You are responsible for the use of generated images and must ensure you do not infringe on third-party rights.'
       },
       section5: {
         title: 'Prohibited Conduct',
-        content: 'You must not use DreamDuel to create, publish, or share illegal, offensive, harassing, violent content, or content that infringes on third-party rights. We reserve the right to remove content and suspend accounts that violate these terms.'
+        content: 'You must not use DreamDuel to generate illegal, offensive, harassing, violent, pornographic content, or content that infringes on third-party rights. We reserve the right to suspend or terminate accounts that violate these terms. Use of the service must comply with all applicable laws.'
       },
       section6: {
         title: 'Intellectual Property',
@@ -489,11 +489,11 @@ export default {
       contact: 'Contact',
       section1: {
         title: 'Information We Collect',
-        content: 'We collect information you provide directly to us, such as your name, email, and the content you create. We also automatically collect information about your use of the service, including IP address, browser type, and pages visited.'
+        content: 'We collect information you provide directly to us, such as your name and email. We do not store the images you generate, as they are downloaded directly to your device. We also automatically collect information about your use of the service, including IP address, browser type, and pages visited.'
       },
       section2: {
         title: 'Use of Information',
-        content: 'We use your information to provide, maintain, and improve our services, process transactions, send you communications, personalize your experience, and protect platform security.'
+        content: 'We use your information to provide and maintain the image generation service, process payments through PayPal, send you transaction confirmations, improve our service, and protect platform security. We do not use the images you generate for any purpose as we do not store them.'
       },
       section3: {
         title: 'Sharing Information',

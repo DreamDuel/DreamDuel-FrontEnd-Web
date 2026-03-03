@@ -462,19 +462,19 @@ export default {
       },
       section2: {
         title: 'Descripción del Servicio',
-        content: 'DreamDuel es una plataforma que permite a los usuarios crear, compartir y descubrir historias visuales generadas mediante inteligencia artificial. Nos reservamos el derecho de modificar o discontinuar el servicio en cualquier momento.'
+        content: 'DreamDuel es un servicio de generación de imágenes mediante inteligencia artificial. Los usuarios pagan $1 por cada imagen generada y la descargan directamente. No almacenamos las imágenes generadas en nuestros servidores. Nos reservamos el derecho de modificar o discontinuar el servicio en cualquier momento.'
       },
       section3: {
         title: 'Cuenta de Usuario',
         content: 'Eres responsable de mantener la confidencialidad de tu cuenta y contraseña. Aceptas la responsabilidad de todas las actividades que ocurran bajo tu cuenta. Debes ser mayor de 13 años para usar este servicio.'
       },
       section4: {
-        title: 'Contenido del Usuario',
-        content: 'Conservas todos los derechos sobre el contenido que crees en DreamDuel. Al publicar contenido, nos otorgas una licencia no exclusiva, mundial y libre de regalías para usar, mostrar y distribuir tu contenido en la plataforma.'
+        title: 'Imágenes Generadas y Derechos',
+        content: 'Las imágenes generadas mediante nuestro servicio son descargadas directamente por ti y no se almacenan en nuestros servidores. Conservas todos los derechos sobre las imágenes que generes y descargues. Eres responsable del uso que hagas de las imágenes generadas y debes asegurarte de no infringir derechos de terceros.'
       },
       section5: {
         title: 'Conducta Prohibida',
-        content: 'No debes usar DreamDuel para crear, publicar o compartir contenido ilegal, ofensivo, acosador, violento o que infrinja los derechos de terceros. Nos reservamos el derecho de eliminar contenido y suspender cuentas que violen estos términos.'
+        content: 'No debes usar DreamDuel para generar contenido ilegal, ofensivo, acosador, violento, pornográfico o que infrinja los derechos de terceros. Nos reservamos el derecho de suspender o cancelar cuentas que violen estos términos. El uso del servicio debe cumplir con todas las leyes aplicables.'
       },
       section6: {
         title: 'Propiedad Intelectual',
@@ -491,11 +491,11 @@ export default {
       contact: 'Contacto',
       section1: {
         title: 'Información que Recopilamos',
-        content: 'Recopilamos información que nos proporcionas directamente, como tu nombre, correo electrónico, y el contenido que creas. También recopilamos información automáticamente sobre tu uso del servicio, incluyendo dirección IP, tipo de navegador y páginas visitadas.'
+        content: 'Recopilamos información que nos proporcionas directamente, como tu nombre y correo electrónico. No almacenamos las imágenes que generas, ya que se descargan directamente a tu dispositivo. También recopilamos información automáticamente sobre tu uso del servicio, incluyendo dirección IP, tipo de navegador y páginas visitadas.'
       },
       section2: {
         title: 'Uso de la Información',
-        content: 'Utilizamos tu información para proporcionar, mantener y mejorar nuestros servicios, procesar transacciones, enviarte comunicaciones, personalizar tu experiencia y proteger la seguridad de la plataforma.'
+        content: 'Utilizamos tu información para proporcionar y mantener el servicio de generación de imágenes, procesar pagos a través de PayPal, enviarte confirmaciones de transacciones, mejorar nuestro servicio y proteger la seguridad de la plataforma. No utilizamos las imágenes que generas para ningún propósito ya que no las almacenamos.'
       },
       section3: {
         title: 'Compartir Información',
