@@ -59,44 +59,10 @@ const navigateToGenerator = () => {
   router.push('/images');
 };
 
-const goToLogin = () => {
-  router.push('/login');
-};
-
-const goToRegister = () => {
-  router.push('/register');
-};
-
 </script>
 
 <template>
   <div class="min-h-screen bg-background-deep overflow-hidden flex flex-col">
-    <!-- Header con CTA de Login/Registro -->
-    <div class="sticky top-0 z-50 bg-background-deep/95 backdrop-blur-md border-b border-white/10">
-      <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
-        <div class="flex items-center space-x-2 sm:space-x-3">
-          <SparklesIcon class="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-          <span class="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-            DreamDuel
-          </span>
-        </div>
-        <div class="flex items-center space-x-2 sm:space-x-3">
-          <button 
-            @click="goToLogin"
-            class="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base text-text-secondary hover:text-primary transition-colors"
-          >
-            {{ t('guest.header.login') }}
-          </button>
-          <button
-            @click="goToRegister"
-            class="px-4 sm:px-6 py-1.5 sm:py-2 text-sm sm:text-base bg-primary hover:bg-primary-light text-white rounded-lg font-semibold transition-all"
-          >
-            {{ t('guest.header.register') }}
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- Hero Section -->
     <section class="relative flex-1 flex items-center py-8 sm:py-16 md:py-24 lg:py-32">
       <!-- Animated Background Blobs -->
