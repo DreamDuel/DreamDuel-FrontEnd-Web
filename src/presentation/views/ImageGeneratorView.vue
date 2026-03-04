@@ -208,10 +208,10 @@ const handleUpgrade = () => {
           <PhotoIcon class="h-12 w-12 text-primary animate-pulse" />
         </div>
         <h1 class="text-5xl md:text-6xl font-bold text-text-primary mb-4">
-          Generador de Imágenes IA
+          {{ t('imageGenerator.title') }}
         </h1>
         <p class="text-text-secondary text-xl mb-6">
-          Crea imágenes únicas con inteligencia artificial
+          {{ t('imageGenerator.subtitle') }}
         </p>
       </div>
 
@@ -220,7 +220,7 @@ const handleUpgrade = () => {
         <!-- Upload de Imagen -->
         <div class="mb-8">
           <label class="block text-text-primary font-semibold mb-3 text-base md:text-lg">
-            1. Sube tu imagen de referencia
+            {{ t('imageGenerator.step1') }}
           </label>
           
           <div v-if="!imagePreviewUrl" class="relative">
@@ -255,39 +255,39 @@ const handleUpgrade = () => {
         <!-- Opciones de Generación (Desbloqueadas) -->
         <div class="mb-8">
           <label class="block text-text-primary font-semibold mb-3 text-base md:text-lg">
-            2. Opciones de Generación
+            {{ t('imageGenerator.step2') }}
           </label>
           
           <!-- PROMPT -->
           <div class="mb-4">
             <label class="block text-text-secondary font-medium mb-2 text-sm">
-              Prompt (Descripción)
-              <span class="text-accent-crimson">*</span>
+              {{ t('imageGenerator.promptLabel') }}
+              <span class="text-accent-crimson">{{ t('imageGenerator.promptRequired') }}</span>
             </label>
             <textarea
               v-model="prompt"
-              placeholder="Ejemplo: una mujer con cabello largo y rizado, sonriendo, en un jardín con flores..."
+              :placeholder="t('imageGenerator.promptPlaceholder')"
               rows="4"
               class="w-full px-5 py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
             ></textarea>
             <p class="text-text-tertiary text-sm mt-2">
-              💡 Describe con detalle cómo quieres que sea la imagen
+              {{ t('imageGenerator.promptTip') }}
             </p>
           </div>
           
           <!-- NEGATIVE PROMPT -->
           <div>
             <label class="block text-text-secondary font-medium mb-2 text-sm">
-              Negative Prompt (Qué evitar)
+              {{ t('imageGenerator.negativePromptLabel') }}
             </label>
             <textarea
               v-model="negativePrompt"
-              placeholder="Ejemplo: borroso, baja calidad, distorsionado, mal dibujado..."
+              :placeholder="t('imageGenerator.negativePromptPlaceholder')"
               rows="3"
               class="w-full px-5 py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
             ></textarea>
             <p class="text-text-tertiary text-sm mt-2">
-              💡 Define qué elementos no quieres en la imagen
+              {{ t('imageGenerator.negativePromptTip') }}
             </p>
           </div>
         </div>
@@ -440,11 +440,11 @@ const handleUpgrade = () => {
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span>Generando Imagen...</span>
+            <span>{{ t('imageGenerator.generating') }}</span>
           </template>
           <template v-else>
             <PhotoIcon class="h-6 w-6" />
-            <span>Generar Imagen</span>
+            <span>{{ t('imageGenerator.generateButton') }}</span>
           </template>
         </button>
 

@@ -21,7 +21,8 @@ export default {
     create: 'Crear',
     profile: 'Perfil',
     settings: 'Configuración',
-    myProfile: 'Mi Perfil'
+    myProfile: 'Mi Perfil',
+    images: 'Imágenes'
   },
   home: {
     hero: {
@@ -128,6 +129,21 @@ export default {
     results: 'resultados',
     noResults: 'No se encontraron historias',
     tryDifferent: 'Intenta con otros términos de búsqueda'
+  },
+  imageGenerator: {
+    title: 'Generador de Imágenes IA',
+    subtitle: 'Crea imágenes únicas con inteligencia artificial',
+    step1: '1. Sube tu imagen de referencia',
+    step2: '2. Opciones de Generación',
+    promptLabel: 'Prompt (Descripción)',
+    promptRequired: '*',
+    promptPlaceholder: 'Ejemplo: una mujer con cabello largo y rizado, sonriendo, en un jardín con flores...',
+    promptTip: '💡 Describe con detalle cómo quieres que sea la imagen',
+    negativePromptLabel: 'Negative Prompt (Qué evitar)',
+    negativePromptPlaceholder: 'Ejemplo: borroso, baja calidad, distorsionado, mal dibujado...',
+    negativePromptTip: '💡 Define qué elementos no quieres en la imagen',
+    generateButton: 'Generar Imagen',
+    generating: 'Generando Imagen...'
   },
   profile: {
     stats: {

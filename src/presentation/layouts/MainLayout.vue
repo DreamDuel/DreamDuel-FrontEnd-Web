@@ -68,7 +68,7 @@ onMounted(() => {
               class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors font-medium"
             >
               <PhotoIcon class="h-5 w-5" />
-              <span>Imágenes</span>
+              <span>{{ t('nav.images') }}</span>
             </router-link>
           </div>
 

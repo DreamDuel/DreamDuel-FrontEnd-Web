@@ -21,7 +21,8 @@ export default {
     create: 'Create',
     profile: 'Profile',
     settings: 'Settings',
-    myProfile: 'My Profile'
+    myProfile: 'My Profile',
+    images: 'Images'
   },
   home: {
     hero: {
@@ -128,6 +129,21 @@ export default {
     results: 'results',
     noResults: 'No stories found',
     tryDifferent: 'Try different search terms'
+  },
+  imageGenerator: {
+    title: 'AI Image Generator',
+    subtitle: 'Create unique images with artificial intelligence',
+    step1: '1. Upload your reference image',
+    step2: '2. Generation Options',
+    promptLabel: 'Prompt (Description)',
+    promptRequired: '*',
+    promptPlaceholder: 'Example: a woman with long curly hair, smiling, in a garden with flowers...',
+    promptTip: '💡 Describe in detail how you want the image to be',
+    negativePromptLabel: 'Negative Prompt (What to avoid)',
+    negativePromptPlaceholder: 'Example: blurry, low quality, distorted, poorly drawn...',
+    negativePromptTip: '💡 Define which elements you don\'t want in the image',
+    generateButton: 'Generate Image',
+    generating: 'Generating Image...'
   },
   profile: {
     stats: {
