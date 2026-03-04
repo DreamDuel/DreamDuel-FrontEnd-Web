@@ -428,7 +428,7 @@ export default {
       username: 'Nombre de usuario',
       usernamePlaceholder: 'usuario123',
       email: 'Correo electrónico',
-      emailPlaceholder: 'tu@email.com',
+      emailPlaceholder: 'tu{'@'}email.com',
       password: 'Contraseña',
       passwordPlaceholder: 'Mínimo 8 caracteres',
       confirmPassword: 'Confirmar contraseña',
