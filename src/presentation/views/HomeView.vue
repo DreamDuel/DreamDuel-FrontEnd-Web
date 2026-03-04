@@ -64,7 +64,7 @@ const navigateToGenerator = () => {
 <template>
   <div class="min-h-screen bg-background-deep overflow-hidden">
     <!-- Hero Section -->
-    <section class="relative py-12 sm:py-16 md:py-24 lg:py-32">
+    <section class="relative py-8 sm:py-16 md:py-24 lg:py-32">
       <!-- Animated Background Blobs -->
       <div class="absolute inset-0 overflow-hidden pointer-events-none">
         <div class="absolute top-0 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-primary/20 rounded-full blur-3xl animate-blob"></div>
@@ -76,21 +76,21 @@ const navigateToGenerator = () => {
       <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
           <!-- Badge -->
-          <div class="inline-flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary/10 border border-primary/20 rounded-full mb-6 sm:mb-8 backdrop-blur-sm animate-fade-in">
+          <div class="inline-flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary/10 border border-primary/20 rounded-full mb-4 sm:mb-6 md:mb-8 backdrop-blur-sm animate-fade-in">
             <SparklesIcon class="w-4 h-4 sm:w-5 sm:h-5 text-primary animate-pulse" />
-            <span class="text-primary font-semibold text-sm sm:text-base">{{ t('home.hero.badge') }}</span>
+            <span class="text-primary font-semibold text-xs sm:text-sm md:text-base">{{ t('home.hero.badge') }}</span>
           </div>
 
           <!-- Main Heading -->
-          <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight px-2 animate-slide-up">
+          <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4 md:mb-6 leading-tight px-2 animate-slide-up">
             {{ t('home.hero.heading1') }}
-            <span class="block mt-2 bg-gradient-to-r from-primary via-purple-400 to-blue-400 bg-clip-text text-transparent">
+            <span class="block mt-1 sm:mt-2 bg-gradient-to-r from-primary via-purple-400 to-blue-400 bg-clip-text text-transparent">
               {{ t('home.hero.heading2') }}
             </span>
           </h1>
 
           <!-- Subtitle -->
-          <p class="text-lg sm:text-xl md:text-2xl text-text-secondary mb-8 sm:mb-12 max-w-2xl mx-auto px-4 animate-fade-in-delay">
+          <p class="text-sm sm:text-base md:text-lg lg:text-xl text-text-secondary mb-6 sm:mb-8 md:mb-12 max-w-2xl mx-auto px-4 animate-fade-in-delay">
             {{ t('home.hero.description') }}
           </p>
 
@@ -98,11 +98,11 @@ const navigateToGenerator = () => {
           <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 animate-slide-up-delay">
             <button
               @click="navigateToGenerator"
-              class="group relative w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary to-primary-light text-white font-bold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/50 overflow-hidden"
+              class="group relative w-full sm:w-auto px-5 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary to-primary-light text-white font-bold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/50 overflow-hidden"
             >
               <span class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
               <span class="relative flex items-center justify-center space-x-2">
-                <PhotoIcon class="w-5 h-5 sm:w-6 sm:h-6" />
+                <PhotoIcon class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
                 <span class="text-sm sm:text-base">{{ t('home.hero.ctaButton') }}</span>
               </span>
             </button>

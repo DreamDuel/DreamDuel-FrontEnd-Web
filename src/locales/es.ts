@@ -15,6 +15,12 @@ export default {
     skip: 'Saltar',
     start: 'Empezar'
   },
+  welcomeBanner: {
+    title: '🎉 ¡Bienvenido a DreamDuel!',
+    message: 'Tu',
+    messageBold: 'primera imagen es GRATIS',
+    messageCta: '. Comienza a crear ahora.'
+  },
   nav: {
     home: 'Inicio',
     search: 'Buscar',

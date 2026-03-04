@@ -28,7 +28,7 @@ onMounted(() => {
     <!-- Desktop Navbar (hidden on mobile) -->
     <nav 
       class="hidden md:block fixed left-0 right-0 z-50 bg-background-elevated/80 backdrop-blur-md border-b border-white/10 transition-all duration-300"
-      :class="showWelcomeBanner ? 'top-16' : 'top-0'"
+      :class="showWelcomeBanner ? 'top-[68px]' : 'top-0'"
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
@@ -121,7 +121,7 @@ onMounted(() => {
     <!-- Main Content -->
     <main 
       class="pb-16 md:pb-0 transition-all duration-300"
-      :class="showWelcomeBanner ? 'md:pt-32' : 'md:pt-16'"
+      :class="showWelcomeBanner ? 'md:pt-[132px]' : 'md:pt-16'"
     >
       <slot />
     </main>
