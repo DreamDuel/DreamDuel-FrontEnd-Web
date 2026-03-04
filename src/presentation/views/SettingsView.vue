@@ -84,7 +84,7 @@ const updatePassword = () => {
 const logout = () => {
   if (confirm(t('settings.confirmLogout'))) {
     userStore.logout();
-    router.push('/login');
+    router.push('/');
   }
 };
 </script>

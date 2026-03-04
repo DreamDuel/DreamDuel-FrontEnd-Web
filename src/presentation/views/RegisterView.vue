@@ -181,9 +181,9 @@ const goToLogin = () => {
             />
             <label for="terms" class="ml-3 text-sm text-text-secondary">
               {{ t('auth.register.acceptTerms') }} 
-              <router-link to="/terms" class="text-primary hover:text-primary-light underline" target="_blank">{{ t('auth.register.terms') }}</router-link>
+              <router-link to="/terms" class="text-primary hover:text-primary-light underline">{{ t('auth.register.terms') }}</router-link>
               {{ t('auth.register.and') }} 
-              <router-link to="/privacy" class="text-primary hover:text-primary-light underline" target="_blank">{{ t('auth.register.privacy') }}</router-link>
+              <router-link to="/privacy" class="text-primary hover:text-primary-light underline">{{ t('auth.register.privacy') }}</router-link>
             </label>
           </div>
 

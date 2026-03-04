@@ -25,7 +25,7 @@ onMounted(async () => {
 
 const handleLogout = () => {
   userStore.logout();
-  router.push('/login');
+  router.push('/');
 };
 
 const toggleEditProfile = () => {
