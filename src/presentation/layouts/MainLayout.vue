@@ -26,7 +26,10 @@ onMounted(() => {
 <template>
   <div class="min-h-screen bg-background-deep">
     <!-- Desktop Navbar (hidden on mobile) -->
-    <nav class="hidden md:block fixed top-0 left-0 right-0 z-50 bg-background-elevated/80 backdrop-blur-md border-b border-white/10">
+    <nav 
+      class="hidden md:block fixed left-0 right-0 z-50 bg-background-elevated/80 backdrop-blur-md border-b border-white/10 transition-all duration-300"
+      :class="showWelcomeBanner ? 'top-16' : 'top-0'"
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
@@ -116,7 +119,10 @@ onMounted(() => {
     />
 
     <!-- Main Content -->
-    <main class="md:pt-16 pb-16 md:pb-0">
+    <main 
+      class="pb-16 md:pb-0 transition-all duration-300"
+      :class="showWelcomeBanner ? 'md:pt-32' : 'md:pt-16'"
+    >
       <slot />
     </main>
 
