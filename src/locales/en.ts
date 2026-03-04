@@ -417,7 +417,9 @@ export default {
       signUp: 'Sign up',
       welcome: 'Welcome back',
       subtitle: 'Continue creating amazing stories',
-      orLoginWith: 'Or log in with',      continueWithGoogle: 'Continue with Google',      google: 'Google',
+      orLoginWith: 'Or log in with',
+      continueWithGoogle: 'Continue with Google',
+      google: 'Google',
       apple: 'Apple',
       creating: 'Logging in...'
     },
