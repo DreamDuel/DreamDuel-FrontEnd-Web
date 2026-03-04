@@ -1,154 +1,131 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-// Views
-import LoginView from '@/presentation/views/LoginView.vue';
-import RegisterView from '@/presentation/views/RegisterView.vue';
-import SplashScreen from '@/presentation/views/SplashScreen.vue';
-import OnboardingScreen from '@/presentation/views/OnboardingScreen.vue';
-import HomeView from '@/presentation/views/HomeView.vue';
-import CreateView from '@/presentation/views/CreateView.vue';
-import ProfileView from '@/presentation/views/ProfileView.vue';
-import PublicProfileView from '@/presentation/views/PublicProfileView.vue';
-import ReaderView from '@/presentation/views/ReaderView.vue';
-import SearchView from '@/presentation/views/SearchView.vue';
-import SettingsView from '@/presentation/views/SettingsView.vue';
-import LoadingScreen from '@/presentation/views/LoadingScreen.vue';
-import StoryDetailsView from '@/presentation/views/StoryDetailsView.vue';
-import StoryViewerScreen from '@/presentation/views/StoryViewerScreen.vue';
-import PricingView from '@/presentation/views/PricingView.vue';
-import GuestCreateView from '@/presentation/views/GuestCreateView.vue';
-import GuestImageView from '@/presentation/views/GuestImageView.vue';
-import ImageGeneratorView from '@/presentation/views/ImageGeneratorView.vue';
-import NicheLandingView from '@/presentation/views/NicheLandingView.vue';
-import TermsView from '@/presentation/views/TermsView.vue';
-import PrivacyView from '@/presentation/views/PrivacyView.vue';
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/login',
       name: 'login',
-      component: LoginView,
+      component: () => import('@/presentation/views/LoginView.vue'),
       meta: { hideNavigation: true }
     },
     {
       path: '/register',
       name: 'register',
-      component: RegisterView,
+      component: () => import('@/presentation/views/RegisterView.vue'),
       meta: { hideNavigation: true }
     },
     {
       path: '/splash',
       name: 'splash',
-      component: SplashScreen,
+      component: () => import('@/presentation/views/SplashScreen.vue'),
       meta: { hideNavigation: true }
     },
     {
       path: '/onboarding',
       name: 'onboarding',
-      component: OnboardingScreen,
+      component: () => import('@/presentation/views/OnboardingScreen.vue'),
       meta: { hideNavigation: true }
     },
     {
       path: '/',
       name: 'root',
-      component: GuestCreateView,
+      component: () => import('@/presentation/views/GuestCreateView.vue'),
       meta: { hideNavigation: true }
     },
     {
       path: '/guest',
       name: 'guest-create',
-      component: GuestCreateView,
+      component: () => import('@/presentation/views/GuestCreateView.vue'),
       meta: { hideNavigation: true }
     },
     {
       path: '/guest-image',
       name: 'guest-image',
-      component: GuestImageView,
+      component: () => import('@/presentation/views/GuestImageView.vue'),
       meta: { hideNavigation: true }
     },
     {
       path: '/generador/:niche',
       name: 'niche-landing',
-      component: NicheLandingView,
+      component: () => import('@/presentation/views/NicheLandingView.vue'),
       meta: { hideNavigation: true }
     },
     {
       path: '/home',
       name: 'home',
-      component: HomeView
+      component: () => import('@/presentation/views/HomeView.vue')
     },
     // RUTAS DE HISTORIAS - Comentadas temporalmente (futuro uso)
     // {
     //   path: '/create',
     //   name: 'create',
-    //   component: CreateView
+    //   component: () => import('@/presentation/views/CreateView.vue')
     // },
     {
       path: '/images',
       name: 'images',
-      component: ImageGeneratorView
+      component: () => import('@/presentation/views/ImageGeneratorView.vue')
     },
     {
       path: '/profile',
       name: 'profile',
-      component: ProfileView
+      component: () => import('@/presentation/views/ProfileView.vue')
     },
     // {
     //   path: '/user/:userId',
     //   name: 'publicProfile',
-    //   component: PublicProfileView
+    //   component: () => import('@/presentation/views/PublicProfileView.vue')
     // },
     // {
     //   path: '/search',
     //   name: 'search',
-    //   component: SearchView
+    //   component: () => import('@/presentation/views/SearchView.vue')
     // },
     {
       path: '/settings',
       name: 'settings',
-      component: SettingsView
+      component: () => import('@/presentation/views/SettingsView.vue')
     },
     {
       path: '/pricing',
       name: 'pricing',
-      component: PricingView,
+      component: () => import('@/presentation/views/PricingView.vue'),
       meta: { hideNavigation: true }
     },
     {
       path: '/loading',
       name: 'loading',
-      component: LoadingScreen,
+      component: () => import('@/presentation/views/LoadingScreen.vue'),
       meta: { hideNavigation: true }
     },
     // {
     //   path: '/story-details/:id',
     //   name: 'story-details',
-    //   component: StoryDetailsView
+    //   component: () => import('@/presentation/views/StoryDetailsView.vue')
     // },
     // {
     //   path: '/story-viewer/:id',
     //   name: 'story-viewer',
-    //   component: StoryViewerScreen,
+    //   component: () => import('@/presentation/views/StoryViewerScreen.vue'),
     //   meta: { hideNavigation: true }
     // },
     // {
     //   path: '/story/:id',
     //   name: 'reader',
-    //   component: ReaderView,
+    //   component: () => import('@/presentation/views/ReaderView.vue'),
     //   meta: { hideNavigation: true, fullscreen: true }
     // },
     {
       path: '/terms',
       name: 'terms',
-      component: TermsView,
+      component: () => import('@/presentation/views/TermsView.vue'),
       meta: { hideNavigation: true }
     },
     {
       path: '/privacy',
       name: 'privacy',
-      component: PrivacyView,
+      component: () => import('@/presentation/views/PrivacyView.vue'),
       meta: { hideNavigation: true }
     }
   ],
