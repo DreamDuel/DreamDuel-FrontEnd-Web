@@ -28,7 +28,12 @@ export default {
     hero: {
       title: 'Crea Historias Visuales Únicas',
       subtitle: 'Convierte tus sueños en narrativas interactivas con IA',
-      cta: 'Crear mi primera historia'
+      cta: 'Crear mi primera historia',
+      badge: 'Generador de Imágenes con IA',
+      heading1: 'Transforma tus ideas en',
+      heading2: 'imágenes increíbles',
+      description: 'Crea imágenes únicas con inteligencia artificial. Simple, rápido y poderoso.',
+      ctaButton: 'Crear Imagen Ahora'
     },
     trending: {
       title: 'Tendencias',

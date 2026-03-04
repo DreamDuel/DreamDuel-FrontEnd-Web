@@ -447,10 +447,6 @@ const handleUpgrade = () => {
             <span>{{ t('imageGenerator.generateButton') }}</span>
           </template>
         </button>
-
-        <p v-if="!canGenerate && !isGenerating" class="text-text-tertiary text-sm mt-3 text-center">
-          {{ !characterImage ? 'Sube una imagen para comenzar' : 'Escribe un prompt descriptivo' }}
-        </p>
       </div>
     </div>
 

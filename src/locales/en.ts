@@ -28,7 +28,12 @@ export default {
     hero: {
       title: 'Create Unique Visual Stories',
       subtitle: 'Turn your dreams into interactive narratives with AI',
-      cta: 'Create my first story'
+      cta: 'Create my first story',
+      badge: 'AI Image Generator',
+      heading1: 'Transform your ideas into',
+      heading2: 'amazing images',
+      description: 'Create unique images with artificial intelligence. Simple, fast and powerful.',
+      ctaButton: 'Create Image Now'
     },
     trending: {
       title: 'Trending',

@@ -78,20 +78,20 @@ const navigateToGenerator = () => {
           <!-- Badge -->
           <div class="inline-flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary/10 border border-primary/20 rounded-full mb-6 sm:mb-8 backdrop-blur-sm animate-fade-in">
             <SparklesIcon class="w-4 h-4 sm:w-5 sm:h-5 text-primary animate-pulse" />
-            <span class="text-primary font-semibold text-sm sm:text-base">Generador de Imágenes con IA</span>
+            <span class="text-primary font-semibold text-sm sm:text-base">{{ t('home.hero.badge') }}</span>
           </div>
 
           <!-- Main Heading -->
           <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight px-2 animate-slide-up">
-            Transforma tus ideas en
+            {{ t('home.hero.heading1') }}
             <span class="block mt-2 bg-gradient-to-r from-primary via-purple-400 to-blue-400 bg-clip-text text-transparent">
-              imágenes increíbles
+              {{ t('home.hero.heading2') }}
             </span>
           </h1>
 
           <!-- Subtitle -->
           <p class="text-lg sm:text-xl md:text-2xl text-text-secondary mb-8 sm:mb-12 max-w-2xl mx-auto px-4 animate-fade-in-delay">
-            Crea imágenes únicas con inteligencia artificial. Simple, rápido y poderoso.
+            {{ t('home.hero.description') }}
           </p>
 
           <!-- CTA Buttons -->
@@ -103,7 +103,7 @@ const navigateToGenerator = () => {
               <span class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
               <span class="relative flex items-center justify-center space-x-2">
                 <PhotoIcon class="w-5 h-5 sm:w-6 sm:h-6" />
-                <span class="text-sm sm:text-base">Crear Imagen Ahora</span>
+                <span class="text-sm sm:text-base">{{ t('home.hero.ctaButton') }}</span>
               </span>
             </button>
           </div>
