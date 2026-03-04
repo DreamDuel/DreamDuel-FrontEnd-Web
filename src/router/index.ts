@@ -34,18 +34,6 @@ const router = createRouter({
       meta: { hideNavigation: true }
     },
     {
-      path: '/guest',
-      name: 'guest-create',
-      component: () => import('@/presentation/views/GuestCreateView.vue'),
-      meta: { hideNavigation: true }
-    },
-    {
-      path: '/guest-image',
-      name: 'guest-image',
-      component: () => import('@/presentation/views/GuestImageView.vue'),
-      meta: { hideNavigation: true }
-    },
-    {
       path: '/generador/:niche',
       name: 'niche-landing',
       component: () => import('@/presentation/views/NicheLandingView.vue'),

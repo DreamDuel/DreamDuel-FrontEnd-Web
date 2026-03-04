@@ -59,12 +59,46 @@ const navigateToGenerator = () => {
   router.push('/images');
 };
 
+const goToLogin = () => {
+  router.push('/login');
+};
+
+const goToRegister = () => {
+  router.push('/register');
+};
+
 </script>
 
 <template>
-  <div class="min-h-screen bg-background-deep overflow-hidden">
+  <div class="min-h-screen bg-background-deep overflow-hidden flex flex-col">
+    <!-- Header con CTA de Login/Registro -->
+    <div class="sticky top-0 z-50 bg-background-deep/95 backdrop-blur-md border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          <SparklesIcon class="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+          <span class="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
+            DreamDuel
+          </span>
+        </div>
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          <button 
+            @click="goToLogin"
+            class="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base text-text-secondary hover:text-primary transition-colors"
+          >
+            {{ t('guest.header.login') }}
+          </button>
+          <button
+            @click="goToRegister"
+            class="px-4 sm:px-6 py-1.5 sm:py-2 text-sm sm:text-base bg-primary hover:bg-primary-light text-white rounded-lg font-semibold transition-all"
+          >
+            {{ t('guest.header.register') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Hero Section -->
-    <section class="relative py-8 sm:py-16 md:py-24 lg:py-32">
+    <section class="relative flex-1 flex items-center py-8 sm:py-16 md:py-24 lg:py-32">
       <!-- Animated Background Blobs -->
       <div class="absolute inset-0 overflow-hidden pointer-events-none">
         <div class="absolute top-0 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-primary/20 rounded-full blur-3xl animate-blob"></div>
@@ -73,7 +107,7 @@ const navigateToGenerator = () => {
       </div>
 
       <!-- Content -->
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
           <!-- Badge -->
           <div class="inline-flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary/10 border border-primary/20 rounded-full mb-4 sm:mb-6 md:mb-8 backdrop-blur-sm animate-fade-in">
@@ -95,7 +129,7 @@ const navigateToGenerator = () => {
           </p>
 
           <!-- CTA Buttons -->
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 animate-slide-up-delay">
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 mb-8 sm:mb-12 animate-slide-up-delay">
             <button
               @click="navigateToGenerator"
               class="group relative w-full sm:w-auto px-5 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary to-primary-light text-white font-bold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/50 overflow-hidden"
@@ -106,6 +140,36 @@ const navigateToGenerator = () => {
                 <span class="text-sm sm:text-base">{{ t('home.hero.ctaButton') }}</span>
               </span>
             </button>
+          </div>
+
+          <!-- Features -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto animate-fade-in-up">
+            <!-- Feature 1 -->
+            <div class="bg-background-card/50 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6 hover:border-primary/50 transition-all">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-primary-light rounded-lg flex items-center justify-center mb-3 sm:mb-4 mx-auto">
+                <SparklesIcon class="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
+              <h3 class="text-text-primary font-bold text-sm sm:text-base mb-2">{{ t('home.features.feature1.title') }}</h3>
+              <p class="text-text-secondary text-xs sm:text-sm">{{ t('home.features.feature1.description') }}</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="bg-background-card/50 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6 hover:border-primary/50 transition-all">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center mb-3 sm:mb-4 mx-auto">
+                <FireIcon class="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
+              <h3 class="text-text-primary font-bold text-sm sm:text-base mb-2">{{ t('home.features.feature2.title') }}</h3>
+              <p class="text-text-secondary text-xs sm:text-sm">{{ t('home.features.feature2.description') }}</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="bg-background-card/50 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6 hover:border-primary/50 transition-all">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-accent-teal to-primary rounded-lg flex items-center justify-center mb-3 sm:mb-4 mx-auto">
+                <PhotoIcon class="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
+              <h3 class="text-text-primary font-bold text-sm sm:text-base mb-2">{{ t('home.features.feature3.title') }}</h3>
+              <p class="text-text-secondary text-xs sm:text-sm">{{ t('home.features.feature3.description') }}</p>
+            </div>
           </div>
         </div>
       </div>

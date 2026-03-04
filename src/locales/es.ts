@@ -41,6 +41,21 @@ export default {
       description: 'Crea imágenes únicas con inteligencia artificial. Simple, rápido y poderoso.',
       ctaButton: 'Crear Imagen Ahora'
     },
+    features: {
+      title: '¿Por qué DreamDuel?',
+      feature1: {
+        title: 'IA Avanzada',
+        description: 'Tecnología de última generación para resultados profesionales'
+      },
+      feature2: {
+        title: 'Súper Rápido',
+        description: 'Genera imágenes en segundos, no en minutos'
+      },
+      feature3: {
+        title: 'Primera Gratis',
+        description: 'Tu primera imagen es completamente gratis'
+      }
+    },
     trending: {
       title: 'Tendencias',
       subtitle: 'Las historias más populares de la semana'
@@ -321,7 +336,7 @@ export default {
     },
     hero: {
       title: 'Transforma tu Foto con IA',
-      subtitle: 'Sube una foto y describe qué quieres hacer con ella. ¡Prueba gratis sin registro!',
+      subtitle: 'Sube una foto y describe qué quieres hacer con ella. Regístrate para comenzar.',
       features: {
         noCard: 'Sin tarjeta',
         instant: 'Instantáneo',
@@ -455,7 +470,7 @@ export default {
       username: 'Nombre de usuario',
       usernamePlaceholder: 'usuario123',
       email: 'Correo electrónico',
-      emailPlaceholder: 'tu.email.com',
+      emailPlaceholder: 'Correo electrónico',
       password: 'Contraseña',
       passwordPlaceholder: 'Mínimo 8 caracteres',
       confirmPassword: 'Confirmar contraseña',

@@ -200,26 +200,26 @@ const handleUpgrade = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-background-deep via-background-elevated to-background-deep flex items-center justify-center px-4 py-20">
+  <div class="min-h-screen bg-gradient-to-br from-background-deep via-background-elevated to-background-deep flex items-center justify-center px-3 sm:px-4 py-12 sm:py-20">
     <div class="w-full max-w-3xl">
       <!-- Header -->
-      <div class="text-center mb-12">
-        <div class="inline-flex items-center space-x-3 mb-4">
-          <PhotoIcon class="h-12 w-12 text-primary animate-pulse" />
+      <div class="text-center mb-6 sm:mb-12">
+        <div class="inline-flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+          <PhotoIcon class="h-8 w-8 sm:h-12 sm:w-12 text-primary animate-pulse" />
         </div>
-        <h1 class="text-5xl md:text-6xl font-bold text-text-primary mb-4">
+        <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-2 sm:mb-4">
           {{ t('imageGenerator.title') }}
         </h1>
-        <p class="text-text-secondary text-xl mb-6">
+        <p class="text-text-secondary text-sm sm:text-base md:text-xl mb-4 sm:mb-6">
           {{ t('imageGenerator.subtitle') }}
         </p>
       </div>
 
       <!-- Main Input Card -->
-      <div class="bg-background-card border border-white/10 rounded-2xl p-4 md:p-8 shadow-2xl backdrop-blur-sm mb-8">
+      <div class="bg-background-card border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-8 shadow-2xl backdrop-blur-sm mb-6 sm:mb-8">
         <!-- Upload de Imagen -->
-        <div class="mb-8">
-          <label class="block text-text-primary font-semibold mb-3 text-base md:text-lg">
+        <div class="mb-6 sm:mb-8">
+          <label class="block text-text-primary font-semibold mb-2 sm:mb-3 text-sm sm:text-base md:text-lg">
             {{ t('imageGenerator.step1') }}
           </label>
           
@@ -253,52 +253,52 @@ const handleUpgrade = () => {
         </div>
 
         <!-- Opciones de Generación (Desbloqueadas) -->
-        <div class="mb-8">
-          <label class="block text-text-primary font-semibold mb-3 text-base md:text-lg">
+        <div class="mb-6 sm:mb-8">
+          <label class="block text-text-primary font-semibold mb-2 sm:mb-3 text-sm sm:text-base md:text-lg">
             {{ t('imageGenerator.step2') }}
           </label>
           
           <!-- PROMPT -->
-          <div class="mb-4">
-            <label class="block text-text-secondary font-medium mb-2 text-sm">
+          <div class="mb-3 sm:mb-4">
+            <label class="block text-text-secondary font-medium mb-2 text-xs sm:text-sm">
               {{ t('imageGenerator.promptLabel') }}
               <span class="text-accent-crimson">{{ t('imageGenerator.promptRequired') }}</span>
             </label>
             <textarea
               v-model="prompt"
               :placeholder="t('imageGenerator.promptPlaceholder')"
-              rows="4"
-              class="w-full px-5 py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
+              rows="3"
+              class="w-full px-3 py-2 sm:px-5 sm:py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary text-xs sm:text-sm placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
             ></textarea>
-            <p class="text-text-tertiary text-sm mt-2">
+            <p class="text-text-tertiary text-xs mt-1 sm:mt-2">
               {{ t('imageGenerator.promptTip') }}
             </p>
           </div>
           
           <!-- NEGATIVE PROMPT -->
           <div>
-            <label class="block text-text-secondary font-medium mb-2 text-sm">
+            <label class="block text-text-secondary font-medium mb-2 text-xs sm:text-sm">
               {{ t('imageGenerator.negativePromptLabel') }}
             </label>
             <textarea
               v-model="negativePrompt"
               :placeholder="t('imageGenerator.negativePromptPlaceholder')"
-              rows="3"
-              class="w-full px-5 py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
+              rows="2"
+              class="w-full px-3 py-2 sm:px-5 sm:py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary text-xs sm:text-sm placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all resize-none"
             ></textarea>
-            <p class="text-text-tertiary text-sm mt-2">
+            <p class="text-text-tertiary text-xs mt-1 sm:mt-2">
               {{ t('imageGenerator.negativePromptTip') }}
             </p>
           </div>
         </div>
 
         <!-- Opciones Avanzadas (PREMIUM ONLY) -->
-        <div class="mb-8">
+        <div class="mb-6 sm:mb-8">
           <button
             @click="showAdvancedOptions = !showAdvancedOptions"
-            class="flex items-center justify-between w-full text-left text-text-primary font-semibold mb-3 text-base md:text-lg hover:text-primary transition-colors"
+            class="flex items-center justify-between w-full text-left text-text-primary font-semibold mb-2 sm:mb-3 text-sm sm:text-base md:text-lg hover:text-primary transition-colors"
           >
-            <span>⚙️ {{ t('guest.steps.advancedOptions') }}</span>
+            <span>{{ t('guest.steps.advancedOptions') }}</span>
             <svg
               :class="['w-5 h-5 transition-transform', showAdvancedOptions ? 'rotate-180' : '']"
               fill="none"
@@ -310,78 +310,74 @@ const handleUpgrade = () => {
           </button>
           
           <Transition name="slide-fade">
-            <div v-if="showAdvancedOptions" class="space-y-6">
+            <div v-if="showAdvancedOptions" class="space-y-4 sm:space-y-6">
               <!-- Género del Personaje -->
               <div>
-                <label class="block text-text-secondary font-medium mb-3 text-sm">
+                <label class="block text-text-secondary font-medium mb-2 sm:mb-3 text-xs sm:text-sm">
                   {{ t('create.advancedOptions.genderLabel') }}
                 </label>
                 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2 sm:gap-3">
                   <button
                     @click="selectedGender = selectedGender === 'female' ? '' : 'female'"
                     :class="[
-                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-4 px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
+                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-3 sm:py-4 px-2 sm:px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
                       selectedGender === 'female'
                         ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20'
                         : 'border-white/10 bg-background-elevated hover:border-primary/50 hover:bg-background-elevated/80'
                     ]"
                   >
-                    <span class="text-2xl mb-1 md:mb-0">👩</span>
-                    <span class="text-text-primary font-medium text-sm md:text-base">{{ t('create.advancedOptions.female') }}</span>
+                    <span class="text-text-primary font-medium text-xs sm:text-sm md:text-base">{{ t('create.advancedOptions.female') }}</span>
                   </button>
                   <button
                     @click="selectedGender = selectedGender === 'male' ? '' : 'male'"
                     :class="[
-                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-4 px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
+                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-3 sm:py-4 px-2 sm:px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
                       selectedGender === 'male'
                         ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20'
                         : 'border-white/10 bg-background-elevated hover:border-primary/50 hover:bg-background-elevated/80'
                     ]"
                   >
-                    <span class="text-2xl mb-1 md:mb-0">👨</span>
-                    <span class="text-text-primary font-medium text-sm md:text-base">{{ t('create.advancedOptions.male') }}</span>
+                    <span class="text-text-primary font-medium text-xs sm:text-sm md:text-base">{{ t('create.advancedOptions.male') }}</span>
                   </button>
                 </div>
               </div>
 
               <!-- Tipo de Cuerpo -->
               <div>
-                <label class="block text-text-secondary font-medium mb-3 text-sm">
+                <label class="block text-text-secondary font-medium mb-2 sm:mb-3 text-xs sm:text-sm">
                   {{ t('create.advancedOptions.bodyTypeLabel') }}
                 </label>
                 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2 sm:gap-3">
                   <button
                     @click="selectedBodyType = selectedBodyType === 'female' ? '' : 'female'"
                     :class="[
-                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-4 px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
+                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-3 sm:py-4 px-2 sm:px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
                       selectedBodyType === 'female'
                         ? 'border-accent-teal bg-accent-teal/10 shadow-lg shadow-accent-teal/20'
                         : 'border-white/10 bg-background-elevated hover:border-accent-teal/50 hover:bg-background-elevated/80'
                     ]"
                   >
-                    <span class="text-2xl mb-1 md:mb-0">💃</span>
-                    <span class="text-text-primary font-medium text-sm md:text-base">{{ t('create.advancedOptions.femaleBody') }}</span>
+                    <span class="text-text-primary font-medium text-xs sm:text-sm md:text-base">{{ t('create.advancedOptions.femaleBody') }}</span>
                   </button>
                   <button
                     @click="selectedBodyType = selectedBodyType === 'male' ? '' : 'male'"
                     :class="[
-                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-4 px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
+                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-3 sm:py-4 px-2 sm:px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
                       selectedBodyType === 'male'
                         ? 'border-accent-teal bg-accent-teal/10 shadow-lg shadow-accent-teal/20'
                         : 'border-white/10 bg-background-elevated hover:border-accent-teal/50 hover:bg-background-elevated/80'
                     ]"
                   >
-                    <span class="text-2xl mb-1 md:mb-0">💪</span>
-                    <span class="text-text-primary font-medium text-sm md:text-base">{{ t('create.advancedOptions.maleBody') }}</span>
+                    <span class="text-text-primary font-medium text-xs sm:text-sm md:text-base">{{ t('create.advancedOptions.maleBody') }}</span>
                   </button>
                 </div>
               </div>
 
               <!-- Pose del Personaje -->
               <div>
-                <label class="block text-text-secondary font-medium mb-2 text-sm">
+                <label class="block text-text-secondary font-medium mb-2 text-xs sm:text-sm">
                   {{ t('create.advancedOptions.poseLabel') }}
                 </label>
                 
@@ -396,11 +392,11 @@ const handleUpgrade = () => {
                     />
                     <label
                       for="poseImageInput"
-                      class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-primary hover:bg-background-elevated/50 transition-all cursor-pointer group"
+                      class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-primary hover:bg-background-elevated/50 transition-all cursor-pointer group"
                     >
-                      <PhotoIcon class="h-12 w-12 text-text-tertiary group-hover:text-primary transition-colors mb-2" />
-                      <span class="text-text-primary font-medium mb-1">{{ t('create.advancedOptions.poseUpload') }}</span>
-                      <span class="text-text-tertiary text-sm">{{ t('create.advancedOptions.poseMaxSize') }}</span>
+                      <PhotoIcon class="h-8 w-8 sm:h-12 sm:w-12 text-text-tertiary group-hover:text-primary transition-colors mb-2" />
+                      <span class="text-text-primary font-medium text-xs sm:text-sm mb-1">{{ t('create.advancedOptions.poseUpload') }}</span>
+                      <span class="text-text-tertiary text-xs">{{ t('create.advancedOptions.poseMaxSize') }}</span>
                     </label>
                   </div>
                   
@@ -415,8 +411,8 @@ const handleUpgrade = () => {
                   </div>
                 </div>
                 
-                <p class="text-text-tertiary text-sm mt-2">
-                  💡 {{ t('create.advancedOptions.poseDescription') }}
+                <p class="text-text-tertiary text-xs mt-1 sm:mt-2">
+                  {{ t('create.advancedOptions.poseDescription') }}
                 </p>
               </div>
             </div>
