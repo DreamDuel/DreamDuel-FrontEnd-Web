@@ -413,7 +413,7 @@ export default {
       password: 'Password',
       forgotPassword: 'Forgot your password?',
       button: 'Log In',
-      noAccount: "Don't have an account?",
+      noAccount: 'Don\'t have an account?',
       signUp: 'Sign up',
       welcome: 'Welcome back',
       subtitle: 'Continue creating amazing stories',
