@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '@/stores/userStore';
-import { SparklesIcon, UserIcon, EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon, GiftIcon } from '@heroicons/vue/24/outline';
-import { getReferralCodeFromUrl, saveReferralAttribution, getSavedReferralCode } from '@/utils/referrals';
+import { SparklesIcon, UserIcon, EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline';
+// import { GiftIcon } from '@heroicons/vue/24/outline';
+// import { getReferralCodeFromUrl, saveReferralAttribution, getSavedReferralCode } from '@/utils/referrals';
 
 const { t } = useI18n();
 
@@ -14,30 +15,30 @@ const username = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
-const referralCode = ref('');
+// const referralCode = ref('');
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 const acceptTerms = ref(false);
 const isLoading = ref(false);
 const error = ref('');
-const hasReferralBonus = ref(false);
+// const hasReferralBonus = ref(false);
 
-onMounted(() => {
-  // Verificar si hay código de referido en la URL
-  const urlCode = getReferralCodeFromUrl();
-  if (urlCode) {
-    saveReferralAttribution(urlCode);
-    referralCode.value = urlCode;
-    hasReferralBonus.value = true;
-  } else {
-    // Verificar si hay código guardado previamente
-    const savedCode = getSavedReferralCode();
-    if (savedCode) {
-      referralCode.value = savedCode;
-      hasReferralBonus.value = true;
-    }
-  }
-});
+// onMounted(() => {
+//   // Verificar si hay código de referido en la URL
+//   const urlCode = getReferralCodeFromUrl();
+//   if (urlCode) {
+//     saveReferralAttribution(urlCode);
+//     referralCode.value = urlCode;
+//     hasReferralBonus.value = true;
+//   } else {
+//     // Verificar si hay código guardado previamente
+//     const savedCode = getSavedReferralCode();
+//     if (savedCode) {
+//       referralCode.value = savedCode;
+//       hasReferralBonus.value = true;
+//     }
+//   }
+// });
 
 const handleRegister = async () => {
   error.value = '';
@@ -58,11 +59,11 @@ const handleRegister = async () => {
     userStore.register(username.value, email.value, password.value);
     
     // Si hay código de referido, procesar bonificación
-    if (referralCode.value) {
-      // Aquí se procesaría en el backend el bonus para el usuario que invitó
-      console.log('Referido por código:', referralCode.value);
-      // En producción: await api.processReferral(referralCode.value);
-    }
+    // if (referralCode.value) {
+    //   // Aquí se procesaría en el backend el bonus para el usuario que invitó
+    //   console.log('Referido por código:', referralCode.value);
+    //   // En producción: await api.processReferral(referralCode.value);
+    // }
     
     isLoading.value = false;
     router.push('/home');
@@ -97,7 +98,7 @@ const goToLogin = () => {
         </h2>
 
         <!-- Referral Bonus Badge -->
-        <div v-if="hasReferralBonus" class="mb-6 bg-gradient-to-r from-accent-gold/20 to-accent-teal/20 rounded-xl p-4 border border-accent-gold/30">
+        <!-- <div v-if="hasReferralBonus" class="mb-6 bg-gradient-to-r from-accent-gold/20 to-accent-teal/20 rounded-xl p-4 border border-accent-gold/30">
           <div class="flex items-center space-x-3">
             <GiftIcon class="h-6 w-6 text-accent-gold flex-shrink-0" />
             <div>
@@ -105,7 +106,7 @@ const goToLogin = () => {
               <p class="text-xs text-text-secondary">{{ t('auth.register.referralDesc') }}</p>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- Error Message -->
         <div v-if="error" class="mb-4 bg-error/10 border border-error/30 rounded-lg p-4">
