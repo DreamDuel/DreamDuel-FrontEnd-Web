@@ -89,6 +89,20 @@ export const useUserStore = defineStore('user', () => {
       return { success: true };
     } catch (error: any) {
       console.error('Error en registro:', error);
+      
+      // Detectar errores de cuenta duplicada
+      const errorMsg = error.message?.toLowerCase() || '';
+      
+      if (errorMsg.includes('already exists') || 
+          errorMsg.includes('ya existe') || 
+          errorMsg.includes('already registered') ||
+          errorMsg.includes('duplicate') ||
+          errorMsg.includes('duplicado') ||
+          errorMsg.includes('email already') ||
+          errorMsg.includes('username already')) {
+        return { success: false, error: 'ACCOUNT_EXISTS' };
+      }
+      
       return { success: false, error: error.message || 'Error al registrarse' };
     }
   }

@@ -77,7 +77,12 @@ const handleRegister = async () => {
   if (result.success) {
     router.push('/home');
   } else {
-    error.value = result.error || t('auth.register.errorPasswordMismatch');
+    // Detectar error de cuenta duplicada
+    if (result.error === 'ACCOUNT_EXISTS') {
+      error.value = t('auth.register.errorAccountExists');
+    } else {
+      error.value = result.error || t('auth.register.errorPasswordMismatch');
+    }
   }
 };
 

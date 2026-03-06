@@ -510,6 +510,7 @@ export default {
       reqNumber: 'Un número',
       passwordsMatch: '✅ Las contraseñas coinciden',
       passwordsDontMatch: '❌ Las contraseñas no coinciden',
+      errorAccountExists: '❌ Esta cuenta ya está registrada. Por favor inicia sesión o usa otro correo/usuario',
       errorAcceptTerms: 'Debes aceptar los términos y condiciones',
       footer: '© 2026 DreamDuel. Todos los derechos reservados.'
     }
