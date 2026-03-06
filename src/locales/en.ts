@@ -472,6 +472,7 @@ export default {
       google: 'Google',
       apple: 'Apple',
       creating: 'Logging in...',
+      warmingUp: '⏳ Waking up server... (may take ~30s)',
       error: '❌ Email or password incorrect'
     },
     register: {
@@ -486,6 +487,7 @@ export default {
       confirmPasswordPlaceholder: 'Confirm your password',
       button: 'Create Account',
       creating: 'Creating account...',
+      warmingUp: '⏳ Waking up server... (may take ~30s)',
       haveAccount: 'Already have an account?',
       signIn: 'Log in',
       joinCommunity: 'Join the creator community',

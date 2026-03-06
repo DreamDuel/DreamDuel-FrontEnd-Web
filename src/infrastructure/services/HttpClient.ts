@@ -7,7 +7,7 @@ export class HttpClient {
 
   constructor() {
     this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-    this.timeout = Number(import.meta.env.VITE_API_TIMEOUT) || 30000;
+    this.timeout = Number(import.meta.env.VITE_API_TIMEOUT) || 60000; // 60s para Render free tier cold starts
   }
 
   async get<T>(endpoint: string): Promise<T> {

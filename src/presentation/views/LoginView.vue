@@ -13,14 +13,22 @@ const email = ref('');
 const password = ref('');
 const showPassword = ref(false);
 const isLoading = ref(false);
+const isWarmingUp = ref(false);
 const error = ref('');
 
 const handleLogin = async () => {
   isLoading.value = true;
   error.value = '';
   
+  // Mostrar "warming up" después de 8 segundos
+  const warmingTimer = setTimeout(() => {
+    isWarmingUp.value = true;
+  }, 8000);
+  
   const result = await userStore.login(email.value, password.value);
+  clearTimeout(warmingTimer);
   isLoading.value = false;
+  isWarmingUp.value = false;
   
   if (result.success) {
     router.push('/home');
@@ -129,7 +137,8 @@ const goToRegister = () => {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              {{ t('common.loading') }}
+              <span v-if="isWarmingUp">{{ t('auth.login.warmingUp') }}</span>
+              <span v-else>{{ t('common.loading') }}</span>
             </span>
           </button>
         </form>
