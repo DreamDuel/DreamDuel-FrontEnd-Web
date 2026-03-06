@@ -458,10 +458,10 @@ const handleUpgrade = () => {
               <div class="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-primary/20 to-accent-crimson/20 rounded-full border border-primary/30 mb-1 sm:mb-2">
                 <SparklesIcon class="w-4 h-4 sm:w-6 sm:h-6 text-primary animate-pulse" />
                 <h2 class="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent-crimson bg-clip-text text-transparent">
-                  ¡Imagen Generada!
+                  {{ t('guest.resultModal.title') }}
                 </h2>
               </div>
-              <p class="text-text-secondary text-xs sm:text-sm mt-1 sm:mt-2">Tu creación está lista para descargar</p>
+              <p class="text-text-secondary text-xs sm:text-sm mt-1 sm:mt-2">{{ t('guest.resultModal.subtitle') }}</p>
             </div>
             
             <!-- Imagen con marco elegante - se ajusta automáticamente -->
@@ -478,7 +478,7 @@ const handleUpgrade = () => {
             <div class="mb-6 p-5 bg-gradient-to-br from-background-elevated to-background-card rounded-xl border border-white/10 backdrop-blur-sm">
               <div class="flex items-center gap-2 mb-2">
                 <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                <p class="text-xs font-semibold text-primary uppercase tracking-wider">Prompt usado</p>
+                <p class="text-xs font-semibold text-primary uppercase tracking-wider">{{ t('guest.resultModal.promptUsed') }}</p>
               </div>
               <p class="text-sm text-text-primary leading-relaxed">{{ generatedPrompt }}</p>
             </div>
@@ -489,7 +489,7 @@ const handleUpgrade = () => {
               class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-primary via-primary-light to-accent-crimson hover:from-primary-light hover:via-accent-crimson hover:to-primary text-white font-bold text-lg rounded-xl transition-all duration-300 shadow-lg shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 hover:scale-105 active:scale-95 group"
             >
               <ArrowDownTrayIcon class="w-6 h-6 group-hover:animate-bounce" />
-              Descargar Imagen
+              {{ t('guest.resultModal.downloadButton') }}
             </button>
             
             <div class="text-center mt-4 p-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-lg border-2 border-amber-500/30">
@@ -497,10 +497,10 @@ const handleUpgrade = () => {
                 <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
-                ¡No olvides descargar tu imagen!
+                {{ t('guest.resultModal.warningTitle') }}
               </p>
               <p class="text-xs text-text-secondary">
-                La imagen solo estará disponible en esta ventana. Descárgala ahora para conservarla.
+                {{ t('guest.resultModal.warningText') }}
               </p>
             </div>
           </div>

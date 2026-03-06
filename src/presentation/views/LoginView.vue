@@ -26,7 +26,7 @@ const handleLogin = async () => {
     if (success) {
       router.push('/home');
     } else {
-      error.value = '❌ Correo electrónico o contraseña incorrectos';
+      error.value = t('auth.login.error');
     }
   }, 1500);
 };

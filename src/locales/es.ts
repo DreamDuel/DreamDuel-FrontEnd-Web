@@ -446,6 +446,14 @@ export default {
       registerButton: 'Registrarse Gratis',
       haveAccount: 'Ya tengo cuenta',
       noCard: 'Sin tarjeta requerida • Cancela cuando quieras'
+    },
+    resultModal: {
+      title: '¡Imagen Generada!',
+      subtitle: 'Tu creación está lista para descargar',
+      promptUsed: 'Prompt usado',
+      downloadButton: 'Descargar Imagen',
+      warningTitle: '¡No olvides descargar tu imagen!',
+      warningText: 'La imagen solo estará disponible en esta ventana. Descárgala ahora para conservarla.'
     }
   },
   auth: {
@@ -463,7 +471,8 @@ export default {
       continueWithGoogle: 'Continuar con Google',
       google: 'Google',
       apple: 'Apple',
-      creating: 'Iniciando sesión...'
+      creating: 'Iniciando sesión...',
+      error: '❌ Correo electrónico o contraseña incorrectos'
     },
     register: {
       title: 'Crear Cuenta',
@@ -492,6 +501,32 @@ export default {
       errorAcceptTerms: 'Debes aceptar los términos y condiciones',
       footer: '© 2026 DreamDuel. Todos los derechos reservados.'
     }
+  },
+  imageLimit: {
+    title: 'Genera tu Imagen',
+    subtitle: 'Cada imagen cuesta solo $1',
+    totalGenerated: 'Has generado',
+    images: 'imágenes en total',
+    costInfo: 'Cada generación adicional cuesta $1.00',
+    generateOne: 'Genera una Imagen',
+    perImage: '/imagen',
+    features: {
+      quality: 'Generación en alta calidad',
+      instant: 'Descarga inmediata',
+      noPlan: 'Pago único, sin suscripciones'
+    },
+    buyButton: 'Comprar Ahora'
+  },
+  guestBenefits: {
+    noCensorship: 'Sin Censura',
+    noCensorshipDesc: 'Libertad total',
+    instant: 'Instantáneo',
+    instantDesc: 'Genera en segundos',
+    private: '100% Privado',
+    privateDesc: 'Tus datos seguros',
+    createAccount: 'Crear Cuenta',
+    alreadyHaveAccount: '¿Ya tienes cuenta?',
+    login: 'Inicia Sesión'
   },
   legal: {
     terms: {

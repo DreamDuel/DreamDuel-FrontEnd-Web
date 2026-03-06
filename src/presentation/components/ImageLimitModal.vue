@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/userStore';
+import { useI18n } from 'vue-i18n';
 import { XMarkIcon, SparklesIcon } from '@heroicons/vue/24/outline';
+
+const { t } = useI18n();
 
 const props = defineProps<{
   show: boolean;
@@ -27,10 +30,10 @@ const userStore = useUserStore();
           <div class="text-center">
             <div class="text-6xl mb-3">🎨</div>
             <h2 class="text-2xl font-bold text-text-primary mb-2">
-              Genera tu Imagen
+              {{ t('imageLimit.title') }}
             </h2>
             <p class="text-text-secondary text-sm">
-              Cada imagen cuesta solo $1
+              {{ t('imageLimit.subtitle') }}
             </p>
           </div>
         </div>
@@ -40,10 +43,10 @@ const userStore = useUserStore();
           <!-- Info Box -->
           <div class="bg-primary/10 border border-primary/30 rounded-xl p-4 text-center">
             <p class="text-text-secondary text-sm mb-1">
-              Has generado <span class="font-bold text-primary">{{ userStore.currentUser?.totalImagesGenerated || 0 }}</span> imágenes en total
+              {{ t('imageLimit.totalGenerated') }} <span class="font-bold text-primary">{{ userStore.currentUser?.totalImagesGenerated || 0 }}</span> {{ t('imageLimit.images') }}
             </p>
             <p class="text-text-tertiary text-xs">
-              Cada generación adicional cuesta $1.00
+              {{ t('imageLimit.costInfo') }}
             </p>
           </div>
 
@@ -53,30 +56,30 @@ const userStore = useUserStore();
               <div class="flex-shrink-0 w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <SparklesIcon class="h-8 w-8 text-white" />
               </div>
-              <h3 class="text-2xl font-bold text-text-primary mb-2">Genera una Imagen</h3>
+              <h3 class="text-2xl font-bold text-text-primary mb-2">{{ t('imageLimit.generateOne') }}</h3>
               <div class="flex items-baseline justify-center gap-2 mb-4">
                 <span class="text-5xl font-bold bg-gradient-to-r from-primary to-accent-crimson bg-clip-text text-transparent">$1</span>
-                <span class="text-text-secondary">/imagen</span>
+                <span class="text-text-secondary">{{ t('imageLimit.perImage') }}</span>
               </div>
               <ul class="space-y-2 mb-6 text-sm text-text-secondary text-left max-w-xs mx-auto">
                 <li class="flex items-center space-x-2">
                   <span class="text-accent-teal">✓</span>
-                  <span>Generación en alta calidad</span>
+                  <span>{{ t('imageLimit.features.quality') }}</span>
                 </li>
                 <li class="flex items-center space-x-2">
                   <span class="text-accent-teal">✓</span>
-                  <span>Descarga inmediata</span>
+                  <span>{{ t('imageLimit.features.instant') }}</span>
                 </li>
                 <li class="flex items-center space-x-2">
                   <span class="text-accent-teal">✓</span>
-                  <span>Pago único, sin suscripciones</span>
+                  <span>{{ t('imageLimit.features.noPlan') }}</span>
                 </li>
               </ul>
               <button
                 @click="emit('upgrade')"
                 class="w-full px-6 py-4 bg-gradient-to-r from-primary to-accent-crimson hover:from-primary-light hover:to-accent-crimson/80 text-white rounded-xl font-bold text-lg transition-all hover:scale-105 shadow-xl shadow-primary/30"
               >
-                Comprar Ahora
+                {{ t('imageLimit.buyButton') }}
               </button>
             </div>
           </div>
