@@ -504,6 +504,12 @@ export default {
       errorPasswordUppercase: 'Password must have at least one UPPERCASE letter',
       errorPasswordLowercase: 'Password must have at least one lowercase letter',
       errorPasswordNumber: 'Password must have at least one NUMBER',
+      reqMin8: 'Minimum 8 characters',
+      reqUppercase: 'One UPPERCASE letter',
+      reqLowercase: 'One lowercase letter',
+      reqNumber: 'One number',
+      passwordsMatch: '✅ Passwords match',
+      passwordsDontMatch: '❌ Passwords don\'t match',
       errorAcceptTerms: 'You must accept the terms and conditions',
       footer: '© 2026 DreamDuel. All rights reserved.'
     }

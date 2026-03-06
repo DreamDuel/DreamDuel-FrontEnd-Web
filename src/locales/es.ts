@@ -504,6 +504,12 @@ export default {
       errorPasswordUppercase: 'La contraseña debe tener al menos una letra MAYÚSCULA',
       errorPasswordLowercase: 'La contraseña debe tener al menos una letra minúscula',
       errorPasswordNumber: 'La contraseña debe tener al menos un NÚMERO',
+      reqMin8: 'Mínimo 8 caracteres',
+      reqUppercase: 'Una letra MAYÚSCULA',
+      reqLowercase: 'Una letra minúscula',
+      reqNumber: 'Un número',
+      passwordsMatch: '✅ Las contraseñas coinciden',
+      passwordsDontMatch: '❌ Las contraseñas no coinciden',
       errorAcceptTerms: 'Debes aceptar los términos y condiciones',
       footer: '© 2026 DreamDuel. Todos los derechos reservados.'
     }

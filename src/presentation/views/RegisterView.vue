@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '@/stores/userStore';
-import { SparklesIcon, UserIcon, EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline';
+import { SparklesIcon, UserIcon, EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -18,6 +18,13 @@ const acceptTerms = ref(false);
 const isLoading = ref(false);
 const isWarmingUp = ref(false);
 const error = ref('');
+
+// Validaciones en tiempo real
+const hasMinLength = computed(() => password.value.length >= 8);
+const hasUppercase = computed(() => /[A-Z]/.test(password.value));
+const hasLowercase = computed(() => /[a-z]/.test(password.value));
+const hasNumber = computed(() => /\d/.test(password.value));
+const passwordsMatch = computed(() => password.value === confirmPassword.value && confirmPassword.value.length > 0);
 
 const validatePassword = (password: string): string | null => {
   if (password.length < 8) {
@@ -174,6 +181,30 @@ const goToLogin = () => {
                 <EyeIcon v-else class="h-5 w-5" />
               </button>
             </div>
+            
+            <!-- Requisitos de contraseña -->
+            <div v-if="password.length > 0" class="mt-3 space-y-1.5 text-sm">
+              <div class="flex items-center" :class="hasMinLength ? 'text-green-400' : 'text-text-tertiary'">
+                <CheckCircleIcon v-if="hasMinLength" class="h-4 w-4 mr-2" />
+                <XCircleIcon v-else class="h-4 w-4 mr-2" />
+                <span>{{ t('auth.register.reqMin8') }}</span>
+              </div>
+              <div class="flex items-center" :class="hasUppercase ? 'text-green-400' : 'text-text-tertiary'">
+                <CheckCircleIcon v-if="hasUppercase" class="h-4 w-4 mr-2" />
+                <XCircleIcon v-else class="h-4 w-4 mr-2" />
+                <span>{{ t('auth.register.reqUppercase') }}</span>
+              </div>
+              <div class="flex items-center" :class="hasLowercase ? 'text-green-400' : 'text-text-tertiary'">
+                <CheckCircleIcon v-if="hasLowercase" class="h-4 w-4 mr-2" />
+                <XCircleIcon v-else class="h-4 w-4 mr-2" />
+                <span>{{ t('auth.register.reqLowercase') }}</span>
+              </div>
+              <div class="flex items-center" :class="hasNumber ? 'text-green-400' : 'text-text-tertiary'">
+                <CheckCircleIcon v-if="hasNumber" class="h-4 w-4 mr-2" />
+                <XCircleIcon v-else class="h-4 w-4 mr-2" />
+                <span>{{ t('auth.register.reqNumber') }}</span>
+              </div>
+            </div>
           </div>
 
           <!-- Confirm Password -->
@@ -201,6 +232,16 @@ const goToLogin = () => {
                 <EyeSlashIcon v-if="showConfirmPassword" class="h-5 w-5" />
                 <EyeIcon v-else class="h-5 w-5" />
               </button>
+            </div>
+            
+            <!-- Indicador de coincidencia -->
+            <div v-if="confirmPassword.length > 0" class="mt-3 text-sm">
+              <div class="flex items-center" :class="passwordsMatch ? 'text-green-400' : 'text-error'">
+                <CheckCircleIcon v-if="passwordsMatch" class="h-4 w-4 mr-2" />
+                <XCircleIcon v-else class="h-4 w-4 mr-2" />
+                <span v-if="passwordsMatch">{{ t('auth.register.passwordsMatch') }}</span>
+                <span v-else>{{ t('auth.register.passwordsDontMatch') }}</span>
+              </div>
             </div>
           </div>
 
