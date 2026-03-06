@@ -19,8 +19,31 @@ const isLoading = ref(false);
 const isWarmingUp = ref(false);
 const error = ref('');
 
+const validatePassword = (password: string): string | null => {
+  if (password.length < 8) {
+    return t('auth.register.errorPasswordMin8');
+  }
+  if (!/[A-Z]/.test(password)) {
+    return t('auth.register.errorPasswordUppercase');
+  }
+  if (!/[a-z]/.test(password)) {
+    return t('auth.register.errorPasswordLowercase');
+  }
+  if (!/\d/.test(password)) {
+    return t('auth.register.errorPasswordNumber');
+  }
+  return null; // Válida
+};
+
 const handleRegister = async () => {
   error.value = '';
+  
+  // Validar formato de contraseña
+  const passwordError = validatePassword(password.value);
+  if (passwordError) {
+    error.value = passwordError;
+    return;
+  }
   
   if (password.value !== confirmPassword.value) {
     error.value = t('auth.register.errorPasswordMismatch');

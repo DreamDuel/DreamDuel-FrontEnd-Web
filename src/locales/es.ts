@@ -500,6 +500,10 @@ export default {
       referralBonus: '¡Bonus de invitación!',
       referralDesc: 'Obtendrás +3 imágenes gratis adicionales al registrarte',
       errorPasswordMismatch: 'Las contraseñas no coinciden',
+      errorPasswordMin8: 'La contraseña debe tener al menos 8 caracteres',
+      errorPasswordUppercase: 'La contraseña debe tener al menos una letra MAYÚSCULA',
+      errorPasswordLowercase: 'La contraseña debe tener al menos una letra minúscula',
+      errorPasswordNumber: 'La contraseña debe tener al menos un NÚMERO',
       errorAcceptTerms: 'Debes aceptar los términos y condiciones',
       footer: '© 2026 DreamDuel. Todos los derechos reservados.'
     }
