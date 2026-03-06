@@ -473,6 +473,7 @@ export default {
       apple: 'Apple',
       creating: 'Iniciando sesión...',
       warmingUp: '⏳ Despertando servidor... (puede tardar ~30s)',
+      errorGoogle: '❌ Error al iniciar sesión con Google. Por favor intenta nuevamente',
       error: '❌ Correo electrónico o contraseña incorrectos'
     },
     register: {
@@ -511,6 +512,8 @@ export default {
       passwordsMatch: '✅ Las contraseñas coinciden',
       passwordsDontMatch: '❌ Las contraseñas no coinciden',
       errorAccountExists: '❌ Esta cuenta ya está registrada. Por favor inicia sesión o usa otro correo/usuario',
+      errorGoogle: '❌ Error al iniciar sesión con Google. Por favor intenta nuevamente',
+      errorGeneric: '❌ Ocurrió un error. Por favor intenta nuevamente',
       errorAcceptTerms: 'Debes aceptar los términos y condiciones',
       footer: '© 2026 DreamDuel. Todos los derechos reservados.'
     }

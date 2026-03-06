@@ -155,6 +155,57 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  async function loginWithGoogle(googleToken: string) {
+    try {
+      // Llamar al backend con el Google token
+      await authService.loginWithGoogle(googleToken);
+      
+      // El backend devuelve access_token, necesitamos obtener los datos del usuario
+      const userData = await authService.getCurrentUser();
+      
+      // Crear usuario desde la respuesta del backend
+      const user: User = {
+        id: userData.id,
+        username: userData.username,
+        email: userData.email,
+        avatarUrl: userData.avatarUrl,
+        hasUsedFreeGeneration: false,
+        totalImagesGenerated: 0,
+        createdAt: new Date(),
+        myStories: [],
+        myImages: [],
+        usageMetrics: {
+          generationsToday: 0,
+          blurClicksToday: 0,
+          downloadAttempts: 0,
+          lastActivityDate: new Date(),
+          isHighIntent: false
+        }
+      };
+      
+      currentUser.value = user;
+      isAuthenticated.value = true;
+      
+      // Guardar en localStorage
+      localStorage.setItem('dreamduel_user', JSON.stringify(user));
+      localStorage.setItem('dreamduel_auth', 'true');
+      
+      // Sincronizar con storyStore
+      setTimeout(async () => {
+        const { useStoryStore } = await import('./storyStore');
+        const storyStore = useStoryStore();
+        if (storyStore.syncUserData) {
+          storyStore.syncUserData();
+        }
+      }, 0);
+      
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error en Google login:', error);
+      return { success: false, error: error.message || 'Error al iniciar sesión con Google' };
+    }
+  }
+
   async function logout() {
     try {
       // Llamar al backend para logout
@@ -373,6 +424,7 @@ export const useUserStore = defineStore('user', () => {
     userInitials,
     register,
     login,
+    loginWithGoogle,
     logout,
     loadUserFromStorage,
     updateProfile,

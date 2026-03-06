@@ -26,6 +26,12 @@ export interface AuthResponse {
   };
 }
 
+export interface GoogleAuthResponse {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+}
+
 export interface PasswordResetRequest {
   email: string;
 }
@@ -83,9 +89,14 @@ export class AuthService {
     return response;
   }
 
-  async loginWithGoogle(token: string): Promise<AuthResponse> {
-    const response = await this.http.post<AuthResponse>(`${this.authEndpoint}/google`, { token });
-    this.saveToken(response.token);
+  async loginWithGoogle(googleToken: string): Promise<GoogleAuthResponse> {
+    const response = await this.http.post<GoogleAuthResponse>('/api/oauth/google', { 
+      token: googleToken 
+    });
+    this.saveToken(response.access_token);
+    if (response.refresh_token) {
+      localStorage.setItem('refreshToken', response.refresh_token);
+    }
     return response;
   }
 
@@ -93,6 +104,10 @@ export class AuthService {
     const response = await this.http.post<AuthResponse>(`${this.authEndpoint}/apple`, { token });
     this.saveToken(response.token);
     return response;
+  }
+
+  async getCurrentUser(): Promise<AuthResponse['user']> {
+    return await this.http.get<AuthResponse['user']>(`${this.authEndpoint}/me`);
   }
 
   private saveToken(token: string): void {

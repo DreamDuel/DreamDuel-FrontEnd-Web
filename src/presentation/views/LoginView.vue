@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '@/stores/userStore';
 import { SparklesIcon, EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline';
+import { googleTokenLogin } from 'vue3-google-login';
 
 const { t } = useI18n();
 
@@ -34,6 +35,31 @@ const handleLogin = async () => {
     router.push('/home');
   } else {
     error.value = result.error || t('auth.login.error');
+  }
+};
+
+const handleGoogleLogin = async () => {
+  error.value = '';
+  isLoading.value = true;
+  
+  try {
+    // Obtener el Google ID Token
+    const response: any = await googleTokenLogin();
+    const googleToken = response.credential || response.access_token || response;
+    
+    // Enviar al backend
+    const result = await userStore.loginWithGoogle(googleToken);
+    
+    if (result.success) {
+      router.push('/home');
+    } else {
+      error.value = result.error || t('auth.login.errorGoogle');
+    }
+  } catch (err: any) {
+    console.error('Google login error:', err);
+    error.value = t('auth.login.errorGoogle');
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -154,7 +180,12 @@ const goToRegister = () => {
         </div>
 
         <!-- Social Login -->
-        <button class="w-full flex items-center justify-center space-x-3 py-3 bg-background-elevated border border-white/10 rounded-lg hover:bg-background-elevated/80 hover:border-white/20 transition-all">
+        <button 
+          @click="handleGoogleLogin"
+          :disabled="isLoading"
+          type="button"
+          class="w-full flex items-center justify-center space-x-3 py-3 bg-background-elevated border border-white/10 rounded-lg hover:bg-background-elevated/80 hover:border-white/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           <svg class="h-5 w-5" viewBox="0 0 24 24">
             <path fill="#EA4335" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#4285F4" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
