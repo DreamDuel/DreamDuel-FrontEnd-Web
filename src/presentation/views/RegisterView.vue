@@ -33,11 +33,14 @@ const handleRegister = async () => {
 
   isLoading.value = true;
   
-  setTimeout(() => {
-    userStore.register(username.value, email.value, password.value);
-    isLoading.value = false;
+  const result = await userStore.register(username.value, email.value, password.value);
+  isLoading.value = false;
+  
+  if (result.success) {
     router.push('/home');
-  }, 1500);
+  } else {
+    error.value = result.error || t('auth.register.errorPasswordMismatch');
+  }
 };
 
 const goToLogin = () => {

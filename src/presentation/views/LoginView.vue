@@ -19,16 +19,14 @@ const handleLogin = async () => {
   isLoading.value = true;
   error.value = '';
   
-  setTimeout(() => {
-    const success = userStore.login(email.value, password.value);
-    isLoading.value = false;
-    
-    if (success) {
-      router.push('/home');
-    } else {
-      error.value = t('auth.login.error');
-    }
-  }, 1500);
+  const result = await userStore.login(email.value, password.value);
+  isLoading.value = false;
+  
+  if (result.success) {
+    router.push('/home');
+  } else {
+    error.value = result.error || t('auth.login.error');
+  }
 };
 
 const goToRegister = () => {

@@ -81,9 +81,9 @@ const updatePassword = () => {
   setTimeout(() => successMessage.value = '', 3000);
 };
 
-const logout = () => {
+const logout = async () => {
   if (confirm(t('settings.confirmLogout'))) {
-    userStore.logout();
+    await userStore.logout();
     router.push('/');
   }
 };

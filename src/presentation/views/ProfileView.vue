@@ -23,8 +23,8 @@ onMounted(async () => {
   }
 });
 
-const handleLogout = () => {
-  userStore.logout();
+const handleLogout = async () => {
+  await userStore.logout();
   router.push('/');
 };
 

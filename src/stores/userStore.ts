@@ -1,6 +1,9 @@
 // Pinia Store: User Store
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import { AuthService } from '@/infrastructure/services/AuthService';
+
+const authService = new AuthService();
 
 interface GeneratedImage {
   id: string;
@@ -42,79 +45,116 @@ export const useUserStore = defineStore('user', () => {
   });
 
   // Actions
-  function register(username: string, email: string, _password: string) {
-    // Crear usuario simulado
-    const newUser: User = {
-      id: `user-${Date.now()}`,
-      username,
-      email,
-      avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=0099FF&color=fff&size=200`,
-      hasUsedFreeGeneration: false, // Primera imagen es gratis
-      totalImagesGenerated: 0,
-      createdAt: new Date(),
-      myStories: [],
-      myImages: [],
-      usageMetrics: {
-        generationsToday: 0,
-        blurClicksToday: 0,
-        downloadAttempts: 0,
-        lastActivityDate: new Date(),
-        isHighIntent: false
-      }
-    };
-
-    currentUser.value = newUser;
-    isAuthenticated.value = true;
-    
-    // Guardar en localStorage
-    localStorage.setItem('dreamduel_user', JSON.stringify(newUser));
-    localStorage.setItem('dreamduel_auth', 'true');
-    
-    // Sincronizar con storyStore
-    setTimeout(async () => {
-      const { useStoryStore } = await import('./storyStore');
-      const storyStore = useStoryStore();
-      if (storyStore.syncUserData) {
-        storyStore.syncUserData();
-      }
-    }, 0);
-  }
-
-  function login(emailOrUsername: string, _password: string): boolean {
-    // Intentar recuperar usuario guardado
-    const savedUser = localStorage.getItem('dreamduel_user');
-    if (savedUser) {
-      const user = JSON.parse(savedUser);
+  async function register(username: string, email: string, password: string) {
+    try {
+      // Llamar al backend para registrar
+      const response = await authService.register({ username, email, password });
       
-      // Verificar si coincide el email o el username
-      const inputLower = emailOrUsername.toLowerCase();
-      const emailMatch = user.email.toLowerCase() === inputLower;
-      const usernameMatch = user.username.toLowerCase() === inputLower;
+      // Crear usuario desde la respuesta del backend
+      const newUser: User = {
+        id: response.user.id,
+        username: response.user.username,
+        email: response.user.email,
+        avatarUrl: response.user.avatarUrl,
+        hasUsedFreeGeneration: false,
+        totalImagesGenerated: 0,
+        createdAt: new Date(),
+        myStories: [],
+        myImages: [],
+        usageMetrics: {
+          generationsToday: 0,
+          blurClicksToday: 0,
+          downloadAttempts: 0,
+          lastActivityDate: new Date(),
+          isHighIntent: false
+        }
+      };
+
+      currentUser.value = newUser;
+      isAuthenticated.value = true;
       
-      if (emailMatch || usernameMatch) {
-        currentUser.value = user;
-        isAuthenticated.value = true;
-        
-        // Sincronizar con storyStore
-        setTimeout(async () => {
-          const { useStoryStore } = await import('./storyStore');
-          const storyStore = useStoryStore();
-          if (storyStore.syncUserData) {
-            storyStore.syncUserData();
-          }
-        }, 0);
-        
-        return true;
-      }
+      // Guardar en localStorage
+      localStorage.setItem('dreamduel_user', JSON.stringify(newUser));
+      localStorage.setItem('dreamduel_auth', 'true');
+      
+      // Sincronizar con storyStore
+      setTimeout(async () => {
+        const { useStoryStore } = await import('./storyStore');
+        const storyStore = useStoryStore();
+        if (storyStore.syncUserData) {
+          storyStore.syncUserData();
+        }
+      }, 0);
+      
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error en registro:', error);
+      return { success: false, error: error.message || 'Error al registrarse' };
     }
-    return false;
   }
 
-  function logout() {
-    currentUser.value = null;
-    isAuthenticated.value = false;
-    localStorage.removeItem('dreamduel_user');
-    localStorage.removeItem('dreamduel_auth');
+  async function login(emailOrUsername: string, password: string) {
+    try {
+      // Llamar al backend para login
+      const response = await authService.login({ emailOrUsername, password });
+      
+      // Crear usuario desde la respuesta del backend
+      const user: User = {
+        id: response.user.id,
+        username: response.user.username,
+        email: response.user.email,
+        avatarUrl: response.user.avatarUrl,
+        hasUsedFreeGeneration: false,
+        totalImagesGenerated: 0,
+        createdAt: new Date(),
+        myStories: [],
+        myImages: [],
+        usageMetrics: {
+          generationsToday: 0,
+          blurClicksToday: 0,
+          downloadAttempts: 0,
+          lastActivityDate: new Date(),
+          isHighIntent: false
+        }
+      };
+      
+      currentUser.value = user;
+      isAuthenticated.value = true;
+      
+      // Guardar en localStorage
+      localStorage.setItem('dreamduel_user', JSON.stringify(user));
+      localStorage.setItem('dreamduel_auth', 'true');
+      
+      // Sincronizar con storyStore
+      setTimeout(async () => {
+        const { useStoryStore } = await import('./storyStore');
+        const storyStore = useStoryStore();
+        if (storyStore.syncUserData) {
+          storyStore.syncUserData();
+        }
+      }, 0);
+      
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error en login:', error);
+      return { success: false, error: error.message || 'Credenciales incorrectas' };
+    }
+  }
+
+  async function logout() {
+    try {
+      // Llamar al backend para logout
+      await authService.logout();
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    } finally {
+      // Siempre limpiar datos locales aunque falle el backend
+      currentUser.value = null;
+      isAuthenticated.value = false;
+      localStorage.removeItem('dreamduel_user');
+      localStorage.removeItem('dreamduel_auth');
+      localStorage.removeItem('authToken');
+    }
   }
 
   function loadUserFromStorage() {
