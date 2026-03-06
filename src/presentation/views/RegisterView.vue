@@ -68,8 +68,8 @@ const goToLogin = () => {
         </h2>
 
         <!-- Error Message -->
-        <div v-if="error" class="mb-4 bg-error/10 border border-error/30 rounded-lg p-4">
-          <p class="text-error text-sm">{{ error }}</p>
+        <div v-if="error" class="mb-4 bg-error/20 border-2 border-error rounded-xl p-4 animate-shake">
+          <p class="text-error text-sm font-semibold">{{ error }}</p>
         </div>
 
         <form @submit.prevent="handleRegister" class="space-y-5">

@@ -115,19 +115,12 @@ const canGenerate = computed(() => {
 const generateImage = async () => {
   if (!canGenerate.value) return;
   
-  // Verificar si es la primera generación (gratis)
-  const isFreeGeneration = userStore.canGenerateFreeImage();
+  // Siempre mostrar modal de pago ($1 por imagen)
+  showLimitModal.value = true;
+  return;
   
-  if (!isFreeGeneration) {
-    // No es gratis, mostrar modal de pago
-    showLimitModal.value = true;
-    return;
-  }
-  
+  /* NOTA: Código de generación real se ejecutará después del pago
   isGenerating.value = true;
-  
-  // Usar la generación gratis
-  userStore.useFreeGeneration();
   
   // Rastrear la generación para PQL
   userStore.trackGeneration();
@@ -154,6 +147,7 @@ const generateImage = async () => {
     isGenerating.value = false;
     showResultModal.value = true;
   }, 4000);
+  */
 };
 
 const downloadImage = async () => {
@@ -448,35 +442,35 @@ const handleUpgrade = () => {
 
     <!-- Modal de imagen generada -->
     <Transition name="modal">
-      <div v-if="showResultModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
-        <div class="bg-gradient-to-br from-background-card via-background-elevated to-background-card rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative border-2 border-primary/20 shadow-2xl shadow-primary/10">
+      <div v-if="showResultModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/90 backdrop-blur-sm">
+        <div class="bg-gradient-to-br from-background-card via-background-elevated to-background-card rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[95vh] flex flex-col relative border-2 border-primary/20 shadow-2xl shadow-primary/10">
           <!-- Botón cerrar -->
           <button
             @click="closeResultModal"
-            class="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm transition-all hover:scale-110 group"
+            class="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-2 sm:p-2.5 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm transition-all hover:scale-110 group"
           >
-            <XMarkIcon class="w-5 h-5 text-white group-hover:text-primary transition-colors" />
+            <XMarkIcon class="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:text-primary transition-colors" />
           </button>
           
           <!-- Contenido del modal -->
-          <div class="p-8">
-            <div class="text-center mb-6">
-              <div class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary/20 to-accent-crimson/20 rounded-full border border-primary/30 mb-2">
-                <SparklesIcon class="w-6 h-6 text-primary animate-pulse" />
-                <h2 class="text-2xl font-bold bg-gradient-to-r from-primary to-accent-crimson bg-clip-text text-transparent">
+          <div class="p-4 sm:p-6 md:p-8 flex-1 flex flex-col overflow-y-auto">
+            <div class="text-center mb-3 sm:mb-4">
+              <div class="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-primary/20 to-accent-crimson/20 rounded-full border border-primary/30 mb-1 sm:mb-2">
+                <SparklesIcon class="w-4 h-4 sm:w-6 sm:h-6 text-primary animate-pulse" />
+                <h2 class="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent-crimson bg-clip-text text-transparent">
                   ¡Imagen Generada!
                 </h2>
               </div>
-              <p class="text-text-secondary text-sm mt-2">Tu creación está lista para descargar</p>
+              <p class="text-text-secondary text-xs sm:text-sm mt-1 sm:mt-2">Tu creación está lista para descargar</p>
             </div>
             
-            <!-- Imagen con marco elegante -->
-            <div class="relative mb-6 rounded-2xl overflow-hidden border-4 border-white/5 shadow-2xl">
+            <!-- Imagen con marco elegante - se ajusta automáticamente -->
+            <div class="relative mb-3 sm:mb-4 rounded-xl sm:rounded-2xl overflow-hidden border-2 sm:border-4 border-white/5 shadow-2xl flex-shrink-0">
               <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent-crimson/5"></div>
               <img 
                 :src="generatedImageUrl" 
                 :alt="generatedPrompt"
-                class="w-full h-auto relative z-10"
+                class="w-full h-auto max-h-[50vh] sm:max-h-[55vh] object-contain relative z-10"
               />
             </div>
             

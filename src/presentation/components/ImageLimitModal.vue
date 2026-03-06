@@ -27,10 +27,10 @@ const userStore = useUserStore();
           <div class="text-center">
             <div class="text-6xl mb-3">🎨</div>
             <h2 class="text-2xl font-bold text-text-primary mb-2">
-              ¡Ya usaste tu imagen gratis!
+              Genera tu Imagen
             </h2>
             <p class="text-text-secondary text-sm">
-              Continúa generando por solo $1 por imagen
+              Cada imagen cuesta solo $1
             </p>
           </div>
         </div>

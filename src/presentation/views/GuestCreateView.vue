@@ -103,16 +103,16 @@ const showcaseImages = [
       <div class="bg-background-card/30 border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 mb-6 sm:mb-10">
         <div class="grid sm:grid-cols-3 gap-3 sm:gap-4 text-center">
           <div>
-            <div class="text-primary font-bold text-base sm:text-lg md:text-xl mb-1">IA Avanzada</div>
-            <p class="text-text-tertiary text-xs sm:text-sm">Resultados profesionales</p>
+            <div class="text-primary font-bold text-base sm:text-lg md:text-xl mb-1">Sin Censura</div>
+            <p class="text-text-tertiary text-xs sm:text-sm">Libertad total</p>
           </div>
           <div>
             <div class="text-primary font-bold text-base sm:text-lg md:text-xl mb-1">Instantáneo</div>
             <p class="text-text-tertiary text-xs sm:text-sm">Genera en segundos</p>
           </div>
           <div>
-            <div class="text-primary font-bold text-base sm:text-lg md:text-xl mb-1">Fácil de Usar</div>
-            <p class="text-text-tertiary text-xs sm:text-sm">Interfaz intuitiva</p>
+            <div class="text-primary font-bold text-base sm:text-lg md:text-xl mb-1">100% Privado</div>
+            <p class="text-text-tertiary text-xs sm:text-sm">Tus datos seguros</p>
           </div>
         </div>
       </div>
@@ -123,7 +123,7 @@ const showcaseImages = [
           @click="goToRegister"
           class="inline-flex items-center space-x-2 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 bg-gradient-to-r from-primary to-accent-teal text-white font-bold text-sm sm:text-base rounded-xl transition-all hover:scale-105"
         >
-          <span>Crear Cuenta Gratis</span>
+          <span>Crear Cuenta</span>
           <ArrowRightIcon class="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
         <p class="text-text-tertiary text-xs sm:text-sm mt-2 sm:mt-3">

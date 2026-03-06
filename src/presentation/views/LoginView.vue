@@ -26,7 +26,7 @@ const handleLogin = async () => {
     if (success) {
       router.push('/home');
     } else {
-      error.value = t('auth.login.error') || 'Usuario no encontrado. Por favor regístrate primero.';
+      error.value = '❌ Correo electrónico o contraseña incorrectos';
     }
   }, 1500);
 };
@@ -59,8 +59,8 @@ const goToRegister = () => {
         </h2>
 
         <!-- Error Message -->
-        <div v-if="error" class="mb-4 bg-error/10 border border-error/30 rounded-lg p-4">
-          <p class="text-error text-sm">{{ error }}</p>
+        <div v-if="error" class="mb-4 bg-error/20 border-2 border-error rounded-xl p-4 animate-shake">
+          <p class="text-error text-sm font-semibold">{{ error }}</p>
         </div>
 
         <form @submit.prevent="handleLogin" class="space-y-5">

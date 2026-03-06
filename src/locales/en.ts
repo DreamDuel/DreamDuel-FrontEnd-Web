@@ -17,8 +17,8 @@ export default {
   },
   welcomeBanner: {
     title: '🎉 Welcome to DreamDuel!',
-    message: 'Your',
-    messageBold: 'first image is FREE',
+    message: 'Generate images',
+    messageBold: 'without limits or censorship',
     messageCta: '. Start creating now.'
   },
   nav: {
@@ -35,25 +35,25 @@ export default {
       title: 'Create Unique Visual Stories',
       subtitle: 'Turn your dreams into interactive narratives with AI',
       cta: 'Create my first story',
-      badge: 'AI Image Generator',
+      badge: 'No Limits • No Censorship • Total Privacy',
       heading1: 'Transform your ideas into',
-      heading2: 'amazing images',
-      description: 'Create unique images with artificial intelligence. Simple, fast and powerful.',
+      heading2: 'unrestricted images',
+      description: 'Image generator without limits or censorship. Total creative freedom without restrictive policies.',
       ctaButton: 'Create Image Now'
     },
     features: {
       title: 'Why DreamDuel?',
       feature1: {
-        title: 'Advanced AI',
-        description: 'Latest technology for professional results'
+        title: 'No Censorship',
+        description: 'Total creative freedom. No restrictions or boring policies'
       },
       feature2: {
         title: 'Super Fast',
         description: 'Generate images in seconds, not minutes'
       },
       feature3: {
-        title: 'First One Free',
-        description: 'Your first image is completely free'
+        title: 'Total Privacy',
+        description: 'Your creations are private. We believe in absolute freedom'
       }
     },
     trending: {
