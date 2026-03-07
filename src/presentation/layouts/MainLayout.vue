@@ -1,26 +1,13 @@
 <script setup lang="ts">
-import { SparklesIcon, UserCircleIcon, /* MagnifyingGlassIcon, */ Cog6ToothIcon, PhotoIcon } from '@heroicons/vue/24/outline';
+import { SparklesIcon, Cog6ToothIcon, PhotoIcon } from '@heroicons/vue/24/outline';
 import BottomNavigation from '@/presentation/components/BottomNavigation.vue';
 import WelcomeBanner from '@/presentation/components/WelcomeBanner.vue';
-import { useUserStore } from '@/stores/userStore';
 import { useI18n } from 'vue-i18n';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 
 const { t } = useI18n();
-const userStore = useUserStore();
-const showUserMenu = ref(false);
 const showWelcomeBanner = ref(false);
 
-onMounted(() => {
-  userStore.loadUserFromStorage();
-  
-  // Mostrar banner de bienvenida solo una vez para usuarios nuevos
-  const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-  if (!hasSeenWelcome && userStore.currentUser) {
-    showWelcomeBanner.value = true;
-    localStorage.setItem('hasSeenWelcome', 'true');
-  }
-});
 </script>
 
 <template>
@@ -72,41 +59,14 @@ onMounted(() => {
             </router-link>
           </div>
 
-          <!-- User Avatar -->
-          <div class="flex items-center space-x-4 relative">
-            <button 
-              @click="showUserMenu = !showUserMenu"
-              class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors group"
+          <!-- Settings Button -->
+          <div class="flex items-center">
+            <router-link 
+              to="/settings"
+              class="p-2 text-text-secondary hover:text-primary transition-colors hover:bg-background-card rounded-lg"
             >
-              <img 
-                v-if="userStore.currentUser"
-                :src="userStore.currentUser.avatarUrl"
-                :alt="userStore.currentUser.username"
-                class="h-8 w-8 rounded-full border-2 border-primary/30 group-hover:border-primary transition-colors"
-              />
-              <UserCircleIcon v-else class="h-8 w-8" />
-            </button>
-            
-            <!-- User Dropdown Menu -->
-            <div 
-              v-if="showUserMenu"
-              @click="showUserMenu = false"
-              class="absolute top-12 right-0 w-48 bg-background-card border border-white/10 rounded-lg shadow-xl overflow-hidden z-50"
-            >
-              <router-link 
-                to="/profile" 
-                class="block px-4 py-3 text-text-secondary hover:bg-primary/10 hover:text-primary transition-colors"
-              >
-                {{ t('nav.myProfile') }}
-              </router-link>
-              <router-link 
-                to="/settings" 
-                class="flex items-center space-x-2 px-4 py-3 text-text-secondary hover:bg-primary/10 hover:text-primary transition-colors"
-              >
-                <Cog6ToothIcon class="h-5 w-5" />
-                <span>{{ t('nav.settings') }}</span>
-              </router-link>
-            </div>
+              <Cog6ToothIcon class="h-6 w-6" />
+            </router-link>
           </div>
         </div>
       </div>

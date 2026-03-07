@@ -6,8 +6,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'root',
-      component: () => import('@/presentation/views/GuestCreateView.vue'),
-      meta: { hideNavigation: true }
+      component: () => import('@/presentation/views/HomeView.vue')
     },
     {
       path: '/generador/:niche',

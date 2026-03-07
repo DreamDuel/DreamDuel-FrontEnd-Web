@@ -2,13 +2,12 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { ArrowLeftIcon, CheckCircleIcon, LanguageIcon, BellIcon } from '@heroicons/vue/24/outline';
+import { ArrowLeftIcon, CheckCircleIcon, LanguageIcon } from '@heroicons/vue/24/outline';
 
 const router = useRouter();
 const { t, locale } = useI18n();
 
 const currentLanguage = ref(locale.value);
-const notifications = ref(true);
 const successMessage = ref('');
 
 const languages = [
@@ -21,15 +20,6 @@ const changeLanguage = (langCode: string) => {
   currentLanguage.value = langCode;
   localStorage.setItem('locale', langCode);
   successMessage.value = langCode === 'es' ? 'Idioma cambiado a Español' : 'Language changed to English';
-  setTimeout(() => successMessage.value = '', 3000);
-};
-
-const toggleNotifications = () => {
-  notifications.value = !notifications.value;
-  localStorage.setItem('notifications', JSON.stringify(notifications.value));
-  successMessage.value = notifications.value 
-    ? (currentLanguage.value === 'es' ? 'Notificaciones activadas' : 'Notifications enabled')
-    : (currentLanguage.value === 'es' ? 'Notificaciones desactivadas' : 'Notifications disabled');
   setTimeout(() => successMessage.value = '', 3000);
 };
 
@@ -92,31 +82,6 @@ const goBack = () => {
                 <span>{{ lang.name }}</span>
               </button>
             </div>
-          </div>
-
-          <!-- Notifications Toggle -->
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <BellIcon class="h-5 w-5 text-text-secondary" />
-              <div>
-                <p class="text-text-primary font-medium">{{ t('settings.preferences.notifications') }}</p>
-                <p class="text-text-tertiary text-sm">{{ t('settings.preferences.notificationsDesc') }}</p>
-              </div>
-            </div>
-            <button
-              @click="toggleNotifications"
-              :class="[
-                'relative w-14 h-8 rounded-full transition-colors',
-                notifications ? 'bg-primary' : 'bg-background-elevated'
-              ]"
-            >
-              <span
-                :class="[
-                  'absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform',
-                  notifications ? 'translate-x-6' : 'translate-x-0'
-                ]"
-              />
-            </button>
           </div>
         </div>
       </div>
