@@ -44,11 +44,21 @@ const handleGoogleLogin = async () => {
   
   try {
     // Obtener el Google ID Token
-    const response: any = await googleTokenLogin({
-      popupType: 'TOKEN',
-    });
+    const response: any = await googleTokenLogin();
     
-    const googleToken = response.credential;
+    console.log('🔍 GOOGLE RESPONSE:', response);
+    console.log('🔍 response.credential:', response.credential);
+    console.log('🔍 response.access_token:', response.access_token);
+    
+    const googleToken = response.credential || response.access_token || response;
+    console.log('🔍 TOKEN A ENVIAR:', googleToken);
+    console.log('🔍 TIPO:', typeof googleToken);
+    
+    if (!googleToken || typeof googleToken !== 'string') {
+      console.error('❌ Token inválido!');
+      error.value = 'Error: No se obtuvo token de Google';
+      return;
+    }
     
     // Enviar al backend
     const result = await userStore.loginWithGoogle(googleToken);

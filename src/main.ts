@@ -12,9 +12,7 @@ app.use(createPinia());
 app.use(router);
 app.use(i18n);
 app.use(vue3GoogleLogin, {
-  clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || '1014759548576-i6n3bgji9aq8ejmrr6666a698p9alsfa.apps.googleusercontent.com',
-  popupType: 'TOKEN',
-  prompt: 'select_account'
+  clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || '1014759548576-i6n3bgji9aq8ejmrr6666a698p9alsfa.apps.googleusercontent.com'
 });
 
 app.mount('#app');

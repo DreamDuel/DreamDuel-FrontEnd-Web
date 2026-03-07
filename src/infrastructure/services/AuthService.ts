@@ -90,13 +90,23 @@ export class AuthService {
   }
 
   async loginWithGoogle(googleToken: string): Promise<GoogleAuthResponse> {
+    console.log('🟢 AuthService.loginWithGoogle() START');
+    console.log('🟢 Enviando POST a /api/oauth/google');
+    console.log('🟢 Token (primeros 50 chars):', googleToken.substring(0, 50) + '...');
+    
     const response = await this.http.post<GoogleAuthResponse>('/api/oauth/google', { 
       token: googleToken 
     });
+    
+    console.log('🟢 Respuesta del backend:', response);
+    console.log('🟢 access_token recibido:', response.access_token?.substring(0, 50) + '...');
+    
     this.saveToken(response.access_token);
     if (response.refresh_token) {
       localStorage.setItem('refreshToken', response.refresh_token);
     }
+    
+    console.log('✅ AuthService.loginWithGoogle() completado');
     return response;
   }
 
@@ -107,7 +117,15 @@ export class AuthService {
   }
 
   async getCurrentUser(): Promise<AuthResponse['user']> {
-    return await this.http.get<AuthResponse['user']>(`${this.authEndpoint}/me`);
+    console.log('🟢 AuthService.getCurrentUser() START');
+    console.log('🟢 Enviando GET a /api/auth/me');
+    
+    const user = await this.http.get<AuthResponse['user']>(`${this.authEndpoint}/me`);
+    
+    console.log('🟢 Usuario recibido:', user);
+    console.log('✅ AuthService.getCurrentUser() completado');
+    
+    return user;
   }
 
   private saveToken(token: string): void {

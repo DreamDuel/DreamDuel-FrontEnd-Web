@@ -157,11 +157,17 @@ export const useUserStore = defineStore('user', () => {
 
   async function loginWithGoogle(googleToken: string) {
     try {
+      console.log('🔵 userStore.loginWithGoogle() START');
+      console.log('🔵 Token recibido:', googleToken.substring(0, 50) + '...');
+      
       // Llamar al backend con el Google token
       await authService.loginWithGoogle(googleToken);
+      console.log('✅ authService.loginWithGoogle() exitoso');
       
       // El backend devuelve access_token, necesitamos obtener los datos del usuario
+      console.log('🔵 Obteniendo datos del usuario...');
       const userData = await authService.getCurrentUser();
+      console.log('✅ Datos del usuario obtenidos:', userData);
       
       // Crear usuario desde la respuesta del backend
       const user: User = {
@@ -199,9 +205,12 @@ export const useUserStore = defineStore('user', () => {
         }
       }, 0);
       
+      console.log('✅ Login con Google completado exitosamente');
       return { success: true };
     } catch (error: any) {
-      console.error('Error en Google login:', error);
+      console.error('❌ Error en Google login:', error);
+      console.error('❌ Error message:', error.message);
+      console.error('❌ Error stack:', error.stack);
       return { success: false, error: error.message || 'Error al iniciar sesión con Google' };
     }
   }
