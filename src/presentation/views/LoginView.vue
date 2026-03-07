@@ -38,43 +38,38 @@ const handleLogin = async () => {
   }
 };
 
-const handleGoogleLogin = async () => {
+const handleGoogleLogin = () => {
   error.value = '';
   isLoading.value = true;
   
-  try {
-    // Usar googleAuthCodeLogin en lugar de googleTokenLogin
-    const { googleAuthCodeLogin } = await import('vue3-google-login');
-    
-    const response: any = await googleAuthCodeLogin({
-      clientId: '1014759548576-i6n3bgji9aq8ejmrr6666a698p9alsfa.apps.googleusercontent.com',
-    });
-    
+  // Usar callback en lugar de await para evitar problemas de popup
+  googleTokenLogin().then((response: any) => {
     console.log('🔍 GOOGLE RESPONSE:', response);
     
-    // Obtener el ID token del credential
+    // El credential es el ID token que necesitamos
     const googleToken = response.credential;
     
     if (!googleToken) {
       error.value = 'No se pudo obtener el token de Google';
+      isLoading.value = false;
       return;
     }
     
-    console.log('✅ Token obtenido:', googleToken.substring(0, 50) + '...');
+    console.log('✅ ID Token obtenido');
     
-    const result = await userStore.loginWithGoogle(googleToken);
-    
-    if (result.success) {
-      router.push('/home');
-    } else {
-      error.value = result.error || t('auth.login.errorGoogle');
-    }
-  } catch (err: any) {
+    userStore.loginWithGoogle(googleToken).then((result) => {
+      if (result.success) {
+        router.push('/home');
+      } else {
+        error.value = result.error || t('auth.login.errorGoogle');
+      }
+      isLoading.value = false;
+    });
+  }).catch((err: any) => {
     console.error('Google login error:', err);
-    error.value = t('auth.login.errorGoogle');
-  } finally {
+    error.value = 'Error al abrir ventana de Google. Por favor permite popups.';
     isLoading.value = false;
-  }
+  });
 };
 
 const goToRegister = () => {
