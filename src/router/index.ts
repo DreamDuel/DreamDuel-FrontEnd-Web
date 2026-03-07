@@ -4,30 +4,6 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/login',
-      name: 'login',
-      component: () => import('@/presentation/views/LoginView.vue'),
-      meta: { hideNavigation: true }
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: () => import('@/presentation/views/RegisterView.vue'),
-      meta: { hideNavigation: true }
-    },
-    {
-      path: '/splash',
-      name: 'splash',
-      component: () => import('@/presentation/views/SplashScreen.vue'),
-      meta: { hideNavigation: true }
-    },
-    {
-      path: '/onboarding',
-      name: 'onboarding',
-      component: () => import('@/presentation/views/OnboardingScreen.vue'),
-      meta: { hideNavigation: true }
-    },
-    {
       path: '/',
       name: 'root',
       component: () => import('@/presentation/views/GuestCreateView.vue'),
@@ -44,32 +20,11 @@ const router = createRouter({
       name: 'home',
       component: () => import('@/presentation/views/HomeView.vue')
     },
-    // RUTAS DE HISTORIAS - Comentadas temporalmente (futuro uso)
-    // {
-    //   path: '/create',
-    //   name: 'create',
-    //   component: () => import('@/presentation/views/CreateView.vue')
-    // },
     {
       path: '/images',
       name: 'images',
       component: () => import('@/presentation/views/ImageGeneratorView.vue')
     },
-    {
-      path: '/profile',
-      name: 'profile',
-      component: () => import('@/presentation/views/ProfileView.vue')
-    },
-    // {
-    //   path: '/user/:userId',
-    //   name: 'publicProfile',
-    //   component: () => import('@/presentation/views/PublicProfileView.vue')
-    // },
-    // {
-    //   path: '/search',
-    //   name: 'search',
-    //   component: () => import('@/presentation/views/SearchView.vue')
-    // },
     {
       path: '/settings',
       name: 'settings',
