@@ -1,25 +1,20 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { useUserStore } from '@/stores/userStore';
+import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { PhotoIcon, XMarkIcon, ArrowDownTrayIcon } from '@heroicons/vue/24/solid';
-import { SparklesIcon } from '@heroicons/vue/24/outline';
-import ImageLimitModal from '@/presentation/components/ImageLimitModal.vue';
-import UpgradeSlideout from '@/presentation/components/UpgradeSlideout.vue';
 
 const { t } = useI18n();
-const router = useRouter();
 const route = useRoute();
-const userStore = useUserStore();
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://dreamduel-backend-web.onrender.com/api';
 
 const prompt = ref('');
 const negativePrompt = ref('');
 const isGenerating = ref(false);
+const error = ref('');
 const characterImage = ref<File | null>(null);
 const imagePreviewUrl = ref<string>('');
-const showLimitModal = ref(false);
-const showUpgradeSlideout = ref(false);
 const poseImage = ref<File | null>(null);
 const posePreviewUrl = ref<string>('');
 const showAdvancedOptions = ref(false);
@@ -28,6 +23,17 @@ const selectedBodyType = ref<string>('');
 const generatedImageUrl = ref<string>('');
 const generatedPrompt = ref<string>('');
 const showResultModal = ref(false);
+
+// Obtener o crear session_id
+const getSessionId = () => {
+  let sessionId = localStorage.getItem('guest_session_id');
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    localStorage.setItem('guest_session_id', sessionId);
+    console.log('🆔 Nueva sesión guest creada:', sessionId);
+  }
+  return sessionId;
+};
 
 // Cargar prompt desde query params si viene desde HomeView
 onMounted(() => {
@@ -43,13 +49,13 @@ const handleFileSelect = (event: Event) => {
     
     // Validar tipo de archivo
     if (!file.type.startsWith('image/')) {
-      alert(t('profile.avatar.errorFormat'));
+      alert('Por favor selecciona un archivo de imagen válido');
       return;
     }
     
     // Validar tamaño (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert(t('profile.avatar.errorSize'));
+      alert('La imagen es demasiado grande. Tamaño máximo: 5MB');
       return;
     }
     
@@ -76,21 +82,18 @@ const handlePoseFileSelect = (event: Event) => {
   if (target.files && target.files[0]) {
     const file = target.files[0];
     
-    // Validar tipo de archivo
     if (!file.type.startsWith('image/')) {
-      alert(t('profile.avatar.errorFormat'));
+      alert('Por favor selecciona un archivo de imagen válido');
       return;
     }
     
-    // Validar tamaño (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert(t('profile.avatar.errorSize'));
+      alert('La imagen es demasiado grande. Tamaño máximo: 5MB');
       return;
     }
     
     poseImage.value = file;
     
-    // Crear preview
     const reader = new FileReader();
     reader.onload = (e) => {
       if (e.target?.result) {
@@ -107,47 +110,104 @@ const removePoseImage = () => {
 };
 
 const canGenerate = computed(() => {
-  return prompt.value.trim().length > 5 && 
-         characterImage.value !== null &&
-         !isGenerating.value;
+  return prompt.value.trim().length > 5 && !isGenerating.value;
 });
 
+// Intentar generar imagen
 const generateImage = async () => {
   if (!canGenerate.value) return;
   
-  // Siempre mostrar modal de pago ($1 por imagen)
-  showLimitModal.value = true;
-  return;
-  
-  /* NOTA: Código de generación real se ejecutará después del pago
   isGenerating.value = true;
+  error.value = '';
+  const sessionId = getSessionId();
   
-  // Rastrear la generación para PQL
-  userStore.trackGeneration();
-  
-  // Simular generación (3-5 segundos)
-  setTimeout(() => {
-    console.log('Generating image with:', {
-      prompt: prompt.value,
-      negativePrompt: negativePrompt.value,
-      gender: selectedGender.value,
-      bodyType: selectedBodyType.value,
-      characterImage: characterImage.value?.name,
-      poseImage: poseImage.value?.name
+  console.log('🎨 Intentando generar imagen...');
+  console.log('🆔 Session ID:', sessionId);
+
+  try {
+    const response = await fetch(`${API_URL}/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: prompt.value,
+        negativePrompt: negativePrompt.value || undefined,
+        style: 'fantasy',
+        aspectRatio: '16:9',
+        sessionId: sessionId
+      })
     });
+
+    if (response.status === 402) {
+      // Necesita pagar - Redirigir a PayPal
+      console.log('💳 Se requiere pago, iniciando compra...');
+      await initiatePurchase();
+      return;
+    }
+
+    if (response.status === 409) {
+      // Ya generó con este pago
+      error.value = 'Ya generaste tu imagen con este pago. Paga $1 para generar otra.';
+      isGenerating.value = false;
+      return;
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Error al generar imagen');
+    }
+
+    const data = await response.json();
+    console.log('✅ Imagen generada:', data);
     
-    // Generar URL de imagen simulada (en producción, esto vendría de la API)
-    const simulatedImageUrl = `https://picsum.photos/seed/${Date.now()}/800/800`;
-    
-    // Guardar datos para mostrar en modal
-    generatedImageUrl.value = simulatedImageUrl;
+    generatedImageUrl.value = data.imageUrl;
     generatedPrompt.value = prompt.value;
-    
-    // Mostrar modal de resultado
-    isGenerating.value = false;
     showResultModal.value = true;
-  }, 4000);
-  */
+    
+  } catch (err: any) {
+    console.error('❌ Error al generar:', err);
+    error.value = err.message || 'Error al generar imagen';
+  } finally {
+    isGenerating.value = false;
+  }
+};
+
+// Iniciar compra en PayPal
+const initiatePurchase = async () => {
+  const sessionId = getSessionId();
+  
+  console.log('💳 Iniciando compra de imagen...');
+  
+  try {
+    const response = await fetch(`${API_URL}/payments/guest/purchase-image`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sessionId: sessionId,
+        returnUrl: `${window.location.origin}/payment/success`,
+        cancelUrl: `${window.location.origin}/images`
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al crear orden de pago');
+    }
+
+    const data = await response.json();
+    console.log('✅ Orden creada, redirigiendo a PayPal...');
+    console.log('🔗 Approval URL:', data.approvalUrl);
+    
+    // Redirigir a PayPal
+    window.location.href = data.approvalUrl;
+    
+  } catch (err: any) {
+    console.error('❌ Error al crear orden:', err);
+    error.value = 'Error al crear orden de pago. Intenta nuevamente.';
+    isGenerating.value = false;
+  }
 };
 
 const downloadImage = async () => {
@@ -184,12 +244,6 @@ const closeResultModal = () => {
   posePreviewUrl.value = '';
   selectedGender.value = '';
   selectedBodyType.value = '';
-};
-
-const handleUpgrade = () => {
-  showLimitModal.value = false;
-  showUpgradeSlideout.value = false;
-  router.push('/pricing');
 };
 </script>
 
@@ -414,7 +468,7 @@ const handleUpgrade = () => {
         </div>
 
         <!-- Generate Button -->
-<!-- Botón de Generar -->
+        <!-- Botón de Generar -->
         <button
           @click="generateImage"
           :disabled="!canGenerate"
@@ -430,13 +484,18 @@ const handleUpgrade = () => {
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span>{{ t('imageGenerator.generating') }}</span>
+            <span>Procesando...</span>
           </template>
           <template v-else>
             <PhotoIcon class="h-6 w-6" />
-            <span>{{ t('imageGenerator.generateButton') }}</span>
+            <span>Generar Imagen - $1</span>
           </template>
         </button>
+
+        <!-- Error Message Inline -->
+        <p v-if="error" class="mt-4 p-4 bg-error/10 border border-error/30 rounded-lg text-error text-sm text-center">
+          {{ error }}
+        </p>
       </div>
     </div>
 
@@ -508,19 +567,21 @@ const handleUpgrade = () => {
       </div>
     </Transition>
 
-    <!-- Modals -->
-    <ImageLimitModal 
-      :show="showLimitModal" 
-      @close="showLimitModal = false"
-      @upgrade="handleUpgrade"
-    />
-    
-    <UpgradeSlideout
-      :show="showUpgradeSlideout"
-      trigger="feature"
-      @close="showUpgradeSlideout = false"
-      @upgrade="handleUpgrade"
-    />
+    <!-- Error Message -->
+    <Transition name="modal">
+      <div v-if="error" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" @click="error = ''">
+        <div class="bg-background-card rounded-2xl p-6 max-w-md border-2 border-error/50" @click.stop>
+          <h3 class="text-xl font-bold text-error mb-4">⚠️ Error</h3>
+          <p class="text-text-secondary mb-6">{{ error }}</p>
+          <button
+            @click="error = ''"
+            class="w-full px-6 py-3 bg-error hover:bg-error/80 text-white font-semibold rounded-xl transition-colors"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 

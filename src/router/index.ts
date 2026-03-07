@@ -36,6 +36,12 @@ const router = createRouter({
       meta: { hideNavigation: true }
     },
     {
+      path: '/payment/success',
+      name: 'payment-success',
+      component: () => import('@/presentation/views/PaymentSuccessView.vue'),
+      meta: { hideNavigation: true }
+    },
+    {
       path: '/loading',
       name: 'loading',
       component: () => import('@/presentation/views/LoadingScreen.vue'),
