@@ -93,8 +93,11 @@ const handleGoogleLogin = async () => {
   
   try {
     // Obtener el Google ID Token
-    const response: any = await googleTokenLogin();
-    const googleToken = response.credential || response.access_token || response;
+    const response: any = await googleTokenLogin({
+      popupType: 'TOKEN',
+    });
+    
+    const googleToken = response.credential;
     
     // Enviar al backend
     const result = await userStore.loginWithGoogle(googleToken);
