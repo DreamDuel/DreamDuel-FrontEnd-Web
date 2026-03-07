@@ -91,12 +91,11 @@ const handleGoogleLogin = () => {
   error.value = '';
   isLoading.value = true;
   
-  // Usar callback en lugar de await para evitar problemas de popup
   googleTokenLogin().then((response: any) => {
     console.log('🔍 GOOGLE RESPONSE:', response);
     
-    // El credential es el ID token que necesitamos
-    const googleToken = response.credential;
+    // Usar access_token en lugar de credential
+    const googleToken = response.access_token || response.credential;
     
     if (!googleToken) {
       error.value = 'No se pudo obtener el token de Google';
@@ -104,7 +103,7 @@ const handleGoogleLogin = () => {
       return;
     }
     
-    console.log('✅ ID Token obtenido');
+    console.log('✅ Token obtenido:', googleToken.substring(0, 50) + '...');
     
     userStore.loginWithGoogle(googleToken).then((result) => {
       if (result.success) {
@@ -116,7 +115,7 @@ const handleGoogleLogin = () => {
     });
   }).catch((err: any) => {
     console.error('Google login error:', err);
-    error.value = 'Error al abrir ventana de Google. Por favor permite popups.';
+    error.value = 'Error al iniciar sesión con Google';
     isLoading.value = false;
   });
 };
