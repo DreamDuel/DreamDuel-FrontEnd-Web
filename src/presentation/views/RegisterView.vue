@@ -92,24 +92,25 @@ const handleGoogleLogin = async () => {
   isLoading.value = true;
   
   try {
-    // Obtener el Google ID Token
-    const response: any = await googleTokenLogin();
+    // Usar googleAuthCodeLogin en lugar de googleTokenLogin
+    const { googleAuthCodeLogin } = await import('vue3-google-login');
+    
+    const response: any = await googleAuthCodeLogin({
+      clientId: '1014759548576-i6n3bgji9aq8ejmrr6666a698p9alsfa.apps.googleusercontent.com',
+    });
     
     console.log('🔍 GOOGLE RESPONSE:', response);
-    console.log('🔍 response.credential:', response.credential);
-    console.log('🔍 response.access_token:', response.access_token);
     
-    const googleToken = response.credential || response.access_token || response;
-    console.log('🔍 TOKEN A ENVIAR:', googleToken);
-    console.log('🔍 TIPO:', typeof googleToken);
+    // Obtener el ID token del credential
+    const googleToken = response.credential;
     
-    if (!googleToken || typeof googleToken !== 'string') {
-      console.error('❌ Token inválido!');
-      error.value = 'Error: No se obtuvo token de Google';
+    if (!googleToken) {
+      error.value = 'No se pudo obtener el token de Google';
       return;
     }
     
-    // Enviar al backend
+    console.log('✅ Token obtenido:', googleToken.substring(0, 50) + '...');
+    
     const result = await userStore.loginWithGoogle(googleToken);
     
     if (result.success) {
