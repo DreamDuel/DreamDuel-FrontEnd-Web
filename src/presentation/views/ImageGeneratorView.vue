@@ -52,8 +52,8 @@ let paypalButtonsInstance: any = null;
 
 const initPayPalButton = async () => {
     try {
-        // Usamos el Client ID verdadero expuesto en VITE o el fallback que enviaste en los logs
-        const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || 'AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R';
+        // Usamos el Client ID de PayPal LIVE que debe coincidir con el backend
+        const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || 'Ab1VlICBy_tSSFyCdoSUV0ryhD4n7hQpLbw5NqEIANw4CZYI17f5KdB1syi1pdxzeJeuihwTaW0beJbU';
         const paypal = await loadScript({ 
             clientId: paypalClientId,
             currency: "USD",
