@@ -687,25 +687,33 @@ const closeResultModal = () => {
 
     <!-- Payment Modal -->
     <Transition name="modal">
-        <div v-if="showPaymentModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/90 backdrop-blur-sm">
-            <div class="bg-gradient-to-br from-background-card via-background-elevated to-background-card rounded-2xl sm:rounded-3xl max-w-2xl w-full h-[80vh] flex flex-col relative border-2 border-primary/20 shadow-2xl shadow-primary/10">
-                <!-- Botón cerrar -->
-                <button
-                    @click="closePaymentModal"
-                    class="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-2 sm:p-2.5 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm transition-all hover:scale-110 group cursor-pointer"
-                >
-                    <XMarkIcon class="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:text-primary transition-colors" />
-                </button>
-                
-                <div class="p-4 sm:p-6 md:p-8 flex-1 flex flex-col h-full">
-                    <div class="text-center mb-4">
-                        <h2 class="text-xl sm:text-2xl font-bold text-white mb-2">Completar Pago Seguro</h2>
-                        <p class="text-text-secondary">Generar 1 Imagen: <span class="text-primary font-bold">$1.00 USD</span></p>
-                    </div>
+        <div v-if="showPaymentModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-sm">
+            <div class="bg-gradient-to-br from-background-card via-background-elevated to-background-card rounded-2xl sm:rounded-3xl w-full max-w-lg flex flex-col relative border-2 border-primary/20 shadow-2xl shadow-primary/10" style="max-height: 92vh;">
+                <!-- Header fijo -->
+                <div class="flex-shrink-0 px-5 pt-5 pb-3 border-b border-white/10 relative">
+                    <button
+                        @click="closePaymentModal"
+                        class="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm transition-all hover:scale-110 group cursor-pointer"
+                    >
+                        <XMarkIcon class="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:text-primary transition-colors" />
+                    </button>
+                    <h2 class="text-lg sm:text-xl font-bold text-white text-center pr-8">Completar Pago Seguro</h2>
+                    <p class="text-text-secondary text-sm text-center mt-1">Generar 1 Imagen: <span class="text-primary font-bold">$1.00 USD</span></p>
+                </div>
 
-                    <div class="flex-1 w-full bg-white rounded-xl overflow-hidden mt-2 relative p-4 sm:p-6 flex items-center justify-center">
-                        <div id="paypal-button-container" class="w-full max-w-sm"></div>
+                <!-- Área scrolleable con los botones de PayPal -->
+                <div class="flex-1 overflow-y-auto p-4 sm:p-5">
+                    <div class="w-full bg-white rounded-xl p-4 sm:p-5">
+                        <div id="paypal-button-container" class="w-full"></div>
                     </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="flex-shrink-0 px-5 py-3 border-t border-white/10 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span class="text-text-tertiary text-xs">Pago seguro procesado por PayPal</span>
                 </div>
             </div>
         </div>
