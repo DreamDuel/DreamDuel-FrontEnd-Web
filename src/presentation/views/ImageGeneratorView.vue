@@ -353,10 +353,8 @@ const closeResultModal = () => {
   <div class="min-h-screen bg-gradient-to-br from-background-deep via-background-elevated to-background-deep flex items-center justify-center px-3 sm:px-4 py-12 sm:py-20">
     <div class="w-full max-w-3xl">
       <!-- Header -->
-      <div class="text-center mb-6 sm:mb-12">
-        <div class="inline-flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
-          <PhotoIcon class="h-8 w-8 sm:h-12 sm:w-12 text-primary animate-pulse" />
-        </div>
+      <div class="text-center mb-6 sm:mb-12 flex flex-col items-center">
+        <img src="/Logo.png" alt="DreamDuel Logo" class="h-24 sm:h-32 w-auto mb-4 drop-shadow-xl animate-fade-in" />
         <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-2 sm:mb-4">
           {{ t('imageGenerator.title') }}
         </h1>
@@ -571,7 +569,7 @@ const closeResultModal = () => {
 
         <!-- Generate Button -->
         <!-- Botón de Generar -->
-        <button
+        <button>
           @click="generateImage"
           :disabled="!canGenerate"
           :class="[

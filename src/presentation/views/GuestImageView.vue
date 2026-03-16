@@ -92,8 +92,8 @@ const skipToLogin = () => {
     <div class="sticky top-0 z-50 bg-background-deep/95 backdrop-blur-md border-b border-white/10">
       <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <SparklesIcon class="h-8 w-8 text-primary" />
-          <span class="text-2xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
+          <img src="/Logo.png" alt="DreamDuel Logo" class="h-8 w-auto" />
+          <span class="text-2xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent drop-shadow-sm">
             DreamDuel
           </span>
         </div>

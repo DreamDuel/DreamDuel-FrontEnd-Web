@@ -21,8 +21,8 @@ const showWelcomeBanner = ref(false);
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
           <router-link to="/home" class="flex items-center space-x-2 group">
-            <SparklesIcon class="h-8 w-8 text-primary transition-transform group-hover:scale-110" />
-            <span class="text-2xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
+            <img src="/Logo.png" alt="DreamDuel Logo" class="h-12 w-auto transition-transform group-hover:scale-110" />
+            <span class="text-3xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent drop-shadow-sm">
               DreamDuel
             </span>
           </router-link>
@@ -78,10 +78,28 @@ const showWelcomeBanner = ref(false);
       @close="showWelcomeBanner = false"
     />
 
+    <!-- Mobile Navbar (hidden on desktop) -->
+    <nav 
+      class="md:hidden fixed left-0 right-0 z-50 bg-background-elevated/80 backdrop-blur-md border-b border-white/10 transition-all duration-300"
+      :class="showWelcomeBanner ? 'top-[68px]' : 'top-0'"
+    >
+      <div class="px-4 h-14 flex items-center justify-center">
+        <!-- Logo -->
+        <router-link to="/home" class="flex items-center space-x-2">
+          <img src="/Logo.png" alt="DreamDuel Logo" class="h-10 w-auto" />
+          <span class="text-2xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent drop-shadow-sm">
+            DreamDuel
+          </span>
+        </router-link>
+      </div>
+    </nav>
+
     <!-- Main Content -->
     <main 
       class="pb-16 md:pb-0 transition-all duration-300"
-      :class="showWelcomeBanner ? 'md:pt-[132px]' : 'md:pt-16'"
+      :class="[
+        showWelcomeBanner ? 'md:pt-[132px] pt-[124px]' : 'md:pt-16 pt-14'
+      ]"
     >
       <slot />
     </main>

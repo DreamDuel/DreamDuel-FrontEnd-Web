@@ -74,7 +74,11 @@ const navigateToGenerator = () => {
 
       <!-- Content -->
       <div class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center">
+        <div class="text-center flex flex-col items-center">
+          
+          <!-- Logo as Title -->
+          <img src="/Logo.png" alt="DreamDuel Logo" class="h-32 sm:h-40 md:h-48 w-auto mb-6 sm:mb-8 animate-fade-in drop-shadow-2xl" />
+
           <!-- Badge -->
           <div class="inline-flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary/10 border border-primary/20 rounded-full mb-4 sm:mb-6 md:mb-8 backdrop-blur-sm animate-fade-in">
             <SparklesIcon class="w-4 h-4 sm:w-5 sm:h-5 text-primary animate-pulse" />
