@@ -569,7 +569,8 @@ const closeResultModal = () => {
 
         <!-- Generate Button -->
         <!-- Botón de Generar -->
-        <button>
+        <button
+          type="button"
           @click="generateImage"
           :disabled="!canGenerate"
           :class="[
