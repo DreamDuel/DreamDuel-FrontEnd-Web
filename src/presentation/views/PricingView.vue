@@ -12,7 +12,7 @@ import {
 const router = useRouter();
 
 const handlePurchase = () => {
-  // Aquí iría la integración con Stripe/PayPal
+  // Aquí iría la integración con pasarela de pago
   console.log('Iniciando compra de imagen');
   alert('Próximamente: Integración con pasarela de pago');
 };
@@ -136,7 +136,7 @@ const handlePurchase = () => {
           <div class="bg-background-card rounded-xl p-6 border border-white/5">
             <h3 class="font-semibold text-text-primary mb-2">¿Qué métodos de pago aceptan?</h3>
             <p class="text-text-secondary">
-              Aceptamos tarjetas de crédito/débito, PayPal y otras opciones de pago locales según tu región.
+              Aceptamos tarjetas de crédito/débito y otras opciones de pago locales según tu región.
             </p>
           </div>
 

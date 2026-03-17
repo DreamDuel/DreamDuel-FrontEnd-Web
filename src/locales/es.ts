@@ -588,7 +588,7 @@ export default {
       },
       section2: {
         title: 'Uso de la Información',
-        content: 'Utilizamos tu información para proporcionar y mantener el servicio de generación de imágenes, procesar pagos a través de PayPal, enviarte confirmaciones de transacciones, mejorar nuestro servicio y proteger la seguridad de la plataforma. No utilizamos las imágenes que generas para ningún propósito ya que no las almacenamos.'
+        content: 'Utilizamos tu información para proporcionar y mantener el servicio de generación de imágenes, procesar pagos, enviarte confirmaciones de transacciones, mejorar nuestro servicio y proteger la seguridad de la plataforma. No utilizamos las imágenes que generas para ningún propósito ya que no las almacenamos.'
       },
       section3: {
         title: 'Compartir Información',

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue';
-import { loadScript } from '@paypal/paypal-js';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { PhotoIcon, XMarkIcon, ArrowDownTrayIcon, SparklesIcon } from '@heroicons/vue/24/solid';
@@ -25,10 +24,6 @@ const generatedImageUrl = ref<string>('');
 const generatedPrompt = ref<string>('');
 const showResultModal = ref(false);
 
-// Paypal Popup
-const showPaymentModal = ref(false);
-const paymentApprovalUrl = ref('');
-
 // Obtener o crear session_id
 const getSessionId = () => {
   let sessionId = localStorage.getItem('guest_session_id');
@@ -46,100 +41,6 @@ onMounted(() => {
     prompt.value = route.query.prompt;
   }
 });
-
-// Variable para la instancia de los botones de paypal
-let paypalButtonsInstance: any = null;
-
-const initPayPalButton = async () => {
-    try {
-        // Usamos el Client ID de PayPal LIVE que debe coincidir con el backend
-        const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || 'Ab1VlICBy_tSSFyCdoSUV0ryhD4n7hQpLbw5NqEIANw4CZYI17f5KdB1syi1pdxzeJeuihwTaW0beJbU';
-        const paypal = await loadScript({ 
-            clientId: paypalClientId,
-            currency: "USD",
-            intent: "capture"
-        });
-
-        if (paypal && paypal.Buttons) {
-            // Renderiza en un pequeño contenedor div dentro de nuestro propio Pop-up
-            paypalButtonsInstance = paypal.Buttons({
-                style: {
-                    layout: 'vertical',
-                    color:  'blue',
-                    shape:  'rect',
-                    label:  'paypal'
-                },
-                // Sobrescribimos createOrder para llamar A NUESTRO BACKEND
-                createOrder: async (data, actions) => {
-                    const sessionId = getSessionId();
-                    console.log('💳 Creando orden en el backend...');
-
-                    const response = await fetch(`${API_URL}/payments/guest/purchase-image`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            sessionId: sessionId,
-                            returnUrl: `${window.location.origin}/payment/success`, // No se usa por el popup SDK pero requerido por backend
-                            cancelUrl: `${window.location.origin}/images`
-                        })
-                    });
-
-                    if (!response.ok) throw new Error('Error al crear orden en Backend');
-                    const orderData = await response.json();
-                    
-                    // El backend devuelve checkoutUrl y orderId. El SDK solo necesita el orderId.
-                    const orderIdStr = orderData.orderId; // Usar id devuelto directamente por la API
-                    console.log('✅ Orden Backend creada. ID de PayPal:', orderIdStr);
-                    return orderIdStr;
-                },
-                // Se invoca cuando el usuario aprueba en la ventana emergente de PayPal
-                onApprove: async (data, actions) => {
-                    console.log('💰 Pago aprobado en PayPal. Confirmando en el backend...', data);
-                    closePaymentModal();
-                    error.value = '';
-                    isGenerating.value = true;
-                    
-                    // Llamamos a nuestro endpoint de confirmar
-                    const sessionId = getSessionId();
-                    try {
-                        const confirmResponse = await fetch(`${API_URL}/payments/guest/confirm-payment`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                orderId: data.orderID,
-                                sessionId: sessionId
-                            })
-                        });
-
-                        if (!confirmResponse.ok) throw new Error('Falló confirmación');
-                        console.log('✅ Pago capturado. Procediendo a generar...');
-                        
-                        // Generar la imagen automáticamente
-                        await generateImage(true);
-
-                    } catch (err) {
-                        console.error('❌ Error capturando pago', err);
-                        error.value = "Pago exitoso pero hubo un error de verificación. Contáctanos.";
-                        isGenerating.value = false;
-                    }
-                },
-                onCancel: (data) => {
-                    console.log('❌ Pago cancelado por el usuario');
-                    closePaymentModal();
-                    error.value = 'El pago fue cancelado.';
-                },
-                onError: (err) => {
-                    console.error('⚠️ Error en componente PayPal SDK:', err);
-                    closePaymentModal();
-                    error.value = 'Hubo un error cargando el método de pago.';
-                }
-            });
-            await paypalButtonsInstance.render('#paypal-button-container');
-        }
-    } catch (error) {
-        console.error("No se pudo cargar SDK PayPal", error);
-    }
-};
 
 const handleFileSelect = (event: Event) => {
   const target = event.target as HTMLInputElement;
@@ -213,8 +114,8 @@ const canGenerate = computed(() => {
 });
 
 // Intentar generar imagen
-const generateImage = async (skipPaymentCheck = false) => {
-  if (!canGenerate.value && !skipPaymentCheck) return;
+const generateImage = async () => {
+  if (!canGenerate.value) return;
   
   isGenerating.value = true;
   error.value = '';
@@ -238,32 +139,13 @@ const generateImage = async (skipPaymentCheck = false) => {
       })
     });
 
-    if (response.status === 402 && !skipPaymentCheck) {
-      // Necesita pagar - Mostrar Pop-up modal en lugar de llamar a API directa
-      console.log('💳 Se requiere pago, mostrando Modal...');
-      isGenerating.value = false;
-      initiatePurchase();
-      return;
-    }
-
-    if (response.status === 409) {
-      // Ya generó con este pago
-      error.value = 'Ya generaste tu imagen con este pago. Paga $1 para generar otra.';
-      isGenerating.value = false;
-      return;
-    }
-
     if (!response.ok) {
-      const errorData = await response.json();
-      
-      // En Render/FastAPI, el 402 devuelve { "detail": "Payment required..." }
-      if (response.status === 402 || errorData.detail?.includes('Payment required')) {
-          console.log('💳 Se requiere pago (Detectado vía detail), mostrando Modal...');
-          isGenerating.value = false;
-          initiatePurchase();
-          return;
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        throw new Error('Error al generar imagen');
       }
-      
       throw new Error(errorData.detail || 'Error al generar imagen');
     }
 
@@ -276,40 +158,10 @@ const generateImage = async (skipPaymentCheck = false) => {
     
   } catch (err: any) {
     console.error('❌ Error al generar:', err);
-    // Filtrar explícitamente el mensaje del backend por si se coló
-    if (err.message && err.message.includes('Payment required')) {
-        console.log('💳 Se requiere pago (Detectado en catch), mostrando Modal...');
-        isGenerating.value = false;
-        initiatePurchase();
-        return;
-    }
     error.value = err.message || 'Error al generar imagen';
   } finally {
-    // Solo desactiva el spinner aquí si NO mostramos el popup de pago, 
-    // porque el popup gestiona su propio "isGenerating.value = false" al cerrarse
-    if (!showPaymentModal.value) {
-        isGenerating.value = false;
-    }
-  }
-};
-
-// Muestra el Modal e Inicializa los botones
-const initiatePurchase = async () => {
-    // Abrir Modal UI inmediatamente
-    showPaymentModal.value = true;
-    
-    // Si aún no hemos inyectado los botones, renderizar
-    nextTick(() => {
-        if (!paypalButtonsInstance) {
-            initPayPalButton();
-        }
-    });
-};
-
-const closePaymentModal = () => {
-    showPaymentModal.value = false;
     isGenerating.value = false;
-    // Opcional: limpiar la instancia si la quieres recrear paypalButtonsInstance?.close()
+  }
 };
 
 const downloadImage = async () => {
@@ -589,7 +441,7 @@ const closeResultModal = () => {
           </template>
           <template v-else>
             <PhotoIcon class="h-6 w-6" />
-            <span>Generar Imagen - $1</span>
+            <span>Generar Imagen</span>
           </template>
         </button>
 
@@ -684,39 +536,6 @@ const closeResultModal = () => {
       </div>
     </Transition>
 
-    <!-- Payment Modal -->
-    <Transition name="modal">
-        <div v-if="showPaymentModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-sm">
-            <div class="bg-gradient-to-br from-background-card via-background-elevated to-background-card rounded-2xl sm:rounded-3xl w-full max-w-lg flex flex-col relative border-2 border-primary/20 shadow-2xl shadow-primary/10" style="max-height: 92vh;">
-                <!-- Header fijo -->
-                <div class="flex-shrink-0 px-5 pt-5 pb-3 border-b border-white/10 relative">
-                    <button
-                        @click="closePaymentModal"
-                        class="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm transition-all hover:scale-110 group cursor-pointer"
-                    >
-                        <XMarkIcon class="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:text-primary transition-colors" />
-                    </button>
-                    <h2 class="text-lg sm:text-xl font-bold text-white text-center pr-8">Completar Pago Seguro</h2>
-                    <p class="text-text-secondary text-sm text-center mt-1">Generar 1 Imagen: <span class="text-primary font-bold">$1.00 USD</span></p>
-                </div>
-
-                <!-- Área scrolleable con los botones de PayPal -->
-                <div class="flex-1 overflow-y-auto p-4 sm:p-5">
-                    <div class="w-full bg-white rounded-xl p-4 sm:p-5">
-                        <div id="paypal-button-container" class="w-full"></div>
-                    </div>
-                </div>
-
-                <!-- Footer -->
-                <div class="flex-shrink-0 px-5 py-3 border-t border-white/10 flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                    <span class="text-text-tertiary text-xs">Pago seguro procesado por PayPal</span>
-                </div>
-            </div>
-        </div>
-    </Transition>
   </div>
 </template>
 

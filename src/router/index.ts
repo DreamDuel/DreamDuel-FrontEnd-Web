@@ -35,12 +35,7 @@ const router = createRouter({
       component: () => import('@/presentation/views/PricingView.vue'),
       meta: { hideNavigation: true }
     },
-    {
-      path: '/payment/success',
-      name: 'payment-success',
-      component: () => import('@/presentation/views/PaymentSuccessView.vue'),
-      meta: { hideNavigation: true }
-    },
+
     {
       path: '/loading',
       name: 'loading',
@@ -77,7 +72,7 @@ const router = createRouter({
       meta: { hideNavigation: true }
     }
   ],
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior(_to, _from, savedPosition) {
     if (savedPosition) {
       return savedPosition;
     } else {

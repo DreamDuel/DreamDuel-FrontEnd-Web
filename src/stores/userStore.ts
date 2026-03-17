@@ -389,7 +389,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   function purchaseImageGeneration(): Promise<boolean> {
-    // Aquí iría la integración con pasarela de pago (Stripe, PayPal, etc.)
+    // Aquí iría la integración con pasarela de pago
     return new Promise((resolve) => {
       // Simulación: En producción, esto llamaría al backend para procesar el pago
       console.log('💳 Procesando pago por generación de imagen...');
