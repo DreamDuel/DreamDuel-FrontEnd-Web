@@ -125,6 +125,27 @@ const generateImage = async () => {
   console.log('🆔 Session ID:', sessionId);
 
   try {
+    let uploadedImageUrl = '';
+    
+    // Paso 1: Subida temporal
+    if (characterImage.value) {
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', characterImage.value);
+      
+      const uploadResponse = await fetch(`${API_URL}/upload/image`, {
+        method: 'POST',
+        body: uploadFormData
+      });
+      
+      if (!uploadResponse.ok) {
+        throw new Error('Error al subir la imagen');
+      }
+      
+      const uploadData = await uploadResponse.json();
+      uploadedImageUrl = uploadData.url;
+    }
+
+    // Paso 2: Generación
     const response = await fetch(`${API_URL}/generate`, {
       method: 'POST',
       headers: {
@@ -135,7 +156,8 @@ const generateImage = async () => {
         negativePrompt: negativePrompt.value || undefined,
         style: 'fantasy',
         aspectRatio: '16:9',
-        sessionId: sessionId
+        sessionId: sessionId,
+        characterImages: uploadedImageUrl ? [uploadedImageUrl] : []
       })
     });
 
@@ -168,7 +190,10 @@ const downloadImage = async () => {
   if (!generatedImageUrl.value) return;
   
   try {
-    const response = await fetch(generatedImageUrl.value);
+    // Use the backend proxy to download the image (avoids CORS with ComfyUI)
+    const proxyUrl = `${API_URL}/generate/download?url=${encodeURIComponent(generatedImageUrl.value)}`;
+    const response = await fetch(proxyUrl);
+    if (!response.ok) throw new Error('Download failed');
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
