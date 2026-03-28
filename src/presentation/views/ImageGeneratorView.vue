@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { PhotoIcon, XMarkIcon, ArrowDownTrayIcon, SparklesIcon } from '@heroicons/vue/24/solid';
@@ -13,13 +13,9 @@ const prompt = ref('');
 const negativePrompt = ref('');
 const isGenerating = ref(false);
 const error = ref('');
+const licenseKey = ref(localStorage.getItem('gumroad_license_key') || '');
 const characterImage = ref<File | null>(null);
 const imagePreviewUrl = ref<string>('');
-const poseImage = ref<File | null>(null);
-const posePreviewUrl = ref<string>('');
-const showAdvancedOptions = ref(false);
-const selectedGender = ref<string>('');
-const selectedBodyType = ref<string>('');
 const generatedImageUrl = ref<string>('');
 const generatedPrompt = ref<string>('');
 const showResultModal = ref(false);
@@ -40,6 +36,24 @@ onMounted(() => {
   if (route.query.prompt && typeof route.query.prompt === 'string') {
     prompt.value = route.query.prompt;
   }
+});
+
+const openGumroadWindow = () => {
+  const url = 'https://gumroad.com/l/tooupe?wanted=true';
+  const width = 600;
+  const height = Math.min(800, window.innerHeight);
+  const left = (window.innerWidth / 2) - (width / 2);
+  const top = (window.innerHeight / 2) - (height / 2);
+  
+  window.open(
+    url,
+    'GumroadCheckout',
+    `width=${width},height=${height},top=${top},left=${left},toolbar=no,menubar=no,scrollbars=yes,resizable=yes,status=no`
+  );
+};
+
+watch(licenseKey, (newVal) => {
+  localStorage.setItem('gumroad_license_key', newVal);
 });
 
 const handleFileSelect = (event: Event) => {
@@ -77,44 +91,17 @@ const removeImage = () => {
   imagePreviewUrl.value = '';
 };
 
-const handlePoseFileSelect = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  if (target.files && target.files[0]) {
-    const file = target.files[0];
-    
-    if (!file.type.startsWith('image/')) {
-      alert('Por favor selecciona un archivo de imagen válido');
-      return;
-    }
-    
-    if (file.size > 5 * 1024 * 1024) {
-      alert('La imagen es demasiado grande. Tamaño máximo: 5MB');
-      return;
-    }
-    
-    poseImage.value = file;
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target?.result) {
-        posePreviewUrl.value = e.target.result as string;
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
-const removePoseImage = () => {
-  poseImage.value = null;
-  posePreviewUrl.value = '';
-};
-
 const canGenerate = computed(() => {
   return prompt.value.trim().length > 5 && !isGenerating.value;
 });
 
 // Intentar generar imagen
 const generateImage = async () => {
+  if (!licenseKey.value.trim()) {
+    error.value = 'Por favor, ingresa tu Clave de Licencia de Gumroad antes de generar.';
+    return;
+  }
+
   if (!canGenerate.value) return;
   
   isGenerating.value = true;
@@ -157,11 +144,15 @@ const generateImage = async () => {
         style: 'fantasy',
         aspectRatio: '16:9',
         sessionId: sessionId,
-        characterImages: uploadedImageUrl ? [uploadedImageUrl] : []
+        characterImages: uploadedImageUrl ? [uploadedImageUrl] : [],
+        licenseKey: licenseKey.value
       })
     });
 
     if (!response.ok) {
+      if (response.status === 403) {
+        throw new Error('Tu clave de licencia es inválida o se han acabado tus créditos. Por favor, compra uno nuevo.');
+      }
       let errorData;
       try {
         errorData = await response.json();
@@ -218,11 +209,10 @@ const closeResultModal = () => {
   prompt.value = '';
   negativePrompt.value = '';
   characterImage.value = null;
+  prompt.value = '';
+  negativePrompt.value = '';
+  characterImage.value = null;
   imagePreviewUrl.value = '';
-  poseImage.value = null;
-  posePreviewUrl.value = '';
-  selectedGender.value = '';
-  selectedBodyType.value = '';
 };
 </script>
 
@@ -242,6 +232,34 @@ const closeResultModal = () => {
 
       <!-- Main Input Card -->
       <div class="bg-background-card border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-8 shadow-2xl backdrop-blur-sm mb-6 sm:mb-8">
+        
+        <!-- License Key Input -->
+        <div class="mb-6 sm:mb-8">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 sm:mb-3 gap-2">
+            <label class="block text-text-primary font-semibold text-sm sm:text-base md:text-lg">
+              Clave de Licencia (Gumroad)
+            </label>
+            <button 
+              type="button"
+              @click="openGumroadWindow"
+              class="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-primary to-accent-crimson hover:from-primary-light hover:to-accent-crimson/80 text-white text-xs font-bold rounded-lg shadow-lg hover:shadow-primary/30 transition-all hover:scale-105 active:scale-95"
+            >
+              🛒 Consigue tu clave de licencia aquí
+            </button>
+          </div>
+          <div class="mb-3 sm:mb-4">
+            <input
+              type="text"
+              v-model="licenseKey"
+              placeholder="Ingresa tu Clave de Licencia aquí..."
+              class="w-full px-3 py-2 sm:px-5 sm:py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary text-xs sm:text-sm placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all"
+            />
+            <p class="text-text-tertiary text-xs mt-1 sm:mt-2">
+              Ingresa la clave que recibiste al comprar. Esto valida tus usos en la plataforma.
+            </p>
+          </div>
+        </div>
+
         <!-- Upload de Imagen -->
         <div class="mb-6 sm:mb-8">
           <label class="block text-text-primary font-semibold mb-2 sm:mb-3 text-sm sm:text-base md:text-lg">
@@ -280,7 +298,7 @@ const closeResultModal = () => {
         <!-- Opciones de Generación (Desbloqueadas) -->
         <div class="mb-6 sm:mb-8">
           <label class="block text-text-primary font-semibold mb-2 sm:mb-3 text-sm sm:text-base md:text-lg">
-            {{ t('imageGenerator.step2') }}
+            Descripción de tu imagen
           </label>
           
           <!-- PROMPT -->
@@ -317,132 +335,7 @@ const closeResultModal = () => {
           </div>
         </div>
 
-        <!-- Opciones Avanzadas (PREMIUM ONLY) -->
-        <div class="mb-6 sm:mb-8">
-          <button
-            @click="showAdvancedOptions = !showAdvancedOptions"
-            class="flex items-center justify-between w-full text-left text-text-primary font-semibold mb-2 sm:mb-3 text-sm sm:text-base md:text-lg hover:text-primary transition-colors"
-          >
-            <span>{{ t('guest.steps.advancedOptions') }}</span>
-            <svg
-              :class="['w-5 h-5 transition-transform', showAdvancedOptions ? 'rotate-180' : '']"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          
-          <Transition name="slide-fade">
-            <div v-if="showAdvancedOptions" class="space-y-4 sm:space-y-6">
-              <!-- Género del Personaje -->
-              <div>
-                <label class="block text-text-secondary font-medium mb-2 sm:mb-3 text-xs sm:text-sm">
-                  {{ t('create.advancedOptions.genderLabel') }}
-                </label>
-                
-                <div class="grid grid-cols-2 gap-2 sm:gap-3">
-                  <button
-                    @click="selectedGender = selectedGender === 'female' ? '' : 'female'"
-                    :class="[
-                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-3 sm:py-4 px-2 sm:px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
-                      selectedGender === 'female'
-                        ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20'
-                        : 'border-white/10 bg-background-elevated hover:border-primary/50 hover:bg-background-elevated/80'
-                    ]"
-                  >
-                    <span class="text-text-primary font-medium text-xs sm:text-sm md:text-base">{{ t('create.advancedOptions.female') }}</span>
-                  </button>
-                  <button
-                    @click="selectedGender = selectedGender === 'male' ? '' : 'male'"
-                    :class="[
-                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-3 sm:py-4 px-2 sm:px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
-                      selectedGender === 'male'
-                        ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20'
-                        : 'border-white/10 bg-background-elevated hover:border-primary/50 hover:bg-background-elevated/80'
-                    ]"
-                  >
-                    <span class="text-text-primary font-medium text-xs sm:text-sm md:text-base">{{ t('create.advancedOptions.male') }}</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Tipo de Cuerpo -->
-              <div>
-                <label class="block text-text-secondary font-medium mb-2 sm:mb-3 text-xs sm:text-sm">
-                  {{ t('create.advancedOptions.bodyTypeLabel') }}
-                </label>
-                
-                <div class="grid grid-cols-2 gap-2 sm:gap-3">
-                  <button
-                    @click="selectedBodyType = selectedBodyType === 'female' ? '' : 'female'"
-                    :class="[
-                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-3 sm:py-4 px-2 sm:px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
-                      selectedBodyType === 'female'
-                        ? 'border-accent-teal bg-accent-teal/10 shadow-lg shadow-accent-teal/20'
-                        : 'border-white/10 bg-background-elevated hover:border-accent-teal/50 hover:bg-background-elevated/80'
-                    ]"
-                  >
-                    <span class="text-text-primary font-medium text-xs sm:text-sm md:text-base">{{ t('create.advancedOptions.femaleBody') }}</span>
-                  </button>
-                  <button
-                    @click="selectedBodyType = selectedBodyType === 'male' ? '' : 'male'"
-                    :class="[
-                      'flex flex-col md:flex-row items-center justify-center md:space-x-2 py-3 sm:py-4 px-2 sm:px-3 md:px-6 rounded-xl border-2 transition-all duration-300',
-                      selectedBodyType === 'male'
-                        ? 'border-accent-teal bg-accent-teal/10 shadow-lg shadow-accent-teal/20'
-                        : 'border-white/10 bg-background-elevated hover:border-accent-teal/50 hover:bg-background-elevated/80'
-                    ]"
-                  >
-                    <span class="text-text-primary font-medium text-xs sm:text-sm md:text-base">{{ t('create.advancedOptions.maleBody') }}</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Pose del Personaje -->
-              <div>
-                <label class="block text-text-secondary font-medium mb-2 text-xs sm:text-sm">
-                  {{ t('create.advancedOptions.poseLabel') }}
-                </label>
-                
-                <div>
-                  <div v-if="!posePreviewUrl" class="relative">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      @change="handlePoseFileSelect"
-                      class="hidden"
-                      id="poseImageInput"
-                    />
-                    <label
-                      for="poseImageInput"
-                      class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-white/20 rounded-xl bg-background-elevated hover:border-primary hover:bg-background-elevated/50 transition-all cursor-pointer group"
-                    >
-                      <PhotoIcon class="h-8 w-8 sm:h-12 sm:w-12 text-text-tertiary group-hover:text-primary transition-colors mb-2" />
-                      <span class="text-text-primary font-medium text-xs sm:text-sm mb-1">{{ t('create.advancedOptions.poseUpload') }}</span>
-                      <span class="text-text-tertiary text-xs">{{ t('create.advancedOptions.poseMaxSize') }}</span>
-                    </label>
-                  </div>
-                  
-                  <div v-else class="relative">
-                    <img :src="posePreviewUrl" alt="Pose Preview" class="w-full max-h-64 object-contain rounded-xl bg-background-elevated border border-white/10" />
-                    <button
-                      @click="removePoseImage"
-                      class="absolute top-3 right-3 p-2 bg-error/90 hover:bg-error text-white rounded-lg transition-colors"
-                    >
-                      <XMarkIcon class="h-5 w-5" />
-                    </button>
-                  </div>
-                </div>
-                
-                <p class="text-text-tertiary text-xs mt-1 sm:mt-2">
-                  {{ t('create.advancedOptions.poseDescription') }}
-                </p>
-              </div>
-            </div>
-          </Transition>
-        </div>
+        <!-- Opciones Avanzadas Eliminadas por Solicitud -->
 
         <!-- Generate Button -->
         <!-- Botón de Generar -->

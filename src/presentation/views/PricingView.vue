@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { 
   SparklesIcon, 
@@ -11,10 +12,21 @@ import {
 
 const router = useRouter();
 
-const handlePurchase = () => {
-  // Aquí iría la integración con pasarela de pago
-  console.log('Iniciando compra de imagen');
-  alert('Próximamente: Integración con pasarela de pago');
+onMounted(() => {
+});
+
+const openGumroadWindow = () => {
+  const url = 'https://gumroad.com/l/tooupe?wanted=true';
+  const width = 600;
+  const height = Math.min(800, window.innerHeight);
+  const left = (window.innerWidth / 2) - (width / 2);
+  const top = (window.innerHeight / 2) - (height / 2);
+  
+  window.open(
+    url,
+    'GumroadCheckout',
+    `width=${width},height=${height},top=${top},left=${left},toolbar=no,menubar=no,scrollbars=yes,resizable=yes,status=no`
+  );
 };
 </script>
 
@@ -80,8 +92,9 @@ const handlePurchase = () => {
 
           <!-- CTA Button -->
           <button
-            @click="handlePurchase"
-            class="w-full py-4 rounded-xl font-bold text-lg bg-gradient-to-r from-primary to-accent-crimson hover:from-primary-light hover:to-accent-crimson/80 text-white shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95"
+            type="button"
+            @click="openGumroadWindow"
+            class="block w-full py-4 text-center rounded-xl font-bold text-lg bg-gradient-to-r from-primary to-accent-crimson hover:from-primary-light hover:to-accent-crimson/80 text-white shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95"
           >
             Comprar Ahora
           </button>

@@ -9,6 +9,7 @@ export interface GenerationRequest {
   aspectRatio?: string;
   negativePrompt?: string;
   characterImages?: string[]; // URLs de personajes
+  licenseKey?: string;
 }
 
 export interface GenerationResponse {
@@ -25,6 +26,7 @@ export interface BatchGenerationRequest {
   }>;
   style: string;
   characterImages?: string[];
+  licenseKey?: string;
 }
 
 export interface BatchGenerationResponse {
