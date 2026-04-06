@@ -317,6 +317,7 @@ const closeResultModal = () => {
             <label class="block text-text-secondary font-medium mb-2 text-xs sm:text-sm">
               {{ t('imageGenerator.promptLabel') }}
               <span class="text-accent-crimson">{{ t('imageGenerator.promptRequired') }}</span>
+              <span class="ml-2 text-accent-crimson text-[10px] sm:text-xs font-bold bg-accent-crimson/10 border border-accent-crimson/30 px-1.5 py-0.5 rounded whitespace-nowrap">{{ t('imageGenerator.promptWarning') }}</span>
             </label>
             <textarea
               v-model="prompt"
@@ -333,6 +334,7 @@ const closeResultModal = () => {
           <div>
             <label class="block text-text-secondary font-medium mb-2 text-xs sm:text-sm">
               {{ t('imageGenerator.negativePromptLabel') }}
+              <span class="ml-2 text-accent-crimson text-[10px] sm:text-xs font-bold bg-accent-crimson/10 border border-accent-crimson/30 px-1.5 py-0.5 rounded whitespace-nowrap">{{ t('imageGenerator.negativePromptWarning') }}</span>
             </label>
             <textarea
               v-model="negativePrompt"
