@@ -181,6 +181,17 @@ const downloadImage = async () => {
   if (!generatedImageUrl.value) return;
   
   try {
+    // Handle base64 imagery directly
+    if (generatedImageUrl.value.startsWith('data:image')) {
+      const link = document.createElement('a');
+      link.href = generatedImageUrl.value;
+      link.download = `dreamduel-${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      return;
+    }
+
     // Use the backend proxy to download the image (avoids CORS with ComfyUI)
     const proxyUrl = `${API_URL}/generate/download?url=${encodeURIComponent(generatedImageUrl.value)}`;
     const response = await fetch(proxyUrl);
