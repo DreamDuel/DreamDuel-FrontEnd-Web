@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { PhotoIcon, XMarkIcon, ArrowDownTrayIcon, SparklesIcon } from '@heroicons/vue/24/solid';
+import { PhotoIcon, XMarkIcon, ArrowDownTrayIcon, SparklesIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/solid';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -19,6 +19,11 @@ const imagePreviewUrl = ref<string>('');
 const generatedImageUrl = ref<string>('');
 const generatedPrompt = ref<string>('');
 const showResultModal = ref(false);
+const showHelpModal = ref(false);
+
+const appendTag = (tag: string) => {
+  prompt.value = prompt.value ? prompt.value + ', ' + tag : tag;
+};
 
 // Obtener o crear session_id
 const getSessionId = () => {
@@ -98,7 +103,7 @@ const canGenerate = computed(() => {
 // Intentar generar imagen
 const generateImage = async () => {
   if (!licenseKey.value.trim()) {
-    error.value = 'Por favor, ingresa tu Clave de Licencia de Gumroad antes de generar.';
+    error.value = 'Por favor, ingresa tu crédito de Gumroad antes de generar.';
     return;
   }
 
@@ -233,7 +238,7 @@ const closeResultModal = () => {
       <!-- Header -->
       <div class="text-center mb-6 sm:mb-12 flex flex-col items-center">
         <img src="/Logo.png" alt="DreamDuel Logo" class="h-24 sm:h-32 w-auto mb-4 drop-shadow-xl animate-fade-in" />
-        <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-2 sm:mb-4">
+        <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-2 sm:mb-4 flex items-center justify-center gap-3">
           {{ t('imageGenerator.title') }}
         </h1>
         <p class="text-text-secondary text-sm sm:text-base md:text-xl mb-4 sm:mb-6">
@@ -242,34 +247,8 @@ const closeResultModal = () => {
       </div>
 
       <!-- Main Input Card -->
-      <div class="bg-background-card border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-8 shadow-2xl backdrop-blur-sm mb-6 sm:mb-8">
-        
-        <!-- License Key Input -->
-        <div class="mb-6 sm:mb-8">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 sm:mb-3 gap-2">
-            <label class="block text-text-primary font-semibold text-sm sm:text-base md:text-lg">
-              Clave de Licencia (Gumroad)
-            </label>
-            <button 
-              type="button"
-              @click="openGumroadWindow"
-              class="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-primary to-accent-crimson hover:from-primary-light hover:to-accent-crimson/80 text-white text-xs font-bold rounded-lg shadow-lg hover:shadow-primary/30 transition-all hover:scale-105 active:scale-95"
-            >
-              🛒 Consigue tu clave de licencia aquí
-            </button>
-          </div>
-          <div class="mb-3 sm:mb-4">
-            <input
-              type="text"
-              v-model="licenseKey"
-              placeholder="Ingresa tu Clave de Licencia aquí..."
-              class="w-full px-3 py-2 sm:px-5 sm:py-4 bg-background-elevated border border-white/10 rounded-xl text-text-primary text-xs sm:text-sm placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all"
-            />
-            <p class="text-text-tertiary text-xs mt-1 sm:mt-2">
-              Ingresa la clave que recibiste al comprar. Esto valida tus usos en la plataforma.
-            </p>
-          </div>
-        </div>
+      <div class="bg-background-card border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-8 shadow-2xl backdrop-blur-sm mb-6 sm:mb-8 relative mt-4">
+
 
         <!-- Upload de Imagen -->
         <div class="mb-6 sm:mb-8">
@@ -309,7 +288,7 @@ const closeResultModal = () => {
         <!-- Opciones de Generación (Desbloqueadas) -->
         <div class="mb-6 sm:mb-8">
           <label class="block text-text-primary font-semibold mb-2 sm:mb-3 text-sm sm:text-base md:text-lg">
-            Descripción de tu imagen
+            {{ t('imageGenerator.step2') }}
           </label>
           
           <!-- PROMPT -->
@@ -346,6 +325,31 @@ const closeResultModal = () => {
               {{ t('imageGenerator.negativePromptTip') }}
             </p>
           </div>
+          
+        </div>
+
+        <!-- License Key Input (Movido aquí) -->
+        <div class="mb-6 sm:mb-8 p-4 bg-background-elevated rounded-xl border border-white/5">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 sm:mb-3 gap-2">
+            <label class="block text-text-primary font-semibold text-sm sm:text-base md:text-lg flex items-center gap-2">
+              {{ t('imageGenerator.licenseTitle') }}
+            </label>
+            <button 
+              type="button"
+              @click="openGumroadWindow"
+              class="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-primary to-accent-crimson hover:from-primary-light hover:to-accent-crimson/80 text-white text-xs font-bold rounded-lg shadow-lg hover:shadow-primary/30 transition-all hover:scale-105 active:scale-95"
+            >
+              {{ t('imageGenerator.licenseButton') }}
+            </button>
+          </div>
+          <div class="mb-1">
+            <input
+              type="text"
+              v-model="licenseKey"
+              :placeholder="t('imageGenerator.licensePlaceholder')"
+              class="w-full px-3 py-2 sm:px-4 sm:py-3 bg-background-deep border border-white/10 rounded-xl text-text-primary text-sm placeholder-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none transition-all"
+            />
+          </div>
         </div>
 
         <!-- Opciones Avanzadas Eliminadas por Solicitud -->
@@ -368,13 +372,29 @@ const closeResultModal = () => {
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span>Procesando...</span>
+            <span>{{ t('imageGenerator.generating') }}</span>
           </template>
           <template v-else>
             <PhotoIcon class="h-6 w-6" />
-            <span>Generar Imagen</span>
+            <span>{{ t('imageGenerator.generateButton') }}</span>
           </template>
         </button>
+
+        <!-- Credit Refund Notice -->
+        <p class="mt-3 text-center text-xs sm:text-sm text-text-secondary flex items-center justify-center gap-1.5">
+          <span>{{ t('imageGenerator.creditRefundNotice') }}</span>
+        </p>
+
+        <!-- Botón de Ayuda (entre Generar y Clave de Licencia en el flujo visual) -->
+        <div class="flex justify-center mt-3 mb-1">
+          <button 
+            @click="showHelpModal = true" 
+            class="px-5 py-2 bg-gradient-to-r from-primary to-accent-teal hover:from-primary-light hover:to-primary text-white font-bold rounded-lg shadow-lg hover:shadow-primary/30 transition-all text-xs sm:text-sm flex items-center gap-1.5"
+          >
+            <QuestionMarkCircleIcon class="w-4 h-4 sm:w-5 sm:h-5" />
+            {{ t('imageGenerator.helpButton') }}
+          </button>
+        </div>
 
         <!-- Error Message Inline -->
         <p v-if="error" class="mt-4 p-4 bg-error/10 border border-error/30 rounded-lg text-error text-sm text-center">
@@ -457,11 +477,30 @@ const closeResultModal = () => {
         <div class="bg-background-card rounded-2xl p-6 max-w-md border-2 border-error/50" @click.stop>
           <h3 class="text-xl font-bold text-error mb-4">⚠️ Error</h3>
           <p class="text-text-secondary mb-6">{{ error }}</p>
-          <button
-            @click="error = ''"
-            class="w-full px-6 py-3 bg-error hover:bg-error/80 text-white font-semibold rounded-xl transition-colors"
-          >
-            Cerrar
+          <button @click="error = ''" class="w-full px-6 py-3 bg-error hover:bg-error/80 text-white font-semibold rounded-xl transition-colors">Cerrar</button>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- Modal de Ayuda -->
+    <Transition name="modal">
+      <div v-if="showHelpModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" @click="showHelpModal = false">
+        <div class="bg-gradient-to-br from-background-card to-background-deep rounded-2xl p-6 max-w-md w-full border border-primary/20 shadow-2xl relative" @click.stop>
+          <button @click="showHelpModal = false" class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition">
+            <XMarkIcon class="w-5 h-5 text-white" />
+          </button>
+          <h2 class="text-xl font-bold bg-gradient-to-r from-primary to-accent-teal text-transparent bg-clip-text mb-6">
+            {{ t('imageGenerator.helpModalTitle') }}
+          </h2>
+          <div class="space-y-4 text-text-secondary text-sm">
+            <p>{{ t('imageGenerator.helpStep1') }}</p>
+            <p>{{ t('imageGenerator.helpStep2') }}</p>
+            <p>{{ t('imageGenerator.helpStep3') }}</p>
+            <p>{{ t('imageGenerator.helpStep4') }}</p>
+            <p>{{ t('imageGenerator.helpStep5') }}</p>
+          </div>
+          <button @click="showHelpModal = false" class="mt-8 w-full py-3 bg-primary hover:bg-primary-light text-white font-bold rounded-xl transition-colors">
+            ✓ ¡Entendido!
           </button>
         </div>
       </div>

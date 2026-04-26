@@ -28,7 +28,9 @@ export default {
     profile: 'Profile',
     settings: 'Settings',
     myProfile: 'My Profile',
-    images: 'Images'
+    images: 'Images',
+    gallery: 'Gallery',
+    gallerySubtitle: 'Get inspired by the best creations made in DreamDuel. Coming soon...'
   },
   home: {
     hero: {
@@ -163,15 +165,26 @@ export default {
     step2: '2. Generation Options',
     promptLabel: 'Prompt (Description)',
     promptRequired: '*',
-    promptWarning: 'MAXIMUM 1000 CHARACTERS (APPROX. 150-200 WORDS) - ENGLISH ONLY',
+    promptWarning: 'ANY LANGUAGE. WE IMPROVE IT AUTOMATICALLY',
     promptPlaceholder: 'Example: a woman with long curly hair, smiling, in a garden with flowers...',
-    promptTip: '💡 Describe in detail how you want the image to be',
+    promptTip: '💡 Describe your image in any language. We’ll improve the prompt automatically.',
     negativePromptLabel: 'Negative Prompt (What to avoid)',
     negativePromptWarning: 'DO NOT LEAVE THIS SPACE BLANK (ENGLISH ONLY)',
     negativePromptPlaceholder: 'Example: blurry, low quality, distorted, poorly drawn...',
-    negativePromptTip: '💡 Define which elements you don\'t want in the image',
+    negativePromptTip: '💡 Describe your image in any language. We’ll improve the prompt automatically.',
     generateButton: 'Generate Image',
-    generating: 'Generating Image...'
+    generating: 'Generating Image...',
+    licenseTitle: 'Your Credit',
+    licenseButton: '🛒 Get your credit here',
+    licensePlaceholder: 'Enter your Gumroad credit...',
+    helpButton: 'HELP',
+    helpModalTitle: 'How to use the Generator',
+    helpStep1: '1. Upload an optional reference image to base the result on.',
+    helpStep2: '2. Describe your image in the Prompt (any language).',
+    helpStep3: '3. Describe what you DON\'T want in the Negative Prompt.',
+    helpStep4: '4. Enter your credit (Gumroad key). You need to purchase it through Gumroad to generate images.',
+    helpStep5: '5. Click Generate and wait for the magic.',
+    creditRefundNotice: '🔐 For every technical error on our end, a credit will be automatically refunded to you.'
   },
   profile: {
     stats: {

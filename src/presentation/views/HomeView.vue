@@ -115,30 +115,30 @@ const navigateToGenerator = () => {
           <!-- Features -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto animate-fade-in-up">
             <!-- Feature 1 -->
-            <div class="bg-background-card/50 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6 hover:border-primary/50 transition-all">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-primary-light rounded-lg flex items-center justify-center mb-3 sm:mb-4 mx-auto">
-                <SparklesIcon class="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div class="flex flex-col items-center text-center p-2">
+              <div class="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary to-primary-light rounded-full flex items-center justify-center mb-4 sm:mb-6 mx-auto shadow-lg shadow-primary/20">
+                <SparklesIcon class="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h3 class="text-text-primary font-bold text-sm sm:text-base mb-2">{{ t('home.features.feature1.title') }}</h3>
-              <p class="text-text-secondary text-xs sm:text-sm">{{ t('home.features.feature1.description') }}</p>
+              <h3 class="text-text-primary font-bold text-lg sm:text-xl mb-3 tracking-wide">{{ t('home.features.feature1.title') }}</h3>
+              <p class="text-text-secondary text-sm sm:text-base leading-relaxed max-w-xs">{{ t('home.features.feature1.description') }}</p>
             </div>
 
             <!-- Feature 2 -->
-            <div class="bg-background-card/50 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6 hover:border-primary/50 transition-all">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center mb-3 sm:mb-4 mx-auto">
-                <FireIcon class="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div class="flex flex-col items-center text-center p-2">
+              <div class="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mb-4 sm:mb-6 mx-auto shadow-lg shadow-purple-500/20">
+                <FireIcon class="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h3 class="text-text-primary font-bold text-sm sm:text-base mb-2">{{ t('home.features.feature2.title') }}</h3>
-              <p class="text-text-secondary text-xs sm:text-sm">{{ t('home.features.feature2.description') }}</p>
+              <h3 class="text-text-primary font-bold text-lg sm:text-xl mb-3 tracking-wide">{{ t('home.features.feature2.title') }}</h3>
+              <p class="text-text-secondary text-sm sm:text-base leading-relaxed max-w-xs">{{ t('home.features.feature2.description') }}</p>
             </div>
 
             <!-- Feature 3 -->
-            <div class="bg-background-card/50 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6 hover:border-primary/50 transition-all">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-accent-teal to-primary rounded-lg flex items-center justify-center mb-3 sm:mb-4 mx-auto">
-                <PhotoIcon class="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div class="flex flex-col items-center text-center p-2">
+              <div class="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-accent-teal to-primary rounded-full flex items-center justify-center mb-4 sm:mb-6 mx-auto shadow-lg shadow-accent-teal/20">
+                <PhotoIcon class="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h3 class="text-text-primary font-bold text-sm sm:text-base mb-2">{{ t('home.features.feature3.title') }}</h3>
-              <p class="text-text-secondary text-xs sm:text-sm">{{ t('home.features.feature3.description') }}</p>
+              <h3 class="text-text-primary font-bold text-lg sm:text-xl mb-3 tracking-wide">{{ t('home.features.feature3.title') }}</h3>
+              <p class="text-text-secondary text-sm sm:text-base leading-relaxed max-w-xs">{{ t('home.features.feature3.description') }}</p>
             </div>
           </div>
         </div>

@@ -25,6 +25,11 @@ const router = createRouter({
       component: () => import('@/presentation/views/ImageGeneratorView.vue')
     },
     {
+      path: '/gallery',
+      name: 'gallery',
+      component: () => import('@/presentation/views/GalleryView.vue')
+    },
+    {
       path: '/settings',
       name: 'settings',
       component: () => import('@/presentation/views/SettingsView.vue')

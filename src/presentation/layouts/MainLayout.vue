@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SparklesIcon, Cog6ToothIcon, PhotoIcon } from '@heroicons/vue/24/outline';
+import { SparklesIcon, Cog6ToothIcon, PhotoIcon, StarIcon } from '@heroicons/vue/24/outline';
 import BottomNavigation from '@/presentation/components/BottomNavigation.vue';
 import WelcomeBanner from '@/presentation/components/WelcomeBanner.vue';
 import { useI18n } from 'vue-i18n';
@@ -52,10 +52,17 @@ const showWelcomeBanner = ref(false);
             -->
             <router-link 
               to="/images" 
-              class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors font-medium"
+              class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors font-medium mr-4"
             >
               <PhotoIcon class="h-5 w-5" />
               <span>{{ t('nav.images') }}</span>
+            </router-link>
+            <router-link 
+              to="/gallery" 
+              class="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors font-medium"
+            >
+              <StarIcon class="h-5 w-5" />
+              <span>{{ t('nav.gallery') }}</span>
             </router-link>
           </div>
 

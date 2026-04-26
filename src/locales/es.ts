@@ -28,7 +28,9 @@ export default {
     profile: 'Perfil',
     settings: 'Configuración',
     myProfile: 'Mi Perfil',
-    images: 'Imágenes'
+    images: 'Imágenes',
+    gallery: 'Galería',
+    gallerySubtitle: 'Inspírate con las mejores creaciones hechas en DreamDuel. Próximamente...'
   },
   home: {
     hero: {
@@ -163,15 +165,26 @@ export default {
     step2: '2. Opciones de Generación',
     promptLabel: 'Prompt (Descripción)',
     promptRequired: '*',
-    promptWarning: 'COMO MÁXIMO 1000 CARACTERES (APROX. 150-200 PALABRAS) - SOLO EN INGLÉS',
+    promptWarning: 'CUALQUIER IDIOMA. LO MEJORAMOS AUTOMÁTICAMENTE.',
     promptPlaceholder: 'Ejemplo: una mujer con cabello largo y rizado, sonriendo, en un jardín con flores...',
-    promptTip: '💡 Describe con detalle cómo quieres que sea la imagen',
+    promptTip: '💡 Describe tu imagen en cualquier idioma. Lo mejoraremos automáticamente.',
     negativePromptLabel: 'Negative Prompt (Qué evitar)',
     negativePromptWarning: 'SIN DEJAR ESTE ESPACIO EN BLANCO (SOLO EN INGLÉS)',
     negativePromptPlaceholder: 'Ejemplo: borroso, baja calidad, distorsionado, mal dibujado...',
-    negativePromptTip: '💡 Define qué elementos no quieres en la imagen',
+    negativePromptTip: '💡 Describe tu imagen en cualquier idioma. Lo mejoraremos automáticamente.',
     generateButton: 'Generar Imagen',
-    generating: 'Generando Imagen...'
+    generating: 'Generando Imagen...',
+    licenseTitle: 'Tu Crédito',
+    licenseButton: '🛒 Consigue tu crédito aquí',
+    licensePlaceholder: 'Ingresa tu crédito de Gumroad...',
+    helpButton: 'AYUDA',
+    helpModalTitle: 'Cómo usar el Generador',
+    helpStep1: '1. Sube una imagen de referencia si quieres guiar a la IA (opcional).',
+    helpStep2: '2. Describe detalladamente lo que deseas en el Prompt (cualquier idioma).',
+    helpStep3: '3. Escribe lo que NO quieres ver en el Negative Prompt.',
+    helpStep4: '4. Introduce tu crédito (clave de Gumroad). Debes conseguirlo pagando a través de Gumroad para poder generar.',
+    helpStep5: '5. Presiona Generar y espera la magia.',
+    creditRefundNotice: '🔐 Por cada error técnico de nuestra parte, se te devolverá un crédito automáticamente.'
   },
   profile: {
     stats: {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { HomeIcon, PhotoIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline';
-import { HomeIcon as HomeIconSolid, PhotoIcon as PhotoIconSolid, Cog6ToothIcon as Cog6ToothIconSolid } from '@heroicons/vue/24/solid';
+import { HomeIcon, PhotoIcon, Cog6ToothIcon, StarIcon } from '@heroicons/vue/24/outline';
+import { HomeIcon as HomeIconSolid, PhotoIcon as PhotoIconSolid, Cog6ToothIcon as Cog6ToothIconSolid, StarIcon as StarIconSolid } from '@heroicons/vue/24/solid';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
@@ -12,13 +12,15 @@ const currentTab = computed(() => {
   const path = route.path;
   if (path === '/' || path.startsWith('/home')) return 'home';
   if (path === '/images') return 'images';
+  if (path === '/gallery') return 'gallery';
   if (path === '/settings') return 'settings';
   return 'home';
 });
 
 const navItems = computed(() => [
   { id: 'home', label: t('nav.home'), icon: HomeIcon, iconSolid: HomeIconSolid, path: '/home' },
-  { id: 'images', label: 'Imágenes', icon: PhotoIcon, iconSolid: PhotoIconSolid, path: '/images' },
+  { id: 'images', label: t('nav.images'), icon: PhotoIcon, iconSolid: PhotoIconSolid, path: '/images' },
+  { id: 'gallery', label: t('nav.gallery'), icon: StarIcon, iconSolid: StarIconSolid, path: '/gallery' },
   { id: 'settings', label: t('nav.settings'), icon: Cog6ToothIcon, iconSolid: Cog6ToothIconSolid, path: '/settings' }
 ]);
 </script>
