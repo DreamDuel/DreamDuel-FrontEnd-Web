@@ -13,16 +13,16 @@ export default {
   },
   home: {
     hero: {
-      badge: 'Sin Límites • Sin Censura • Total Privacidad',
+      badge: 'Rápido • Fácil • Privado',
       heading1: 'Transforma tus ideas en',
-      heading2: 'imágenes sin restricciones',
-      description: 'Generador de imágenes sin límites ni censura. Libertad creativa total sin políticas restrictivas.',
+      heading2: 'imágenes increíbles',
+      description: 'Describe lo que imaginas y nuestra inteligencia artificial lo convierte en una imagen única en segundos.',
       ctaButton: 'Crear Imagen Ahora'
     },
     features: {
       feature1: {
-        title: 'Sin Censura',
-        description: 'Libertad creativa total. Sin restricciones ni políticas aburridas'
+        title: 'Creatividad Sin Esfuerzo',
+        description: 'Escribe tu idea en cualquier idioma y obtén imágenes de alta calidad'
       },
       feature2: {
         title: 'Súper Rápido',
@@ -30,7 +30,7 @@ export default {
       },
       feature3: {
         title: 'Privacidad Total',
-        description: 'Tus creaciones son privadas. Creemos en la libertad absoluta'
+        description: 'No guardamos tus imágenes: las descargas directamente a tu dispositivo'
       }
     }
   },
@@ -63,6 +63,7 @@ export default {
     creditRefundNotice: '🔐 Por cada error técnico de nuestra parte, se te devolverá un crédito automáticamente.',
     uploadClick: 'Haz click para subir una imagen',
     maxSize: 'PNG, JPG (máx. 5MB)',
+    removeImage: 'Quitar imagen',
     resultModal: {
       title: '¡Imagen Generada!',
       subtitle: 'Tu creación está lista para descargar',
@@ -108,11 +109,11 @@ export default {
       },
       section2: {
         title: 'Descripción del Servicio',
-        content: 'DreamDuel es un servicio de generación de imágenes mediante inteligencia artificial. Los usuarios pagan $1 por cada imagen generada y la descargan directamente. No almacenamos las imágenes generadas en nuestros servidores. Nos reservamos el derecho de modificar o discontinuar el servicio en cualquier momento.'
+        content: 'DreamDuel es un servicio de generación de imágenes mediante inteligencia artificial. Cada imagen generada consume un crédito, que se adquiere a través de Gumroad, y se descarga directamente. No almacenamos las imágenes generadas en nuestros servidores. Nos reservamos el derecho de modificar o discontinuar el servicio en cualquier momento.'
       },
       section3: {
-        title: 'Cuenta de Usuario',
-        content: 'Eres responsable de mantener la confidencialidad de tu cuenta y contraseña. Aceptas la responsabilidad de todas las actividades que ocurran bajo tu cuenta. Debes ser mayor de 13 años para usar este servicio.'
+        title: 'Créditos y Clave de Licencia',
+        content: 'Tus créditos se entregan como una clave de licencia de Gumroad. Eres responsable de mantenerla en privado, ya que cualquier persona que la tenga podrá usar tus créditos. Si una generación falla por un error técnico de nuestra parte, el crédito se te devuelve automáticamente. Debes ser mayor de 13 años para usar este servicio.'
       },
       section4: {
         title: 'Imágenes Generadas y Derechos',
@@ -120,7 +121,7 @@ export default {
       },
       section5: {
         title: 'Conducta Prohibida',
-        content: 'No debes usar DreamDuel para generar contenido ilegal, ofensivo, acosador, violento, pornográfico o que infrinja los derechos de terceros. Nos reservamos el derecho de suspender o cancelar cuentas que violen estos términos. El uso del servicio debe cumplir con todas las leyes aplicables.'
+        content: 'DreamDuel es un servicio apto para todo público. No debes usarlo para generar contenido ilegal, sexual o explícito, ofensivo, acosador, violento o que infrinja los derechos de terceros. Nos reservamos el derecho de invalidar las claves de licencia de quienes violen estos términos. El uso del servicio debe cumplir con todas las leyes aplicables.'
       },
       section6: {
         title: 'Propiedad Intelectual',
@@ -135,11 +136,11 @@ export default {
       title: 'Política de Privacidad',
       section1: {
         title: 'Información que Recopilamos',
-        content: 'Recopilamos información que nos proporcionas directamente, como tu nombre y correo electrónico. No almacenamos las imágenes que generas, ya que se descargan directamente a tu dispositivo. También recopilamos información automáticamente sobre tu uso del servicio, incluyendo dirección IP, tipo de navegador y páginas visitadas.'
+        content: 'Los pagos se procesan a través de Gumroad, que recopila los datos de compra (como tu correo electrónico); nosotros solo recibimos tu clave de licencia para validar tus créditos. La imagen de referencia que subes se usa de forma temporal para generar tu imagen, y no almacenamos las imágenes generadas, ya que se descargan directamente a tu dispositivo. También recopilamos automáticamente información sobre tu uso del servicio, como dirección IP, tipo de navegador y páginas visitadas, mediante herramientas de analítica como Microsoft Clarity.'
       },
       section2: {
         title: 'Uso de la Información',
-        content: 'Utilizamos tu información para proporcionar y mantener el servicio de generación de imágenes, procesar pagos, enviarte confirmaciones de transacciones, mejorar nuestro servicio y proteger la seguridad de la plataforma. No utilizamos las imágenes que generas para ningún propósito ya que no las almacenamos.'
+        content: 'Utilizamos tu información para proporcionar y mantener el servicio de generación de imágenes, validar tus créditos, mejorar nuestro servicio y proteger la seguridad de la plataforma. No utilizamos las imágenes que generas para ningún propósito, ya que no las almacenamos.'
       },
       section3: {
         title: 'Compartir Información',

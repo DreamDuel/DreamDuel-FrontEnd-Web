@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { PhotoIcon, XMarkIcon, ArrowDownTrayIcon, SparklesIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/solid';
@@ -31,6 +31,16 @@ onMounted(() => {
     prompt.value = route.query.prompt;
   }
 });
+
+// Escape cierra los modales de error y ayuda. El de resultado no, para no perder la imagen sin querer
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key !== 'Escape') return;
+  if (error.value) error.value = '';
+  else if (showHelpModal.value) showHelpModal.value = false;
+};
+
+onMounted(() => window.addEventListener('keydown', handleKeydown));
+onBeforeUnmount(() => window.removeEventListener('keydown', handleKeydown));
 
 watch(licenseKey, (newVal) => {
   localStorage.setItem(LICENSE_KEY_STORAGE, newVal);
@@ -172,6 +182,7 @@ const closeResultModal = () => {
             <img :src="imagePreviewUrl" alt="Preview" class="w-full max-h-96 object-contain rounded-xl bg-background-elevated" />
             <button
               @click="removeImage"
+              :aria-label="t('imageGenerator.removeImage')"
               class="absolute top-3 right-3 p-2 bg-error/90 hover:bg-error text-white rounded-lg transition-colors"
             >
               <XMarkIcon class="h-5 w-5" />
@@ -292,11 +303,12 @@ const closeResultModal = () => {
 
     <!-- Modal de imagen generada -->
     <Transition name="modal">
-      <div v-if="showResultModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/90 backdrop-blur-sm">
+      <div v-if="showResultModal" role="dialog" aria-modal="true" aria-labelledby="result-modal-title" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/90 backdrop-blur-sm">
         <div class="bg-gradient-to-br from-background-card via-background-elevated to-background-card rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[95vh] flex flex-col relative border-2 border-primary/20 shadow-2xl shadow-primary/10">
           <!-- Botón cerrar -->
           <button
             @click="closeResultModal"
+            :aria-label="t('common.close')"
             class="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-2 sm:p-2.5 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm transition-all hover:scale-110 group"
           >
             <XMarkIcon class="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:text-primary transition-colors" />
@@ -307,7 +319,7 @@ const closeResultModal = () => {
             <div class="text-center mb-3 sm:mb-4">
               <div class="inline-flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-primary/20 to-accent-crimson/20 rounded-full border border-primary/30 mb-1 sm:mb-2">
                 <SparklesIcon class="w-4 h-4 sm:w-6 sm:h-6 text-primary animate-pulse" />
-                <h2 class="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent-crimson bg-clip-text text-transparent">
+                <h2 id="result-modal-title" class="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent-crimson bg-clip-text text-transparent">
                   {{ t('imageGenerator.resultModal.title') }}
                 </h2>
               </div>
@@ -360,9 +372,9 @@ const closeResultModal = () => {
 
     <!-- Error Message -->
     <Transition name="modal">
-      <div v-if="error" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" @click="error = ''">
+      <div v-if="error" role="alertdialog" aria-modal="true" aria-labelledby="error-modal-title" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" @click="error = ''">
         <div class="bg-background-card rounded-2xl p-6 max-w-md border-2 border-error/50" @click.stop>
-          <h3 class="text-xl font-bold text-error mb-4">⚠️ {{ t('common.error') }}</h3>
+          <h3 id="error-modal-title" class="text-xl font-bold text-error mb-4">⚠️ {{ t('common.error') }}</h3>
           <p class="text-text-secondary mb-6">{{ error }}</p>
           <button @click="error = ''" class="w-full px-6 py-3 bg-error hover:bg-error/80 text-white font-semibold rounded-xl transition-colors">{{ t('common.close') }}</button>
         </div>
@@ -371,12 +383,12 @@ const closeResultModal = () => {
 
     <!-- Modal de Ayuda -->
     <Transition name="modal">
-      <div v-if="showHelpModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" @click="showHelpModal = false">
+      <div v-if="showHelpModal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" @click="showHelpModal = false">
         <div class="bg-gradient-to-br from-background-card to-background-deep rounded-2xl p-6 max-w-md w-full border border-primary/20 shadow-2xl relative" @click.stop>
-          <button @click="showHelpModal = false" class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition">
+          <button @click="showHelpModal = false" :aria-label="t('common.close')" class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition">
             <XMarkIcon class="w-5 h-5 text-white" />
           </button>
-          <h2 class="text-xl font-bold bg-gradient-to-r from-primary to-accent-teal text-transparent bg-clip-text mb-6">
+          <h2 id="help-modal-title" class="text-xl font-bold bg-gradient-to-r from-primary to-accent-teal text-transparent bg-clip-text mb-6">
             {{ t('imageGenerator.helpModalTitle') }}
           </h2>
           <div class="space-y-4 text-text-secondary text-sm">

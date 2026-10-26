@@ -22,6 +22,7 @@ npm run dev            # http://localhost:5173
 | `npm run build` | Chequeo de tipos + build de producción en `dist/` |
 | `npm run type-check` | Solo chequeo de tipos (`vue-tsc`) |
 | `npm run lint` | ESLint |
+| `npm test` | Tests (Vitest); `npm run test:watch` para modo interactivo |
 | `npm run preview` | Sirve el build de producción localmente |
 
 ## Variables de entorno
@@ -66,4 +67,4 @@ src/
 
 ## Despliegue
 
-Vercel, con `vercel.json` redirigiendo todas las rutas a `index.html`. El CI de GitHub Actions ejecuta lint y build en cada push y pull request.
+Vercel, con `vercel.json` redirigiendo todas las rutas a `index.html`. El CI de GitHub Actions ejecuta lint, tests y build en cada push y pull request.

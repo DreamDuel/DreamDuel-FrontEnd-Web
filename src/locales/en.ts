@@ -13,16 +13,16 @@ export default {
   },
   home: {
     hero: {
-      badge: 'No Limits • No Censorship • Total Privacy',
+      badge: 'Fast • Easy • Private',
       heading1: 'Transform your ideas into',
-      heading2: 'unrestricted images',
-      description: 'Image generator without limits or censorship. Total creative freedom without restrictive policies.',
+      heading2: 'amazing images',
+      description: 'Describe what you imagine and our artificial intelligence turns it into a unique image in seconds.',
       ctaButton: 'Create Image Now'
     },
     features: {
       feature1: {
-        title: 'No Censorship',
-        description: 'Total creative freedom. No restrictions or boring policies'
+        title: 'Effortless Creativity',
+        description: 'Write your idea in any language and get high-quality images'
       },
       feature2: {
         title: 'Super Fast',
@@ -30,7 +30,7 @@ export default {
       },
       feature3: {
         title: 'Total Privacy',
-        description: 'Your creations are private. We believe in absolute freedom'
+        description: 'We don’t keep your images: you download them straight to your device'
       }
     }
   },
@@ -63,6 +63,7 @@ export default {
     creditRefundNotice: '🔐 For every technical error on our end, a credit will be automatically refunded to you.',
     uploadClick: 'Click to upload an image',
     maxSize: 'PNG, JPG (max. 5MB)',
+    removeImage: 'Remove image',
     resultModal: {
       title: 'Image Generated!',
       subtitle: 'Your creation is ready to download',
@@ -108,11 +109,11 @@ export default {
       },
       section2: {
         title: 'Service Description',
-        content: 'DreamDuel is an AI-powered image generation service. Users pay $1 per generated image and download it directly. We do not store generated images on our servers. We reserve the right to modify or discontinue the service at any time.'
+        content: 'DreamDuel is an AI-powered image generation service. Each generated image uses one credit, purchased through Gumroad, and is downloaded directly. We do not store generated images on our servers. We reserve the right to modify or discontinue the service at any time.'
       },
       section3: {
-        title: 'User Account',
-        content: 'You are responsible for maintaining the confidentiality of your account and password. You accept responsibility for all activities that occur under your account. You must be at least 13 years old to use this service.'
+        title: 'Credits and License Key',
+        content: 'Your credits are delivered as a Gumroad license key. You are responsible for keeping it private, as anyone who has it can use your credits. If a generation fails due to a technical error on our side, the credit is automatically refunded. You must be at least 13 years old to use this service.'
       },
       section4: {
         title: 'Generated Images and Rights',
@@ -120,7 +121,7 @@ export default {
       },
       section5: {
         title: 'Prohibited Conduct',
-        content: 'You must not use DreamDuel to generate illegal, offensive, harassing, violent, pornographic content, or content that infringes on third-party rights. We reserve the right to suspend or terminate accounts that violate these terms. Use of the service must comply with all applicable laws.'
+        content: 'DreamDuel is a service suitable for all audiences. You must not use it to generate illegal, sexual or explicit, offensive, harassing or violent content, or content that infringes on third-party rights. We reserve the right to invalidate the license keys of anyone who violates these terms. Use of the service must comply with all applicable laws.'
       },
       section6: {
         title: 'Intellectual Property',
@@ -135,11 +136,11 @@ export default {
       title: 'Privacy Policy',
       section1: {
         title: 'Information We Collect',
-        content: 'We collect information you provide directly to us, such as your name and email. We do not store the images you generate, as they are downloaded directly to your device. We also automatically collect information about your use of the service, including IP address, browser type, and pages visited.'
+        content: 'Payments are processed by Gumroad, which collects the purchase details (such as your email); we only receive your license key to validate your credits. The reference image you upload is used temporarily to generate your image, and we do not store generated images, as they are downloaded directly to your device. We also automatically collect information about your use of the service, such as IP address, browser type and pages visited, through analytics tools such as Microsoft Clarity.'
       },
       section2: {
         title: 'Use of Information',
-        content: 'We use your information to provide and maintain the image generation service, process payments, send you transaction confirmations, improve our service, and protect platform security. We do not use the images you generate for any purpose as we do not store them.'
+        content: 'We use your information to provide and maintain the image generation service, validate your credits, improve our service and protect platform security. We do not use the images you generate for any purpose, as we do not store them.'
       },
       section3: {
         title: 'Sharing Information',

@@ -10,7 +10,7 @@ const props = defineProps<{
 }>();
 
 // Fecha de la última modificación del contenido legal
-const LAST_UPDATED = new Date(2026, 2, 3);
+const LAST_UPDATED = new Date(2026, 9, 26);
 
 const DOCS = {
   terms: { sections: 7, email: 'support@dreamduel.com' },
