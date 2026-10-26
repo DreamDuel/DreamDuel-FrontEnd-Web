@@ -5,84 +5,49 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'root',
-      component: () => import('@/presentation/views/HomeView.vue')
-    },
-    {
-      path: '/generador/:niche',
-      name: 'niche-landing',
-      component: () => import('@/presentation/views/NicheLandingView.vue'),
-      meta: { hideNavigation: true }
+      name: 'home',
+      component: () => import('@/views/HomeView.vue')
     },
     {
       path: '/home',
-      name: 'home',
-      component: () => import('@/presentation/views/HomeView.vue')
+      redirect: '/'
     },
     {
       path: '/images',
       name: 'images',
-      component: () => import('@/presentation/views/ImageGeneratorView.vue')
+      component: () => import('@/views/ImageGeneratorView.vue')
     },
     {
       path: '/gallery',
       name: 'gallery',
-      component: () => import('@/presentation/views/GalleryView.vue')
+      component: () => import('@/views/GalleryView.vue')
     },
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('@/presentation/views/SettingsView.vue')
+      component: () => import('@/views/SettingsView.vue')
     },
-    {
-      path: '/pricing',
-      name: 'pricing',
-      component: () => import('@/presentation/views/PricingView.vue'),
-      meta: { hideNavigation: true }
-    },
-
-    {
-      path: '/loading',
-      name: 'loading',
-      component: () => import('@/presentation/views/LoadingScreen.vue'),
-      meta: { hideNavigation: true }
-    },
-    // {
-    //   path: '/story-details/:id',
-    //   name: 'story-details',
-    //   component: () => import('@/presentation/views/StoryDetailsView.vue')
-    // },
-    // {
-    //   path: '/story-viewer/:id',
-    //   name: 'story-viewer',
-    //   component: () => import('@/presentation/views/StoryViewerScreen.vue'),
-    //   meta: { hideNavigation: true }
-    // },
-    // {
-    //   path: '/story/:id',
-    //   name: 'reader',
-    //   component: () => import('@/presentation/views/ReaderView.vue'),
-    //   meta: { hideNavigation: true, fullscreen: true }
-    // },
     {
       path: '/terms',
       name: 'terms',
-      component: () => import('@/presentation/views/TermsView.vue'),
+      component: () => import('@/views/LegalView.vue'),
+      props: { doc: 'terms' },
       meta: { hideNavigation: true }
     },
     {
       path: '/privacy',
       name: 'privacy',
-      component: () => import('@/presentation/views/PrivacyView.vue'),
+      component: () => import('@/views/LegalView.vue'),
+      props: { doc: 'privacy' },
       meta: { hideNavigation: true }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/'
     }
   ],
   scrollBehavior(_to, _from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    } else {
-      return { top: 0 };
-    }
+    return savedPosition ?? { top: 0 };
   }
 });
 

@@ -1,0 +1,99 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { SparklesIcon, PhotoIcon, FireIcon } from '@heroicons/vue/24/outline';
+
+const { t } = useI18n();
+const router = useRouter();
+
+const navigateToGenerator = () => {
+  router.push('/images');
+};
+</script>
+
+<template>
+  <div class="min-h-screen bg-background-deep overflow-hidden flex flex-col">
+    <!-- Hero Section -->
+    <section class="relative flex-1 flex items-center py-8 sm:py-16 md:py-24 lg:py-32">
+      <!-- Animated Background Blobs -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-primary/20 rounded-full blur-3xl animate-blob"></div>
+        <div class="absolute top-1/3 right-1/4 w-72 h-72 sm:w-[500px] sm:h-[500px] bg-purple-500/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-0 left-1/3 w-80 h-80 sm:w-[600px] sm:h-[600px] bg-blue-500/10 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+      </div>
+
+      <!-- Content -->
+      <div class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center flex flex-col items-center">
+          
+          <!-- Logo as Title -->
+          <img src="/Logo.png" alt="DreamDuel Logo" class="h-32 sm:h-40 md:h-48 w-auto mb-6 sm:mb-8 animate-fade-in drop-shadow-2xl" />
+
+          <!-- Badge -->
+          <div class="inline-flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary/10 border border-primary/20 rounded-full mb-4 sm:mb-6 md:mb-8 backdrop-blur-sm animate-fade-in">
+            <SparklesIcon class="w-4 h-4 sm:w-5 sm:h-5 text-primary animate-pulse" />
+            <span class="text-primary font-semibold text-xs sm:text-sm md:text-base">{{ t('home.hero.badge') }}</span>
+          </div>
+
+          <!-- Main Heading -->
+          <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4 md:mb-6 leading-tight px-2 animate-slide-up">
+            {{ t('home.hero.heading1') }}
+            <span class="block mt-1 sm:mt-2 bg-gradient-to-r from-primary via-purple-400 to-blue-400 bg-clip-text text-transparent">
+              {{ t('home.hero.heading2') }}
+            </span>
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="text-sm sm:text-base md:text-lg lg:text-xl text-text-secondary mb-6 sm:mb-8 md:mb-12 max-w-2xl mx-auto px-4 animate-fade-in-delay">
+            {{ t('home.hero.description') }}
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 mb-8 sm:mb-12 animate-slide-up-delay">
+            <button
+              @click="navigateToGenerator"
+              class="group relative w-full sm:w-auto px-5 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary to-primary-light text-white font-bold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/50 overflow-hidden"
+            >
+              <span class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
+              <span class="relative flex items-center justify-center space-x-2">
+                <PhotoIcon class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                <span class="text-sm sm:text-base">{{ t('home.hero.ctaButton') }}</span>
+              </span>
+            </button>
+          </div>
+
+          <!-- Features -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto animate-fade-in-up">
+            <!-- Feature 1 -->
+            <div class="flex flex-col items-center text-center p-2">
+              <div class="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary to-primary-light rounded-full flex items-center justify-center mb-4 sm:mb-6 mx-auto shadow-lg shadow-primary/20">
+                <SparklesIcon class="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <h3 class="text-text-primary font-bold text-lg sm:text-xl mb-3 tracking-wide">{{ t('home.features.feature1.title') }}</h3>
+              <p class="text-text-secondary text-sm sm:text-base leading-relaxed max-w-xs">{{ t('home.features.feature1.description') }}</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="flex flex-col items-center text-center p-2">
+              <div class="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mb-4 sm:mb-6 mx-auto shadow-lg shadow-purple-500/20">
+                <FireIcon class="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <h3 class="text-text-primary font-bold text-lg sm:text-xl mb-3 tracking-wide">{{ t('home.features.feature2.title') }}</h3>
+              <p class="text-text-secondary text-sm sm:text-base leading-relaxed max-w-xs">{{ t('home.features.feature2.description') }}</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="flex flex-col items-center text-center p-2">
+              <div class="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-accent-teal to-primary rounded-full flex items-center justify-center mb-4 sm:mb-6 mx-auto shadow-lg shadow-accent-teal/20">
+                <PhotoIcon class="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <h3 class="text-text-primary font-bold text-lg sm:text-xl mb-3 tracking-wide">{{ t('home.features.feature3.title') }}</h3>
+              <p class="text-text-secondary text-sm sm:text-base leading-relaxed max-w-xs">{{ t('home.features.feature3.description') }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</template>
