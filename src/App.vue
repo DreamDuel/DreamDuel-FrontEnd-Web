@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router';
-import MainLayout from './presentation/layouts/MainLayout.vue';
-import { useRoute } from 'vue-router';
 import { computed } from 'vue';
+import { RouterView, useRoute } from 'vue-router';
+import MainLayout from '@/layouts/MainLayout.vue';
 
 const route = useRoute();
 const hideLayout = computed(() => route.meta.hideNavigation);

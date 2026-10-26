@@ -1,53 +1,28 @@
 export default {
   common: {
-    appName: 'DreamDuel',
-    tagline: 'Your stories come to life',
-    loading: 'Loading...',
-    error: 'Error',
-    save: 'Save',
-    cancel: 'Cancel',
-    confirm: 'Confirm',
-    delete: 'Delete',
-    edit: 'Edit',
-    share: 'Share',
     back: 'Back',
-    next: 'Next',
-    skip: 'Skip',
-    start: 'Start'
-  },
-  welcomeBanner: {
-    title: '🎉 Welcome to DreamDuel!',
-    message: 'Generate images',
-    messageBold: 'without limits or censorship',
-    messageCta: '. Start creating now.'
+    error: 'Error',
+    close: 'Close'
   },
   nav: {
     home: 'Home',
-    search: 'Search',
-    create: 'Create',
-    profile: 'Profile',
-    settings: 'Settings',
-    myProfile: 'My Profile',
     images: 'Images',
     gallery: 'Gallery',
-    gallerySubtitle: 'Get inspired by the best creations made in DreamDuel. Coming soon...'
+    gallerySubtitle: 'Get inspired by the best creations made in DreamDuel. Coming soon...',
+    settings: 'Settings'
   },
   home: {
     hero: {
-      title: 'Create Unique Visual Stories',
-      subtitle: 'Turn your dreams into interactive narratives with AI',
-      cta: 'Create my first story',
-      badge: 'No Limits • No Censorship • Total Privacy',
+      badge: 'Fast • Easy • Private',
       heading1: 'Transform your ideas into',
-      heading2: 'unrestricted images',
-      description: 'Image generator without limits or censorship. Total creative freedom without restrictive policies.',
+      heading2: 'amazing images',
+      description: 'Describe what you imagine and our artificial intelligence turns it into a unique image in seconds.',
       ctaButton: 'Create Image Now'
     },
     features: {
-      title: 'Why DreamDuel?',
       feature1: {
-        title: 'No Censorship',
-        description: 'Total creative freedom. No restrictions or boring policies'
+        title: 'Effortless Creativity',
+        description: 'Write your idea in any language and get high-quality images'
       },
       feature2: {
         title: 'Super Fast',
@@ -55,108 +30,9 @@ export default {
       },
       feature3: {
         title: 'Total Privacy',
-        description: 'Your creations are private. We believe in absolute freedom'
+        description: 'We don’t keep your images: you download them straight to your device'
       }
-    },
-    trending: {
-      title: 'Trending',
-      subtitle: 'The most popular stories of the week'
-    },
-    new: {
-      title: 'New Stories',
-      subtitle: 'The latest creations from the community'
-    },
-    featured: {
-      badge: 'MOST POPULAR',
-      reads: 'reads'
     }
-  },
-  create: {
-    title: 'Generate Your Story',
-    subtitle: 'Describe your dream and AI will turn it into a unique visual story',
-    titleLabel: 'Story title',
-    titlePlaceholder: 'E.g: The Last Time Guardian',
-    titleRequired: 'Title (required)',
-    prompt: {
-      label: 'What\'s your fantasy today?',
-      placeholder: 'Example: A space warrior discovers a forgotten planet where music controls reality...'
-    },
-    style: {
-      label: 'Visual Style',
-      anime: 'Anime',
-      realistic: 'Realistic',
-      noir: 'Noir',
-      watercolor: 'Watercolor',
-      comic: 'Comic',
-      fantasy: 'Fantasy'
-    },
-    genre: {
-      label: 'Genre',
-      romance: 'Romance',
-      action: 'Action',
-      mystery: 'Mystery',
-      scifi: 'Sci-Fi',
-      horror: 'Horror',
-      fantasy: 'Fantasy'
-    },
-    characters: {
-      label: 'Characters',
-      subtitle: 'Add photos and names',
-      optional: 'Optional',
-      addCharacter: 'Add Character',
-      namePlaceholder: 'Character name',
-      descriptionPlaceholder: 'Character description: age, appearance, clothing, physical characteristics...',
-      limit: 'max',
-      freePlan: 'Free: 2 max',
-      premiumPlan: 'Premium: 10 max',
-      limitReached: 'Limit Reached (Free Plan)',
-      limitDesc: 'You\'ve reached the maximum of 2 characters. Upgrade to Premium to use up to 10 characters per story.',
-      upgradeToPremium: 'Upgrade to Premium',
-      premiumLimitDesc: 'You\'ve reached the maximum of 10 characters per story'
-    },
-    visibility: {
-      label: 'Story visibility',
-      public: 'Public',
-      publicDesc: 'Everyone can see it',
-      private: 'Private',
-      privateDesc: 'Only you will see it'
-    },
-    advancedOptions: {
-      title: 'Advanced Options',
-      genderLabel: 'Character Gender',
-      female: 'Female',
-      male: 'Male',
-      bodyTypeLabel: 'Body Type',
-      femaleBody: 'Feminine',
-      maleBody: 'Masculine',
-      poseLabel: 'Character Pose Reference',
-      poseUpload: 'Click to upload a pose reference',
-      poseMaxSize: 'PNG, JPG (max. 5MB)',
-      poseDescription: 'Upload a reference image showing the desired pose for your character'
-    },
-    generate: 'MATERIALIZE',
-    generating: 'CREATING MAGIC...',
-    features: {
-      instant: 'Instant generation',
-      unique: '100% unique and personalized',
-      unlimited: 'Unlimited possibilities'
-    }
-  },
-  search: {
-    title: 'Discover Stories',
-    placeholder: 'Search stories, authors, genres...',
-    filters: 'Filters',
-    tags: 'Tags',
-    visualStyle: 'Visual Style',
-    sortBy: 'Sort by',
-    sort: {
-      popular: 'Most popular',
-      recent: 'Most recent',
-      trending: 'Trending'
-    },
-    results: 'results',
-    noResults: 'No stories found',
-    tryDifferent: 'Try different search terms'
   },
   imageGenerator: {
     title: 'AI Image Generator',
@@ -171,7 +47,7 @@ export default {
     negativePromptLabel: 'Negative Prompt (What to avoid)',
     negativePromptWarning: 'DO NOT LEAVE THIS SPACE BLANK (ENGLISH ONLY)',
     negativePromptPlaceholder: 'Example: blurry, low quality, distorted, poorly drawn...',
-    negativePromptTip: '💡 Describe your image in any language. We’ll improve the prompt automatically.',
+    negativePromptTip: '💡 Write what you don’t want to see in English, separated by commas.',
     generateButton: 'Generate Image',
     generating: 'Generating Image...',
     licenseTitle: 'Your Credit',
@@ -184,284 +60,10 @@ export default {
     helpStep3: '3. Describe what you DON\'T want in the Negative Prompt.',
     helpStep4: '4. Enter your credit (Gumroad key). You need to purchase it through Gumroad to generate images.',
     helpStep5: '5. Click Generate and wait for the magic.',
-    creditRefundNotice: '🔐 For every technical error on our end, a credit will be automatically refunded to you.'
-  },
-  profile: {
-    stats: {
-      title: 'Profile Information',
-      memberSince: 'Member since',
-      email: 'Email',
-      stories: 'Stories',
-      followers: 'Followers',
-      following: 'Following',
-      totalLikes: 'Likes'
-    },
-    tabs: {
-      myStories: 'My Stories',
-      saved: 'Saved',
-      liked: 'Liked',
-      images: 'Images'
-    },
-    empty: {
-      noStories: 'You haven\'t created any stories yet',
-      createFirst: 'Create your first story',
-      noSaved: 'You have no saved stories',
-      noLiked: 'You haven\'t liked any stories',
-      explore: 'Explore stories',
-      noImages: 'You haven\'t generated any images yet',
-      generateFirst: 'Generate your first image'
-    },
-    credits: {
-      freeImages: 'Free images',
-      resetIn: 'Resets in:',
-      referralCode: 'Referral code',
-      copy: 'Copy',
-      referralDesc: '+3 images per invited friend',
-      referrals: 'referrals',
-      referralCopied: 'Referral link copied!'
-    },
-    premium: {
-      active: 'Premium Active',
-      features: 'Unlimited images • No watermarks',
-      manage: 'Manage'
-    },
-    edit: {
-      editProfile: 'Edit profile',
-      saveChanges: 'Save changes',
-      username: 'Username',
-      bio: 'Bio',
-      bioPlaceholder: 'Bio (optional)',
-      noBio: 'No bio'
-    },
-    avatar: {
-      uploading: 'Uploading...',
-      errorFormat: 'Please select a valid image',
-      errorSize: 'Image must be smaller than 5MB'
-    },
-    logout: 'Sign out'
-  },
-  settings: {
-    title: 'Settings',
-    account: {
-      title: 'Account',
-      username: 'Username',
-      email: 'Email',
-      bio: 'Bio',
-      bioPlaceholder: 'Tell us about yourself...',
-      changePassword: 'Change password',
-      saved: 'Profile updated successfully',
-      passwordMismatch: 'Passwords do not match',
-      passwordTooShort: 'Password must be at least 6 characters',
-      passwordUpdated: 'Password updated successfully',
-      currentPassword: 'Current password',
-      newPassword: 'New password',
-      confirmPassword: 'Confirm password',
-      update: 'Update',
-      saveChanges: 'Save changes'
-    },
-    preferences: {
-      title: 'Preferences',
-      notifications: 'Push notifications',
-      notificationsDesc: 'Receive updates about your stories',
-      language: 'Language',
-      languageDesc: 'Select your preferred language'
-    },
-    premium: {
-      title: 'DreamDuel Premium',
-      description: 'Unlock exclusive features',
-      features: {
-        unlimited: 'Unlimited generation',
-        priority: 'Priority processing',
-        styles: 'Exclusive styles',
-        commercial: 'Commercial use',
-        noAds: 'No ads',
-        exclusiveStyles: 'Exclusive visual styles'
-      },
-      cta: 'Upgrade to Premium',
-      upgradeButton: 'Upgrade to Premium',
-      price: '$9.99/month'
-    },
-    legal: {
-      title: 'Legal & Support',
-      terms: 'Terms and Conditions',
-      privacy: 'Privacy Policy',
-      help: 'Help Center',
-      about: 'About DreamDuel'
-    },
-    logout: 'Sign out',
-    confirmLogout: 'Are you sure you want to sign out?'
-  },
-  story: {
-    readNow: 'Read Now',
-    readStory: 'Read Story',
-    like: 'Like',
-    save: 'Save',
-    author: 'Author',
-    follow: 'Follow',
-    scenes: 'Scenes from this story',
-    scene: 'Scene',
-    stats: {
-      views: 'views',
-      likes: 'likes',
-      comments: 'comments'
-    }
-  },
-  viewer: {
-    ready: 'Your story is ready!',
-    subtitle: 'You can now read it or share it with the world',
-    actions: {
-      read: 'Read Now',
-      details: 'View Details',
-      create: 'Create Another'
-    },
-    backHome: 'Back to home'
-  },
-  loading: {
-    messages: [
-      'Creating worlds...',
-      'Generating characters...',
-      'Weaving the plot...',
-      'Bringing your story to life...'
-    ]
-  },
-  onboarding: {
-    slides: [
-      {
-        title: 'Create Unique Stories',
-        description: 'Describe your fantasy and AI will generate a personalized visual story'
-      },
-      {
-        title: 'Customize Characters',
-        description: 'Upload photos of your favorite characters and bring them to life in your story'
-      },
-      {
-        title: 'Discover Infinite Stories',
-        description: 'Explore creations from other users and find your next favorite read'
-      },
-      {
-        title: 'Start Dreaming!',
-        description: 'Join thousands of creators and readers on DreamDuel'
-      }
-    ]
-  },
-  guest: {
-    header: {
-      login: 'Log In',
-      register: 'Sign Up Free'
-    },
-    hero: {
-      title: 'Transform Your Photo with AI',
-      subtitle: 'Upload a photo and describe what you want to do with it. Sign up to get started.',
-      features: {
-        noCard: 'No card required',
-        instant: 'Instant',
-        free: '100% free'
-      }
-    },
-    steps: {
-      uploadImage: 'Upload a photo of a person',
-      uploadClick: 'Click to upload an image',
-      maxSize: 'PNG, JPG (max. 5MB)',
-      promptLabel: 'Describe what you want to create',
-      promptDescription: 'PROMPT - Describe what you want to see',
-      promptPlaceholder: 'Example: a person on the beach at sunset, wearing sportswear swimsuit, relaxed pose, background with palm trees and ocean waves...',
-      promptExample: 'Describe in detail: scenery, clothing, pose, lighting, atmosphere...',
-      negativePromptDescription: 'NEGATIVE PROMPT - Describe what you DON\'T want to see (Optional)',
-      negativePromptPlaceholder: 'Example: low quality, blurry, distorted, disfigured, extra hands, malformed face...',
-      negativePromptExample: 'Indicate which elements you want to avoid in the generated image',
-      customizePhysical: 'Customize physical characteristics (Optional)',
-      customizeDesc: 'Select physical characteristics to transform the person in the photo',
-      finalDescription: 'Final Description (Auto-generated)',
-      additionalDetails: 'Add additional details: scenery, environment, accessories, special effects...',
-      additionalExample: 'Example: "on a beach at sunset with palm trees in the background"',
-      finalPrompt: 'Final Prompt (will be sent to AI):',
-      selectOrWrite: 'Select options or write a description...',
-      advancedOptions: 'Advanced Options',
-      poseLabelLocked: 'Character Pose Reference',
-      registerRequired: 'Registration Required',
-      poseUploadLocked: 'Upload a pose reference image',
-      registerToUnlock: 'Register to unlock',
-      registerToUnlockButton: 'Sign Up to Unlock',
-      poseExample: 'Upload an image showing the desired character pose',
-      genderLabel: 'Character Gender',
-      female: 'Female',
-      male: 'Male',
-      genderDescription: 'Select the gender for your generated character',
-      bodyTypeLabel: 'Body Type',
-      femaleBody: 'Feminine',
-      maleBody: 'Masculine',
-      bodyTypeDescription: 'Choose the body type for your character'
-    },
-    physicalOptions: {
-      gender: 'Gender / Features',
-      ageRange: 'Age Range',
-      bodyType: 'Body Type',
-      muscleDefinition: 'Muscle Definition',
-      height: 'Height',
-      clothing: 'Clothing',
-      poseAction: 'Action / Pose'
-    },
-    bodyTypes: {
-      athletic: '💪 Athletic',
-      slim: '🏃 Slim',
-      average: '🧍 Average',
-      robust: '🏋️ Robust',
-      curvy: '💃 Curvy',
-      muscular: '🦾 Muscular'
-    },
-    muscles: {
-      defined: '💎 Defined Muscles',
-      toned: '⚡ Toned',
-      normal: '➖ Normal'
-    },
-    heights: {
-      tall: '📏 Tall',
-      average: '📐 Average Height',
-      short: '📌 Short'
-    },
-    clothing: {
-      sport: '⚽ Sportswear',
-      casual: '👕 Casual',
-      formal: '👔 Formal',
-      swimsuit: '🩱 Swimsuit',
-      superhero: '🦸 Superhero',
-      elegant: '🎩 Elegant Gala',
-      streetwear: '🧥 Streetwear'
-    },
-    poses: {
-      standing: '🧍 Standing',
-      sitting: '🪑 Sitting',
-      lying: '🛋️ Lying Down',
-      selfie: '🤳 Taking Selfie',
-      running: '🏃 Running',
-      jumping: '🦘 Jumping',
-      powerPose: '💪 Power Pose',
-      crossedArms: '🙅 Crossed Arms',
-      meditating: '🧘 Meditating',
-      dancing: '💃 Dancing'
-    },
-    generate: {
-      button: 'GENERATE IMAGE FREE',
-      generating: 'CREATING YOUR IMAGE...',
-      uploadRequired: '⚠️ Upload a photo to continue',
-      descRequired: '⚠️ Describe what you want to do with the photo'
-    },
-    benefits: {
-      title: '✨ Sign up and get:',
-      freeImages: '3 Free Images',
-      freeDesc: 'Welcome pack',
-      saveCreations: 'Save Creations',
-      saveDesc: 'Access from anywhere',
-      inviteFriends: 'Invite Friends',
-      inviteDesc: '+3 credits per referral'
-    },
-    modal: {
-      ready: 'Your image is ready!',
-      subtitle: 'Sign up for free to save it and create more amazing images',
-      registerButton: 'Sign Up Free',
-      haveAccount: 'I already have an account',
-      noCard: 'No card required • Cancel anytime'
-    },
+    creditRefundNotice: '🔐 For every technical error on our end, a credit will be automatically refunded to you.',
+    uploadClick: 'Click to upload an image',
+    maxSize: 'PNG, JPG (max. 5MB)',
+    removeImage: 'Remove image',
     resultModal: {
       title: 'Image Generated!',
       subtitle: 'Your creation is ready to download',
@@ -469,112 +71,49 @@ export default {
       downloadButton: 'Download Image',
       warningTitle: 'Don\'t forget to download your image!',
       warningText: 'The image will only be available in this window. Download it now to keep it.'
+    },
+    helpModalClose: 'Got it!',
+    errors: {
+      licenseRequired: 'Please enter your Gumroad credit before generating.',
+      license: 'Your license key is invalid or you have run out of credits. Please buy a new one.',
+      invalidFile: 'Please select a valid image file.',
+      fileTooLarge: 'The image is too large. Maximum size: 5MB.',
+      upload: 'Error uploading the image. Please try again.',
+      generate: 'Error generating the image. Please try again.',
+      download: 'Error downloading the image.'
     }
   },
-  auth: {
-    login: {
-      title: 'Log In',
-      email: 'Email',
-      password: 'Password',
-      forgotPassword: 'Forgot your password?',
-      button: 'Log In',
-      noAccount: 'Don\'t have an account?',
-      signUp: 'Sign up',
-      welcome: 'Welcome back',
-      subtitle: 'Continue creating amazing stories',
-      orLoginWith: 'Or log in with',
-      continueWithGoogle: 'Continue with Google',
-      google: 'Google',
-      apple: 'Apple',
-      creating: 'Logging in...',
-      warmingUp: '⏳ Waking up server... (may take ~30s)',
-      errorGoogle: '❌ Error signing in with Google. Please try again',
-      error: '❌ Email or password incorrect'
+  settings: {
+    title: 'Settings',
+    preferences: {
+      title: 'Preferences',
+      language: 'Language',
+      languageDesc: 'Select your preferred language',
+      languageChanged: 'Language changed to English'
     },
-    register: {
-      title: 'Create Account',
-      username: 'Username',
-      usernamePlaceholder: 'username123',
-      email: 'Email',
-      emailPlaceholder: 'Email',
-      password: 'Password',
-      passwordPlaceholder: 'Minimum 8 characters',
-      confirmPassword: 'Confirm password',
-      confirmPasswordPlaceholder: 'Confirm your password',
-      button: 'Create Account',
-      creating: 'Creating account...',
-      warmingUp: '⏳ Waking up server... (may take ~30s)',
-      haveAccount: 'Already have an account?',
-      signIn: 'Log in',
-      joinCommunity: 'Join the creator community',
-      acceptTerms: 'I accept the',
-      terms: 'terms and conditions',
-      and: 'and the',
-      privacy: 'privacy policy',
-      orRegisterWith: 'Or sign up with',
-      continueWithGoogle: 'Continue with Google',
-      referralBonus: 'Referral Bonus!',
-      referralDesc: 'You will get +3 free images when you sign up',
-      errorPasswordMismatch: 'Passwords do not match',
-      errorPasswordMin8: 'Password must be at least 8 characters',
-      errorPasswordUppercase: 'Password must have at least one UPPERCASE letter',
-      errorPasswordLowercase: 'Password must have at least one lowercase letter',
-      errorPasswordNumber: 'Password must have at least one NUMBER',
-      reqMin8: 'Minimum 8 characters',
-      reqUppercase: 'One UPPERCASE letter',
-      reqLowercase: 'One lowercase letter',
-      reqNumber: 'One number',
-      passwordsMatch: '✅ Passwords match',
-      passwordsDontMatch: '❌ Passwords don\'t match',
-      errorAccountExists: '❌ This account is already registered. Please sign in or use another email/username',
-      errorGoogle: '❌ Error signing in with Google. Please try again',
-      errorGeneric: '❌ An error occurred. Please try again',
-      errorAcceptTerms: 'You must accept the terms and conditions',
-      footer: '© 2026 DreamDuel. All rights reserved.'
+    legal: {
+      title: 'Legal & Support',
+      terms: 'Terms and Conditions',
+      privacy: 'Privacy Policy',
+      about: 'About DreamDuel'
     }
-  },
-  imageLimit: {
-    title: 'Generate Your Image',
-    subtitle: 'Each image costs only $1',
-    totalGenerated: 'You have generated',
-    images: 'images in total',
-    costInfo: 'Each additional generation costs $1.00',
-    generateOne: 'Generate an Image',
-    perImage: '/image',
-    features: {
-      quality: 'High quality generation',
-      instant: 'Instant download',
-      noPlan: 'One-time payment, no subscriptions'
-    },
-    buyButton: 'Buy Now'
-  },
-  guestBenefits: {
-    noCensorship: 'No Censorship',
-    noCensorshipDesc: 'Total freedom',
-    instant: 'Instant',
-    instantDesc: 'Generate in seconds',
-    private: '100% Private',
-    privateDesc: 'Your data is safe',
-    createAccount: 'Create Account',
-    alreadyHaveAccount: 'Already have an account?',
-    login: 'Log In'
   },
   legal: {
+    lastUpdated: 'Last updated',
+    contact: 'Contact',
     terms: {
       title: 'Terms and Conditions',
-      lastUpdated: 'Last updated',
-      contact: 'Contact',
       section1: {
         title: 'Acceptance of Terms',
         content: 'By accessing and using DreamDuel, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you should not use our service.'
       },
       section2: {
         title: 'Service Description',
-        content: 'DreamDuel is an AI-powered image generation service. Users pay $1 per generated image and download it directly. We do not store generated images on our servers. We reserve the right to modify or discontinue the service at any time.'
+        content: 'DreamDuel is an AI-powered image generation service. Each generated image uses one credit, purchased through Gumroad, and is downloaded directly. We do not store generated images on our servers. We reserve the right to modify or discontinue the service at any time.'
       },
       section3: {
-        title: 'User Account',
-        content: 'You are responsible for maintaining the confidentiality of your account and password. You accept responsibility for all activities that occur under your account. You must be at least 13 years old to use this service.'
+        title: 'Credits and License Key',
+        content: 'Your credits are delivered as a Gumroad license key. You are responsible for keeping it private, as anyone who has it can use your credits. If a generation fails due to a technical error on our side, the credit is automatically refunded. You must be at least 13 years old to use this service.'
       },
       section4: {
         title: 'Generated Images and Rights',
@@ -582,7 +121,7 @@ export default {
       },
       section5: {
         title: 'Prohibited Conduct',
-        content: 'You must not use DreamDuel to generate illegal, offensive, harassing, violent, pornographic content, or content that infringes on third-party rights. We reserve the right to suspend or terminate accounts that violate these terms. Use of the service must comply with all applicable laws.'
+        content: 'DreamDuel is a service suitable for all audiences. You must not use it to generate illegal, sexual or explicit, offensive, harassing or violent content, or content that infringes on third-party rights. We reserve the right to invalidate the license keys of anyone who violates these terms. Use of the service must comply with all applicable laws.'
       },
       section6: {
         title: 'Intellectual Property',
@@ -595,15 +134,13 @@ export default {
     },
     privacy: {
       title: 'Privacy Policy',
-      lastUpdated: 'Last updated',
-      contact: 'Contact',
       section1: {
         title: 'Information We Collect',
-        content: 'We collect information you provide directly to us, such as your name and email. We do not store the images you generate, as they are downloaded directly to your device. We also automatically collect information about your use of the service, including IP address, browser type, and pages visited.'
+        content: 'Payments are processed by Gumroad, which collects the purchase details (such as your email); we only receive your license key to validate your credits. The reference image you upload is used temporarily to generate your image, and we do not store generated images, as they are downloaded directly to your device. We also automatically collect information about your use of the service, such as IP address, browser type and pages visited, through analytics tools such as Microsoft Clarity.'
       },
       section2: {
         title: 'Use of Information',
-        content: 'We use your information to provide and maintain the image generation service, process payments, send you transaction confirmations, improve our service, and protect platform security. We do not use the images you generate for any purpose as we do not store them.'
+        content: 'We use your information to provide and maintain the image generation service, validate your credits, improve our service and protect platform security. We do not use the images you generate for any purpose, as we do not store them.'
       },
       section3: {
         title: 'Sharing Information',

@@ -2,34 +2,43 @@ import { createI18n } from 'vue-i18n';
 import es from './locales/es';
 import en from './locales/en';
 
-// Idiomas disponibles en la aplicación
-const availableLocales = ['es', 'en'];
+export const SUPPORTED_LOCALES = [
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'en', name: 'English', flag: '🇺🇸' }
+] as const;
 
-// Función para detectar el idioma del navegador
-const getBrowserLocale = (): string => {
-  // Obtener el idioma del navegador
-  const browserLang = navigator.language || (navigator as any).userLanguage;
-  
-  // Extraer el código de idioma principal (ej: 'es-MX' -> 'es')
-  const langCode = browserLang.split('-')[0].toLowerCase();
-  
-  // Verificar si el idioma está disponible
-  return availableLocales.includes(langCode) ? langCode : 'es';
+export type AppLocale = (typeof SUPPORTED_LOCALES)[number]['code'];
+
+const LOCALE_STORAGE_KEY = 'locale';
+const DEFAULT_LOCALE: AppLocale = 'es';
+
+const isSupported = (code: string | null): code is AppLocale =>
+  SUPPORTED_LOCALES.some((l) => l.code === code);
+
+// Idioma guardado, luego el del navegador (ej: 'es-MX' -> 'es'), y por último español
+const getInitialLocale = (): AppLocale => {
+  const saved = localStorage.getItem(LOCALE_STORAGE_KEY);
+  if (isSupported(saved)) return saved;
+
+  const browserLang = navigator.language.split('-')[0]?.toLowerCase() ?? null;
+  return isSupported(browserLang) ? browserLang : DEFAULT_LOCALE;
 };
 
-// Obtener idioma: primero del localStorage, luego del navegador, finalmente español
-const savedLocale = localStorage.getItem('locale');
-const defaultLocale = savedLocale || getBrowserLocale();
+const initialLocale = getInitialLocale();
+document.documentElement.lang = initialLocale;
 
 const i18n = createI18n({
-  legacy: false, // Usar Composition API
-  locale: defaultLocale,
-  fallbackLocale: 'es',
-  messages: {
-    es,
-    en
-  },
-  globalInjection: true
+  legacy: false,
+  locale: initialLocale,
+  fallbackLocale: DEFAULT_LOCALE,
+  messages: { es, en }
 });
+
+/** Cambia el idioma de la app, lo recuerda y actualiza <html lang> */
+export function setLocale(code: AppLocale) {
+  i18n.global.locale.value = code;
+  localStorage.setItem(LOCALE_STORAGE_KEY, code);
+  document.documentElement.lang = code;
+}
 
 export default i18n;

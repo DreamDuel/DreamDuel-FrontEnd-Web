@@ -11,7 +11,7 @@ export default {
         background: {
           deep: '#000A0F',      // Fondo principal de la página
           elevated: '#0F1419',  // Navbars, Sidebars
-          card: '#1A2332'       // Tarjetas de historias
+          card: '#1A2332'       // Tarjetas y modales
         },
         // PRIMARIOS (Ocean Blue - Para acciones principales)
         primary: {
